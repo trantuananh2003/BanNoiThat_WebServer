@@ -1,0 +1,92 @@
+﻿using BanNoiThat.API.Model;
+using BanNoiThat.Application.DTOs;
+using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
+using BanNoiThat.Application.Service.Products.Commands.UpdatePatchProduct;
+using BanNoiThat.Application.Service.Products.Commands.UpdateProductItems;
+using BanNoiThat.Application.Service.Products.Queries.FindProduct;
+using BanNoiThat.Application.Service.Products.Queries.GetProductsPaging;
+using BanNoiThat.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Text.Json;
+
+namespace BanNoiThat.API.Controllers
+{
+    [ApiController]
+    [Route("api/[Controller]")]
+    public class ProductsController : Controller
+    {
+        private readonly IMediator _mediator;
+        private ApiResponse _apiResponse;
+
+        public ProductsController(IMediator mediator)
+        {
+            _mediator = mediator;
+            _apiResponse = new ApiResponse();
+        }
+
+        #region Admin
+        //Create product
+        [HttpPost]
+        public async Task<ActionResult> CreateProductAsync([FromForm] CreateProductsCommand command)
+        {
+            await _mediator.Send(command);
+
+            return Ok();
+        }
+
+        //Get product for paged list
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse>> GetPagedListProductAsync([FromQuery] GetPagedProductsQuery queryPagedProduct)
+        {
+            var pagedProductModel = await _mediator.Send(queryPagedProduct);
+
+            PaginationDto pagination = new PaginationDto()
+            {
+                CurrentPage = pagedProductModel.PageCurrent,
+                PageSize = pagedProductModel.PageSize,
+                TotalRecords = pagedProductModel.TotalCount,
+            };
+
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagination));
+            _apiResponse.Result = pagedProductModel.Items;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+            return Ok(_apiResponse);
+        }
+
+        //Get product by slug
+        [HttpGet("{slug}")]
+        public async Task<ActionResult<ApiResponse>> GetProductBySlugAsync([FromRoute] string slug)
+        {
+            var createModel = new FindProductQuery() {  Slug = slug };
+            var modelResponse = await _mediator.Send(createModel);
+
+            _apiResponse.Result = modelResponse;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+           
+            return _apiResponse;
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<ApiResponse>> UpdateProductByIdAsync([FromRoute]string id, [FromBody] JsonPatchDocument<Product> jsonPatchProduct)
+        {
+            await _mediator.Send(new UpdatePatchProductCommand() { Id = id, JsonPatchProductDto = jsonPatchProduct });
+            return Ok();
+        }
+
+        [HttpPut("{productId}/product-items")]
+        public async Task<ActionResult<ApiResponse>> UpdateProductItems([FromRoute]string productId, [FromBody] List<ProductItemRequest> items)
+        {
+            var command = new UpsertProductItemsCommand() {
+                ProductId = productId,
+                ListProductItems = items
+            };
+
+            await _mediator.Send(command);
+            return NoContent();
+        }
+        #endregion
+    }
+}

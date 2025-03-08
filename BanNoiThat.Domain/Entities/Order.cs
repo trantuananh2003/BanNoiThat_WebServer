@@ -1,0 +1,21 @@
+﻿namespace BanNoiThat.Domain.Entities
+{
+    public class Order
+    {
+        public string Id { get; set; }
+        public string User_Id { get; set; }
+        //Need object User
+        public DateTime OrderPaidTime { get; set; }
+        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
+        public double TotalPrice { get; set; } 
+
+        public string PaymentMethod { get; set; } //Cod, Online
+        public string PaymentIntentId { get; set; }
+        public string PaymentStatus { get; set; } //Pending, Paid, Failed, Refunded
+
+        public string OrderStatus { get; set; }  //Pending, Processing (From ready to shipping, Back), Returned (Đơn hàng thất bại) , Delivered
+        public string ShippingAddress { get; set; }
+        public string PhoneNumber { get; set; }
+    }
+}

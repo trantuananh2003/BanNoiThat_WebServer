@@ -1,0 +1,41 @@
+﻿using BanNoiThat.Application.Interfaces.IRepository;
+using BanNoiThat.Application.Interfaces.Repository;
+using BanNoiThat.Application.Service.BrandService;
+using BanNoiThat.Infrastructure.SqlServer.DataContext;
+using System;
+using System.Collections.Generic;
+namespace BanNoiThat.Infrastructure.SqlServer.Repositories
+{
+    public class UnitOfWork : IUnitOfWork, IDisposable
+    {
+        private ApplicationDbContext _dbContext;
+        private ICategoriesRepository _categoriesRepository;
+        private IProductRepository _productsRepository;
+        private IBrandsRepository _brandsRepository;
+        private ICartRepository _cartRepository;
+        private IOrdersRepository _orderRepository;
+        private IUserRepository _userRepository;
+
+        public ICategoriesRepository CategoriesRepository => _categoriesRepository = new CategoriesRepository(_dbContext);
+        public IProductRepository ProductRepository => _productsRepository = new ProductRepository(_dbContext);
+        public IBrandsRepository BrandRepository => _brandsRepository = new BrandRepository(_dbContext);
+        public ICartRepository CartRepository => _cartRepository = new CartRepository(_dbContext);
+        public IOrdersRepository OrderRepository => _orderRepository = new OrderRepository(_dbContext);
+        public IUserRepository UserRepository => _userRepository = new UserRepository(_dbContext);
+
+        public UnitOfWork(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task SaveChangeAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            if (_dbContext != null) _dbContext.Dispose();
+        }
+    }
+}

@@ -1,0 +1,6 @@
+@BanNoiThat.API_HostAddress = http://localhost:5037
+
+GET {{BanNoiThat.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
