@@ -28,10 +28,18 @@ namespace BanNoiThat.Application.Service.Database
 
         public async Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync()
         {
-            var listEntity = await _uow.CategoriesRepository.GetAllAsync(includeProperties: "Parent");
-            var listDto = _mapper.Map<IEnumerable<CategoryResponse>>(listEntity);
+            var listEntity = await _uow.CategoriesRepository.GetAllAsync(includeProperties: "Children");
+            var listResponse = new List<CategoryResponse>();
 
-            return listDto;
+            foreach(var entity in listEntity)
+            {
+                if(entity.Children.Any())
+                {
+                    listResponse.Add(_mapper.Map<CategoryResponse>(entity));
+                }
+            }
+
+            return listResponse;
         }
 
         public async Task<CategoryResponse> GetCategoryAsync(string id)

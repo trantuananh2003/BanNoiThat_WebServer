@@ -48,8 +48,6 @@ namespace BanNoiThat.API.Controllers
                 {
                     new Claim("email", userEntity.Email),
                     new Claim("fullName", userEntity.FullName),
-                    new Claim(ClaimTypes.NameIdentifier, userEntity.Id),
-                    new Claim(ClaimTypes.Email, userEntity.Email),
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
