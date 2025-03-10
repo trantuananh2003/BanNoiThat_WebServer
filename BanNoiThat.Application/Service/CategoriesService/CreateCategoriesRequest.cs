@@ -2,8 +2,8 @@
 {
     public class CreateCategoriesRequest
     {
-        public string Name { get; set; }
-        public string CategoriesUrlImage { get; set; }
+        public string? Name { get; set; }
+        public string? CategoriesUrlImage { get; set; }
         public string? Parent_Id { get; set; }
         public CreateCategoriesRequest? Parent { get; set; }
     }
