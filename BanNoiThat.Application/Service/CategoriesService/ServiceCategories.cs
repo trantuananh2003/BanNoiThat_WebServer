@@ -26,7 +26,7 @@ namespace BanNoiThat.Application.Service.Database
             await _uow.SaveChangeAsync();
         }
 
-        public async Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<CategoryResponse>> GetCategoriesForClientAsync()
         {
             var listEntity = await _uow.CategoriesRepository.GetAllAsync(includeProperties: "Children");
             var listResponse = new List<CategoryResponse>();
@@ -34,6 +34,22 @@ namespace BanNoiThat.Application.Service.Database
             foreach(var entity in listEntity)
             {
                 if(entity.Children.Any())
+                {
+                    listResponse.Add(_mapper.Map<CategoryResponse>(entity));
+                }
+            }
+
+            return listResponse;
+        }
+
+        public async Task<IEnumerable<CategoryResponse>> GetCategoriesForAdminAsync()
+        {
+            var listEntity = await _uow.CategoriesRepository.GetAllAsync(includeProperties: "Children");
+            var listResponse = new List<CategoryResponse>();
+
+            foreach (var entity in listEntity)
+            {
+                if (entity.Children.Any() || string.IsNullOrEmpty(entity.Parent_Id))
                 {
                     listResponse.Add(_mapper.Map<CategoryResponse>(entity));
                 }

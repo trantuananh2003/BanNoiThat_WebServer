@@ -9,8 +9,7 @@ using System.Net;
 namespace BanNoiThat.API.Controllers
 {
     [ApiController]
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/[controller]")]
     public class CategoriesController : Controller
     {
         private readonly IServiceCategories _serviceCategories;
@@ -27,12 +26,31 @@ namespace BanNoiThat.API.Controllers
             _apiResponse = new ApiResponse();
         }
 
-        [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetAllBrand()
+        [HttpGet("client")]
+        public async Task<ActionResult<ApiResponse>> GetAllCategoryForClient()
         {
-            var modelsResponse = await _serviceCategories.GetAllCategoriesAsync();
+            var modelsResponse = await _serviceCategories.GetCategoriesForClientAsync();
 
             if (modelsResponse.IsNullOrEmpty()) {
+                _logger.LogWarning("END: Get list models reponse null");
+            }
+
+            _apiResponse.Result = modelsResponse;
+            _apiResponse.IsSuccess = true;
+
+            _logger.LogInformation("END: Get list models reponse");
+
+            return Ok(_apiResponse);
+        }
+
+
+        [HttpGet("admin")]
+        public async Task<ActionResult<ApiResponse>> GetAllCategoryForAdmin()
+        {
+            var modelsResponse = await _serviceCategories.GetCategoriesForAdminAsync();
+
+            if (modelsResponse.IsNullOrEmpty())
+            {
                 _logger.LogWarning("END: Get list models reponse null");
             }
 
@@ -56,5 +74,7 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(_apiResponse);
         }
+
+
     }
 }

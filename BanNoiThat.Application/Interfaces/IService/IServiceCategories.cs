@@ -8,6 +8,7 @@ namespace BanNoiThat.Application.Interfaces.Database
     {
         Task CreateCategoryAsync(CreateCategoriesRequest model);
         Task<CategoryResponse> GetCategoryAsync(string id);
-        Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync();
+        Task<IEnumerable<CategoryResponse>> GetCategoriesForClientAsync();
+        Task<IEnumerable<CategoryResponse>> GetCategoriesForAdminAsync();
     }
 }
