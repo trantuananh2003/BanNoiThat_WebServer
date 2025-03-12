@@ -47,7 +47,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                     Id = product.Id,
                     Name = product.Name,
                     Slug = product.Slug,
-                    ThumnailUrl = product.ThumbnailUrl,
+                    ThumbnailUrl = product.ThumbnailUrl,
                     Price = product.ProductItems.Any() ? product.ProductItems.Min(x => x.Price) : 0,
                     SalePrice = product.ProductItems.Any() ? product.ProductItems.Min(x => x.SalePrice) : 0,
                 });

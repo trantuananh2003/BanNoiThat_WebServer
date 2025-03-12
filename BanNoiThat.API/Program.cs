@@ -37,19 +37,20 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins",
+    options.AddPolicy("AllowFrontEnd",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000/")
-                   .AllowAnyOrigin()
+            builder.WithOrigins("http://localhost:3005")
+                   .AllowAnyHeader()
                    .AllowAnyMethod()
-                   .AllowAnyHeader();
+                   .AllowCredentials()
+                   .WithExposedHeaders("X-Pagination"); 
         });
 });
 
 
 var app = builder.Build();
-app.UseCors("AllowAllOrigins");
+app.UseCors("AllowFrontEnd");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

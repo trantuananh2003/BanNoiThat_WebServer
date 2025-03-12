@@ -27,8 +27,7 @@ namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
             if (request.ThumbnailImage != null && request.ThumbnailImage.Length > 0)
             {
                 var fileName = $"{Guid.NewGuid()}{Path.GetExtension(request.ThumbnailImage.FileName)}";
-                await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, request.ThumbnailImage);
-                entityProduct.ThumbnailUrl = fileName;
+                entityProduct.ThumbnailUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, request.ThumbnailImage);
             }
 
             foreach (var productItem in request.ListProductItems)

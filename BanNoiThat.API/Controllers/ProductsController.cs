@@ -54,13 +54,13 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.Result = pagedProductModel.Items;
             _apiResponse.StatusCode = HttpStatusCode.OK;
             return Ok(_apiResponse);
-        }
+        }        
 
-        //Get product by slug
-        [HttpGet("{slug}")]
-        public async Task<ActionResult<ApiResponse>> GetProductBySlugAsync([FromRoute] string slug)
+        //Get product by slug or id
+        [HttpGet("{value}")]
+        public async Task<ActionResult<ApiResponse>> GetProductBySlugAsync([FromRoute] string value)
         {
-            var createModel = new FindProductQuery() {  Slug = slug };
+            var createModel = new FindProductQuery() {  IdentityValue = value };
             var modelResponse = await _mediator.Send(createModel);
 
             _apiResponse.Result = modelResponse;
@@ -87,6 +87,8 @@ namespace BanNoiThat.API.Controllers
             await _mediator.Send(command);
             return NoContent();
         }
+
         #endregion
+
     }
 }

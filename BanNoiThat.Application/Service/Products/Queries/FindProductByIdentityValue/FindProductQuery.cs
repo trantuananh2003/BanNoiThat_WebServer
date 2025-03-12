@@ -5,7 +5,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.FindProduct
 {
     public class FindProductQuery : IRequest<ProductResponse>
     {
-        public string Id { get; set; } = string.Empty;
-        public string Slug { get; set; } = string.Empty;
+        //Slug or Id
+        public string IdentityValue { get; set; } = string.Empty;
     }
 }

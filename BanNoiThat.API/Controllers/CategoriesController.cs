@@ -74,7 +74,5 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(_apiResponse);
         }
-
-
     }
 }
