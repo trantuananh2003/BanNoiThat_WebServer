@@ -1,4 +1,6 @@
-﻿namespace BanNoiThat.Application.DTOs
+﻿using Microsoft.AspNetCore.Http;
+
+namespace BanNoiThat.Application.DTOs
 {
     public class CreateProductItem
     {
@@ -7,5 +9,6 @@
         public double? Price { get; set; }
         public double? SalePrice { get; set; }
         public string? Sku { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

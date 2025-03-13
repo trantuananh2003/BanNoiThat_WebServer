@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.Interfaces.Database;

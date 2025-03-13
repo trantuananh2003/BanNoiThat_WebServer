@@ -11,8 +11,8 @@ namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
         public string Category_Id { get; set; }
         public string Brand_Id { get; set; }
         public string Description { get; set; }
-        public IFormFile? ThumbnailImage { get; set; }
         public string Slug { get; set; }
+        public IFormFile? ThumbnailImage { get; set; }
         public List<CreateProductItem> ListProductItems { get; set; }
     }
 }

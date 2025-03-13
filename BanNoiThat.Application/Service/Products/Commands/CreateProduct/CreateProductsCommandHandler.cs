@@ -36,6 +36,12 @@ namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
                 entityProductItem.Id = Guid.NewGuid().ToString();
                 entityProductItem.Product_Id = entityProduct.Id;
                 entityProduct.ProductItems.Add(entityProductItem);
+
+                if(productItem.Image != null && productItem.Image.Length > 0)
+                {
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(productItem.Image.FileName)}";
+                    entityProductItem.ImageUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, productItem.Image);
+                }
             }
 
             await _uow.ProductRepository.CreateAsync(entityProduct);

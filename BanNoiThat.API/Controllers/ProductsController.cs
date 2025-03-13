@@ -58,7 +58,7 @@ namespace BanNoiThat.API.Controllers
 
         //Get product by slug or id
         [HttpGet("{value}")]
-        public async Task<ActionResult<ApiResponse>> GetProductBySlugAsync([FromRoute] string value)
+        public async Task<ActionResult<ApiResponse>> GetProductAsync([FromRoute] string value)
         {
             var createModel = new FindProductQuery() {  IdentityValue = value };
             var modelResponse = await _mediator.Send(createModel);
