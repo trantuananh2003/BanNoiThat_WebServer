@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoApi"));
-
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMediatR(cfg => {
@@ -33,6 +32,7 @@ builder.Services.AddVersionedApiExplorer(
 );
 builder.Services.AddSingleton(u => new BlobServiceClient(builder.Configuration.GetConnectionString("StorageAccount")));
 builder.Services.RegisterDIService();
+builder.Services.SetUpAuthorization(builder.Configuration);
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
@@ -48,7 +48,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-
 var app = builder.Build();
 app.UseCors("AllowFrontEnd");
 
@@ -61,6 +60,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

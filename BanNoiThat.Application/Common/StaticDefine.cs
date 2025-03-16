@@ -3,5 +3,25 @@
     public static class StaticDefine
     {
         public const string SD_Storage_Containter = "eventmanagement";
+
+        //Claim user
+        public const string Claim_User_Id = "user_id";
+        public const string Claim_FullName = "fullName";
+
+        //Status order 
+        //Pending, Processing, Shipping , Done, cancelled ,Returned (Đơn hàng hoàn lại)
+        public const string Status_Order_Pending = "Pending";
+        public const string Status_Order_Processing = "Processing";
+        public const string Status_Order_Shipping = "Shipping";
+        public const string Status_Order_Done = "Done";
+        public const string Status_Order_Returned = "Returned";
+        public const string Status_Order_Cancelled = "Cancelled";
+
+        //Status payment
+        //Pending, Paid, Failed, Refunded
+        public const string Status_Payment_Pending = "Pending";
+        public const string Status_Payment_Paid = "Paid";
+        public const string Status_Payment_Failed = "Failed";
+        public const string Status_Payment_Refunded = "Refunded";
     }
 }

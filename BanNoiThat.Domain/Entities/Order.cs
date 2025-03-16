@@ -14,7 +14,8 @@
         public string PaymentIntentId { get; set; }
         public string PaymentStatus { get; set; } //Pending, Paid, Failed, Refunded
 
-        public string OrderStatus { get; set; }  //Pending, Processing (From ready to shipping, Back), Returned (Đơn hàng thất bại) , Delivered
+        public string OrderStatus { get; set; } //Pending, Processing, Shipping , Done, Cancelled , Returned (Đơn hàng hoàn lại)
+
         public string ShippingAddress { get; set; }
         public string PhoneNumber { get; set; }
     }

@@ -58,7 +58,7 @@ namespace BanNoiThat.API.Controllers
 
         //Get product by slug or id
         [HttpGet("{value}")]
-        public async Task<ActionResult<ApiResponse>> GetProductAsync([FromRoute] string value)
+        public async Task<ActionResult<ApiResponse>> GetProductBytIdentityAsync([FromRoute] string value)
         {
             var createModel = new FindProductQuery() {  IdentityValue = value };
             var modelResponse = await _mediator.Send(createModel);
@@ -87,7 +87,6 @@ namespace BanNoiThat.API.Controllers
             await _mediator.Send(command);
             return NoContent();
         }
-
         #endregion
 
     }

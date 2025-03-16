@@ -1,9 +1,12 @@
 ﻿using Azure;
 using BanNoiThat.API.Model;
+using BanNoiThat.Application.Common;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Service.MomoService.Momo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace BanNoiThat.API.Controllers
 {
@@ -23,17 +26,25 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreatePaymentUrl([FromQuery] string userId,[FromForm]OrderInfoRequest model) 
+        [Authorize]
+        public async Task<ActionResult<ApiResponse>> CreatePaymentUrl([FromForm]OrderInfoRequest model) 
         {
-            var orderModel =  await _paymentService.CreatePayment(userId, model);
-            if(model.PaymentMethod == "COD")
+            var emailUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)!.Value;
+
+            var orderModel =  await _paymentService.CreatePayment(emailUser, model);
+
+            if(model.PaymentMethod == "cod")
             {
-                return Created();
+                _apiResponse.IsSuccess = true;
+                _apiResponse.StatusCode = HttpStatusCode.OK;
+                return Ok(_apiResponse);
             }
-            else if (model.PaymentMethod == "Online" && orderModel != null)
+            else if (model.PaymentMethod == "momo" && orderModel != null)
             {
                 var resultMomo = await _momoService.CreatePaymentMomoAsync(orderModel);
-                return RedirectPermanent(resultMomo.PayUrl);
+                _apiResponse.IsSuccess = true;
+                _apiResponse.Result = resultMomo.PayUrl;
+                return Ok(_apiResponse);
             }
             else
             {

@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using BanNoiThat.Application.Common;
 
 namespace BanNoiThat.API.Controllers
 {
@@ -46,8 +47,9 @@ namespace BanNoiThat.API.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("email", userEntity.Email),
-                    new Claim("fullName", userEntity.FullName),
+                    new Claim(StaticDefine.Claim_User_Id, userEntity.Id),
+                    new Claim(ClaimTypes.Email, userEntity.Email),
+                    new Claim(StaticDefine.Claim_FullName, userEntity.FullName),
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -61,7 +63,8 @@ namespace BanNoiThat.API.Controllers
                 FullName = userEntity.FullName,
                 Token = tokenHandler.WriteToken(token)
             };
-            
+
+            _apiResponse.IsSuccess = true;
             _apiResponse.StatusCode = HttpStatusCode.OK;
             _apiResponse.Result = loginResponse;
             return Ok(_apiResponse);

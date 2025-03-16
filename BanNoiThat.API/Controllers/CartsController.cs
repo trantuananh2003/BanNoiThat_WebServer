@@ -20,9 +20,9 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetCartAsyncByIdUser(string UserId)
-        {
-            var modelResponse = await _cartService.GetCartByUserId(UserId);
+        public async Task<ActionResult<ApiResponse>> GetCartAsyncByIdUser([FromQuery] string email)
+       {
+            var modelResponse = await _cartService.GetCartByUserEmail(email);
 
             _apiResponse.Result = modelResponse;
             _apiResponse.StatusCode = HttpStatusCode.OK;
@@ -31,10 +31,19 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApiResponse>> UpdateCartItem(string UserId,[FromForm] CartItemRequest cartItemRequest)
+        public async Task<ActionResult<ApiResponse>> UpdateCartItem([FromQuery]string email, [FromForm] CartItemRequest cartItemRequest)
         {
-            await _cartService.UpdateQuantityItemCartByUserId(UserId, cartItemRequest);
+            await _cartService.UpdateQuantityItemCartByUserId(email, cartItemRequest);
 
+            return _apiResponse;
+        }
+
+        [HttpDelete("{cartId}/cartItems/{cartItemId}")]
+        public async Task<ActionResult<ApiResponse>> RemoveCartItem([FromQuery] string email, string cartId, string cartItemId)
+        {
+            await _cartService.DeleteCartItem(cartId, cartItemId);
+
+            _apiResponse.IsSuccess = true;
             return _apiResponse;
         }
     }

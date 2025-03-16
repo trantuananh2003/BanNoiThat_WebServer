@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BanNoiThat.Application.DTOs;
+using BanNoiThat.Application.DTOs.User;
 using BanNoiThat.Application.Service.BrandService;
 using BanNoiThat.Application.Service.CategoriesService;
 using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
@@ -36,7 +37,17 @@ namespace BanNoiThat.API.Mapper
             CreateMap<CartItem, CartItemResponse>()
                 .ForMember(dest => dest.NameOption, opt => opt.MapFrom(cartItem => cartItem.ProductItem.NameOption))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(cartItem => cartItem.ProductItem.Product.Name))
-                .ForMember(dest => dest.ThumbnailUrl, opt => opt.MapFrom(cartItem => cartItem.ProductItem.Product.ThumbnailUrl));
-        } 
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(cartItem => cartItem.ProductItem.ImageUrl))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(cartItem => cartItem.ProductItem.Price))
+                .ForMember(dest => dest.SalePrice, opt => opt.MapFrom(cartItem => cartItem.ProductItem.SalePrice));
+
+            //Order
+            CreateMap<Order, OrderResponse>();
+            CreateMap<OrderItem, OrderItemResponse>();
+
+            //User
+            CreateMap<InfoUserRequest, User>();
+            CreateMap<User, InfoUserResponse>();
+        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using BanNoiThat.Application.Common;
-using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.Interfaces.Database;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.CategoriesService;

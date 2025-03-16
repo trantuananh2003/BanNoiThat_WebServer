@@ -4,7 +4,8 @@ namespace BanNoiThat.Application.Interfaces.IService
 {
     public interface IServiceCarts 
     {
-        Task<CartResponse> GetCartByUserId(string UserId);
-        Task UpdateQuantityItemCartByUserId(string UserId, CartItemRequest cartItemRequest);
+        Task<CartResponse> GetCartByUserEmail(string UserId);
+        Task UpdateQuantityItemCartByUserId(string emailUser, CartItemRequest cartItemRequest);
+        Task DeleteCartItem(string cartId, string cartItemId);
     }
 }

@@ -23,5 +23,11 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             return cartEntity;
         }
 
+        public async Task DeleteCartItem(string cartId, string cartItemId)
+        {
+            var entity = await _db.CartItems.Where(x => x.Id == cartItemId).FirstOrDefaultAsync();
+
+            _db.CartItems.Remove(entity);
+        }
     }
 }

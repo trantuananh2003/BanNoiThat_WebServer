@@ -43,7 +43,6 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
-
         [HttpGet("admin")]
         public async Task<ActionResult<ApiResponse>> GetAllCategoryForAdmin()
         {

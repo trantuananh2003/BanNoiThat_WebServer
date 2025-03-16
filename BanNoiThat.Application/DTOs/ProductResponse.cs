@@ -1,4 +1,6 @@
-﻿namespace BanNoiThat.Application.DTOs
+﻿using BanNoiThat.Application.Service.CategoriesService;
+
+namespace BanNoiThat.Application.DTOs
 {
     public class ProductResponse
     {

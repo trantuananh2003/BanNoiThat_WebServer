@@ -11,13 +11,14 @@ namespace BanNoiThat.Application.Service.CartsService
         public IUnitOfWork _uow = uow;
         public IMapper _mapper = mapper;
 
-        public async Task<CartResponse> GetCartByUserId(string UserId)
+        public async Task<CartResponse> GetCartByUserEmail(string email)
         {
-            var cartEntity = await _uow.CartRepository.GetCartByIdUser(UserId);
+            var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == email);
+            var cartEntity = await _uow.CartRepository.GetCartByIdUser(userEntity.Id);
             //*Nếu giỏ hàng chưa tồn tại
             if (cartEntity is null)
             {
-                await CreateCart(cartEntity, UserId);
+                cartEntity = await CreateCart(cartEntity, userEntity.Id);
                 await _uow.SaveChangeAsync();
             }
 
@@ -27,24 +28,28 @@ namespace BanNoiThat.Application.Service.CartsService
         }
 
         //Thêm hoặc giảm chưa áp dụng chỉnh việc nhập số lượng cố định
-        public async Task UpdateQuantityItemCartByUserId(string UserId, CartItemRequest cartItemRequest)
+        public async Task UpdateQuantityItemCartByUserId(string userEmail, CartItemRequest cartItemRequest)
         {
             if (cartItemRequest.IsAddManual)
             {
                 cartItemRequest.Quantity /= Math.Abs(cartItemRequest.Quantity);
             }
 
-            var cartEntity = await _uow.CartRepository.GetAsync(x => x.User_Id == UserId, includeProperties: "CartItems");
-            _uow.CartRepository.AttachEntity(cartEntity);
+            var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == userEmail);
+            var cartEntity = await _uow.CartRepository.GetAsync(x => x.User_Id == userEntity.Id, includeProperties: "CartItems");
 
             //*Nếu giỏ hàng chưa tồn tại
             if (cartEntity is null)
             {
-                await CreateCart(cartEntity, UserId);
+                cartEntity = await CreateCart(cartEntity, userEntity.Id);
+            }
+            else
+            {
+                _uow.CartRepository.AttachEntity(cartEntity);
             }
 
             var productItem = await _uow.ProductRepository.GetProductItemByIdAsync(cartItemRequest.ProductItem_Id);
-            var existingCartItem = cartEntity.CartItems.FirstOrDefault(x => x.ProductItem_Id == productItem.Id);
+            var existingCartItem = cartEntity.CartItems is not null ? cartEntity.CartItems.FirstOrDefault(x => x.ProductItem_Id == productItem.Id) : null;
 
             //* Kiểm tra quantity muốn thêm vào có vượt quá
             var countQuantity = ((existingCartItem is not null) ? existingCartItem.Quantity : 0) + cartItemRequest.Quantity;
@@ -73,21 +78,29 @@ namespace BanNoiThat.Application.Service.CartsService
                 cartEntity.CartItems.Add(new CartItem() {
                     Id = Guid.NewGuid().ToString(),
                     ProductItem_Id = productItem.Id,
-                    Quantity = productItem.Quantity,
+                    Quantity = cartItemRequest.Quantity,
                     Cart_Id = cartEntity.Id,
                 });
             }
 
             await _uow.SaveChangeAsync();
-        }
+        }  
 
         //Tạo cart entity trong database
-        private async Task CreateCart(Cart cart, string UserId)
+        public async Task<Cart> CreateCart(Cart cart, string UserId)
         {
             cart = new Cart();
             cart.User_Id = UserId;
             cart.Id = Guid.NewGuid().ToString();
+            cart.CartItems = new List<CartItem>();
             await _uow.CartRepository.CreateAsync(cart);
+
+            return cart;
+        }
+
+        public async Task DeleteCartItem(string cartId,string cartItemId)
+        {
+            await _uow.CartRepository.DeleteCartItem(cartId, cartItemId);
         }
     }
 }

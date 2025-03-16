@@ -26,7 +26,16 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             //Condition
             if(!string.IsNullOrEmpty(stringSearch))
             {
-                query = query.Where(x => x.Name.Contains(stringSearch)); 
+                var categoryEntity = await _db.Categories.AsNoTracking().Where(c => c.Slug == stringSearch).FirstOrDefaultAsync();
+
+                if (categoryEntity != null)
+                {
+                    query = query.Where(x => x.Category_Id == categoryEntity.Id);
+                }
+                else
+                {
+                    query = query.Where(x => x.Name.Contains(stringSearch));
+                }
             }
 
             //OrderBy and Desc

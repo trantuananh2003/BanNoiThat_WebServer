@@ -1,5 +1,4 @@
-﻿using BanNoiThat.Application.DTOs;
-using BanNoiThat.Application.Service.CategoriesService;
+﻿using BanNoiThat.Application.Service.CategoriesService;
 using BanNoiThat.Domain.Entities;
 
 namespace BanNoiThat.Application.Interfaces.Database
