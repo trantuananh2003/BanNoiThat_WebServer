@@ -101,6 +101,7 @@ namespace BanNoiThat.Application.Service.CartsService
         public async Task DeleteCartItem(string cartId,string cartItemId)
         {
             await _uow.CartRepository.DeleteCartItem(cartId, cartItemId);
+            await _uow.SaveChangeAsync();
         }
     }
 }

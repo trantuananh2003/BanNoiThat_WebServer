@@ -7,5 +7,6 @@ namespace BanNoiThat.Application.Interfaces.IService
     {
         Task<Order> GetDetailOrderById(string id, string userId);
         Task<List<OrderResponse>> GetListOrder(string userId, string orderStatus);
+        Task OrderUpdateStatus(string idUser, string orderId, string orderStatus);
     }
 }

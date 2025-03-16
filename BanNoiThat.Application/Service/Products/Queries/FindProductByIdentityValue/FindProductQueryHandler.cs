@@ -12,7 +12,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.FindProduct
 
         public async Task<ProductResponse> Handle(FindProductQuery request, CancellationToken cancellationToken)
         {
-            var entityProduct = await _uow.ProductRepository.GetAsync(x => x.Slug == request.IdentityValue || x.Id == request.IdentityValue, includeProperties: "Category, Brand, ProductItems");
+            var entityProduct = await _uow.ProductRepository.GetAsync((x => x.Slug == request.IdentityValue || x.Id == request.IdentityValue), includeProperties: "Category, Brand, ProductItems");
             var entityProductResponse = _mapper.Map<ProductResponse>(entityProduct);
 
             return entityProductResponse;

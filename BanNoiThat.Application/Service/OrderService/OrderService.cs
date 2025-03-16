@@ -31,5 +31,15 @@ namespace BanNoiThat.Application.Service.OrderService
             return listOrderResponse;
         }
 
+        public async Task OrderUpdateStatus(string idUser, string orderId, string orderStatus)
+        {
+            var user = await _uow.UserRepository.GetAsync(x => x.Id == idUser);
+            var entity = await _uow.OrderRepository.GetAsync(x => x.Id == orderId && x.User_Id == user.Id);
+            _uow.OrderRepository.AttachEntity(entity);
+
+            entity.OrderStatus = orderStatus;
+            await _uow.SaveChangeAsync();
+        }
+
     }
 }

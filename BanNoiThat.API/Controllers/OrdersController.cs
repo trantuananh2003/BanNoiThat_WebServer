@@ -1,5 +1,6 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
+using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.Interfaces.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,9 +49,12 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
-        [HttpPatch()]
-        public async Task<ActionResult<ApiResponse>> UpdateInfoOrder()
+        [HttpPatch("{orderId}")]
+        public async Task<ActionResult<ApiResponse>> UpdateOrder([FromRoute] string orderId, [FromForm] OrderPatchRequest order)
         {
+            var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
+
+            await _serviceOrder.OrderUpdateStatus(userId, orderId, order.OrderStatus);
             return _apiResponse;
         }
     }
