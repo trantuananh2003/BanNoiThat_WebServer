@@ -18,9 +18,22 @@ namespace BanNoiThat.API.Controllers
             _serviceUser = serviceUser;
         }
 
-        [HttpGet]
+        [HttpGet("{userId}")]
         [Authorize]
         public async Task<ActionResult<ApiResponse>> GetInfoUserById()
+        {
+            var userId = HttpContext.User.Claims.First().Value;
+
+            var modelResponse = await _serviceUser.GetInfoUser(userId);
+
+            _apiResponse.IsSuccess = true;
+            _apiResponse.Result = modelResponse;
+
+            return _apiResponse;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse>> GetAllUser()
         {
             var userId = HttpContext.User.Claims.First().Value;
 
@@ -43,5 +56,6 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.IsSuccess = true;
             return _apiResponse;
         }
+
     }
 }

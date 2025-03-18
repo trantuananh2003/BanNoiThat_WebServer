@@ -1,6 +1,5 @@
 ﻿using BanNoiThat.Application.DTOs;
 using MediatR;
-using System.Reflection.Metadata.Ecma335;
 
 namespace BanNoiThat.Application.Service.Products.Queries.GetProductsPaging
 {

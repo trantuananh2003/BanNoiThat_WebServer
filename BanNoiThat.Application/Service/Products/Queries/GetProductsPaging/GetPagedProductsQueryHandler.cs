@@ -6,7 +6,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsPaging
 {
     public class GetPagedProductsQueryHandler : IRequestHandler<GetPagedProductsQuery, PagedList<ProductHomeResponse>>
     {
-        public IUnitOfWork _uow;
+        private IUnitOfWork _uow;
 
         public GetPagedProductsQueryHandler(IUnitOfWork uow)
         {
@@ -19,5 +19,6 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsPaging
 
             return entityPadeawait;
         }
+
     }
 }

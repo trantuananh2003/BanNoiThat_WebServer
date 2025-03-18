@@ -4,6 +4,8 @@ using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Domain.Entities;
 using MediatR;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
 {
@@ -23,6 +25,9 @@ namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
             entityProduct.Category_Id = request.Category_Id;
             entityProduct.Brand_Id = request.Brand_Id;
             entityProduct.ProductItems = new();
+            entityProduct.Keyword = HandleSaveKeyWord(entityProduct);
+            HandleKeyword.AddKeyWord(entityProduct.Keyword);
+
 
             if (request.ThumbnailImage != null && request.ThumbnailImage.Length > 0)
             {
@@ -48,6 +53,35 @@ namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
             await _uow.SaveChangeAsync();
 
             return Unit.Value;
+        }
+
+        private string HandleSaveKeyWord(Product product)
+        {
+            string keyword;
+    
+            var names = product.Name.Split(' ');
+            var slugs = product.Slug.Split('-');
+
+            keyword = string.Join(" ", names);
+            keyword += string.Join(" ", slugs);
+
+            keyword = RemoveSpecialCharacters(keyword);
+
+            return keyword;
+        }
+
+        // Hàm loại bỏ ký tự đặc biệt
+        private string RemoveSpecialCharacters(string input)
+        {
+            // Chuẩn hóa chuỗi sang dạng FormD để tách dấu
+            var normalizedString = input.Normalize(NormalizationForm.FormD);
+
+            // Dùng Regex để chỉ giữ lại các ký tự không phải dấu
+            var regex = new Regex("\\p{IsCombiningDiacriticalMarks}+");
+            string withoutDiacritics = regex.Replace(normalizedString, string.Empty);
+
+            // Loại bỏ các ký tự đặc biệt ngoài chữ cái và số
+            return Regex.Replace(withoutDiacritics, @"[^a-zA-Z0-9\s]", string.Empty);
         }
     }
 }

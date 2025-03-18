@@ -36,24 +36,40 @@ namespace BanNoiThat.API.Controllers
             return _apiResponse;
         }
 
-        [HttpGet]
+        [HttpGet("customer")]
         [Authorize]
-        public async Task<ActionResult<ApiResponse>> GetListOrder([FromQuery] string orderStatus)
+        public async Task<ActionResult<ApiResponse>> GetListOrderForUser([FromQuery] string orderStatus)
         {
             string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value;
 
-            var listOrder = await _serviceOrder.GetListOrder(userId, orderStatus);
+            var listOrder = await _serviceOrder.GetListOrderForClient(userId, orderStatus);
 
             _apiResponse.IsSuccess = true;
             _apiResponse.Result = listOrder;
             return Ok(_apiResponse);
         }
 
-        [HttpPatch("{orderId}")]
-        public async Task<ActionResult<ApiResponse>> UpdateOrder([FromRoute] string orderId, [FromForm] OrderPatchRequest order)
+        [HttpGet("manager")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse>> GetListOrderForManager([FromQuery] string orderStatus)
+        {
+            string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value;
+
+            var listOrder = await _serviceOrder.GetListOrderForAdmin(userId, orderStatus);
+
+            _apiResponse.IsSuccess = true;
+            _apiResponse.Result = listOrder;
+            return Ok(_apiResponse);
+        }
+
+        [HttpPatch("{orderId}/orderStatus")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse>> UpdateOrderStatus([FromRoute] string orderId, [FromForm] OrderPatchRequest order)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
+            var roleUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
 
+            //Chỉ có user mới đc hủy đơn
             await _serviceOrder.OrderUpdateStatus(userId, orderId, order.OrderStatus);
             return _apiResponse;
         }

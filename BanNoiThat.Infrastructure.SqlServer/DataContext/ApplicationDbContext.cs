@@ -22,6 +22,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.DataContext
         public DbSet<OrderItem> OrderItems { get; set; }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<ProductConfig> ProductConfigs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +30,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.DataContext
             //modelBuilder.Entity<Product>().HasKey(o => o.Id);
             modelBuilder.ApplyConfiguration(new FluentCategories());
             modelBuilder.ApplyConfiguration(new FluentProducts());
+            modelBuilder.ApplyConfiguration(new FluentProductConfigs());
             modelBuilder.ApplyConfiguration(new FluentBrands());
             modelBuilder.ApplyConfiguration(new FluentProductItems());
 

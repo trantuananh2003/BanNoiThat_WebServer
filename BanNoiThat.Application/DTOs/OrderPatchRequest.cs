@@ -1,6 +1,4 @@
-﻿
-
-namespace BanNoiThat.Application.DTOs
+﻿namespace BanNoiThat.Application.DTOs
 {
     public class OrderPatchRequest
     {

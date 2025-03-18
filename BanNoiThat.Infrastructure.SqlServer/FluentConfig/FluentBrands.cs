@@ -9,6 +9,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.FluentConfig
         public void Configure(EntityTypeBuilder<Brand> builder)
         {
             builder.HasKey(o => o.Id);
+            builder.Property(o => o.BrandName).HasColumnType("nvarchar(255)");
         }
     }
 }

@@ -4,6 +4,7 @@ using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250318090551_UpdateField_AllDb_Nvarchar")]
+    partial class UpdateField_AllDb_Nvarchar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,7 +31,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BrandName")
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Slug")
                         .HasColumnType("nvarchar(max)");
@@ -90,7 +93,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Parent_Id")
                         .HasColumnType("nvarchar(450)");
@@ -159,7 +162,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("NameItem")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Order_Id")
                         .IsRequired()
@@ -199,14 +202,14 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Keyword")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("Slug")
                         .IsRequired()
@@ -240,7 +243,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -259,7 +262,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("NameOption")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -298,7 +301,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar");
 
                     b.Property<bool>("IsMale")
                         .HasColumnType("bit");

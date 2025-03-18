@@ -12,6 +12,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.FluentConfig
             builder.HasOne(o => o.Order).WithMany(x => x.OrderItems).HasForeignKey(o => o.Order_Id);
             builder.Property(o => o.Quantity).HasDefaultValue(1);
             builder.HasOne(o => o.ProductItem).WithMany().HasForeignKey(o => o.ProductItem_Id);
+            builder.Property(o => o.NameItem).HasColumnType("nvarchar(255)");
         }
     }
 }

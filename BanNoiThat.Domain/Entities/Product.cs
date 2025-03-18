@@ -9,7 +9,9 @@ namespace BanNoiThat.Domain.Entities
         public Category Category { get; set; }
         public string? Brand_Id { get; set; }
         public Brand Brand { get; set; }
+        public List<ProductConfig> Configs { get; set; }
         public List<ProductItem> ProductItems { get; set; }
+        public string? Keyword { get; set; }
 
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

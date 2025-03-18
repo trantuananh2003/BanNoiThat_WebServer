@@ -27,7 +27,7 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetAllCategory()
+        public async Task<ActionResult<ApiResponse>> GetAllBrand()
         {
             var modelsResponse = await _serviceBrands.GetAllBrandAsync();
 

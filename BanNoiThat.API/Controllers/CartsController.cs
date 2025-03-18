@@ -23,7 +23,7 @@ namespace BanNoiThat.API.Controllers
 
         [HttpGet]
         public async Task<ActionResult<ApiResponse>> GetCartAsyncByIdUser([FromQuery] string email)
-       {
+        {
             var modelResponse = await _cartService.GetCartByUserEmail(email);
 
             _apiResponse.Result = modelResponse;

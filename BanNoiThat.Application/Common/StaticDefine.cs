@@ -7,6 +7,7 @@
         //Claim user
         public const string Claim_User_Id = "user_id";
         public const string Claim_FullName = "fullName";
+        public const string Claim_User_Role = "user_role";
 
         //Status order 
         //Pending, Processing, Shipping , Done, cancelled ,Returned (Đơn hàng hoàn lại)
@@ -23,5 +24,10 @@
         public const string Status_Payment_Paid = "Paid";
         public const string Status_Payment_Failed = "Failed";
         public const string Status_Payment_Refunded = "Refunded";
+
+        //Role
+        public const string Role_Admin = "admin";
+        public const string Role_Customer = "customer";
+        public const string Role_Staff = "staff";
     }
 }

@@ -50,6 +50,7 @@ namespace BanNoiThat.API.Controllers
                     new Claim(StaticDefine.Claim_User_Id, userEntity.Id),
                     new Claim(ClaimTypes.Email, userEntity.Email),
                     new Claim(StaticDefine.Claim_FullName, userEntity.FullName),
+                    new Claim(StaticDefine.Claim_User_Role, userEntity.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -79,6 +80,7 @@ namespace BanNoiThat.API.Controllers
                 FullName = registerRequest.FullName,
                 Email = registerRequest.Email,
                 Password = registerRequest.Password,
+                Role = StaticDefine.Role_Customer,
             };
 
             await _uow.UserRepository.CreateAsync(userEntity);

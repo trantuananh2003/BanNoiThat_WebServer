@@ -23,9 +23,17 @@ namespace BanNoiThat.Application.Service.OrderService
             return orderEntity;
         }
 
-        public async Task<List<OrderResponse>> GetListOrder(string userId, string orderStatus)
+        public async Task<List<OrderResponse>> GetListOrderForClient(string userId, string orderStatus)
         {
             var listOrder = await _uow.OrderRepository.GetAllAsync(x => x.User_Id == userId && x.OrderStatus == orderStatus, includeProperties: "OrderItems");
+            var listOrderResponse = _mapper.Map<List<OrderResponse>>(listOrder);
+
+            return listOrderResponse;
+        }
+
+        public async Task<List<OrderResponse>> GetListOrderForAdmin(string userId, string orderStatus)
+        {
+            var listOrder = await _uow.OrderRepository.GetAllAsync(x => x.OrderStatus == orderStatus, includeProperties: "OrderItems");
             var listOrderResponse = _mapper.Map<List<OrderResponse>>(listOrder);
 
             return listOrderResponse;

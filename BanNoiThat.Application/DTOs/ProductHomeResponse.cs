@@ -8,5 +8,6 @@
         public string ThumbnailUrl { get; set; }
         public double Price { get; set; }
         public double SalePrice { get; set; }
+        public string? Keyword { get; set; }
     }
 }

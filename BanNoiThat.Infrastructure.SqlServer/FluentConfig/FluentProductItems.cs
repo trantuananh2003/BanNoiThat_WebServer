@@ -10,6 +10,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.FluentConfig
         {
             builder.HasKey(o => o.Id);
             builder.HasOne(o => o.Product).WithMany(x => x.ProductItems).HasForeignKey(x => x.Product_Id).OnDelete(DeleteBehavior.SetNull);
+            builder.Property(o => o.NameOption).HasColumnType("nvarchar(255)");
+
         }
     }
 }

@@ -5,6 +5,7 @@ using BanNoiThat.Application.Service.Products.Commands.UpdatePatchProduct;
 using BanNoiThat.Application.Service.Products.Commands.UpdateProductItems;
 using BanNoiThat.Application.Service.Products.Queries.FindProduct;
 using BanNoiThat.Application.Service.Products.Queries.GetProductsPaging;
+using BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend;
 using BanNoiThat.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
@@ -26,6 +27,21 @@ namespace BanNoiThat.API.Controllers
             _mediator = mediator;
             _apiResponse = new ApiResponse();
         }
+
+        #region Both Admin and Client
+        //Get product by "slug" or "id"
+        [HttpGet("{value}")]
+        public async Task<ActionResult<ApiResponse>> GetProductByIdentityAsync([FromRoute] string value)
+        {
+            var createModel = new FindProductQuery() { IdentityValue = value };
+            var modelResponse = await _mediator.Send(createModel);
+
+            _apiResponse.Result = modelResponse;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+
+            return _apiResponse;
+        }
+        #endregion
 
         #region Admin
         //Create product
@@ -54,21 +70,9 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.Result = pagedProductModel.Items;
             _apiResponse.StatusCode = HttpStatusCode.OK;
             return Ok(_apiResponse);
-        }        
-
-        //Get product by slug or id
-        [HttpGet("{value}")]
-        public async Task<ActionResult<ApiResponse>> GetProductBytIdentityAsync([FromRoute] string value)
-        {
-            var createModel = new FindProductQuery() {  IdentityValue = value };
-            var modelResponse = await _mediator.Send(createModel);
-
-            _apiResponse.Result = modelResponse;
-            _apiResponse.StatusCode = HttpStatusCode.OK;
-           
-            return _apiResponse;
         }
 
+        //Get product for paged list
         [HttpPatch("{id}")]
         public async Task<ActionResult<ApiResponse>> UpdateProductByIdAsync([FromRoute]string id, [FromBody] JsonPatchDocument<Product> jsonPatchProduct)
         {
@@ -76,6 +80,7 @@ namespace BanNoiThat.API.Controllers
             return Ok();
         }
 
+        //Cập nhập product item trong product id
         [HttpPut("{productId}/product-items")]
         public async Task<ActionResult<ApiResponse>> UpdateProductItems([FromRoute]string productId, [FromBody] List<ProductItemRequest> items)
         {
@@ -89,5 +94,34 @@ namespace BanNoiThat.API.Controllers
         }
         #endregion
 
+        #region Client 
+
+        //Get product for paged list
+        [HttpPost("recommend")]
+        public async Task<ActionResult<ApiResponse>> GetPagedListProductRecommendAsync(int pageCurrent, int pageSize, string? stringSearch, [FromForm] RecommendRequest model)
+        {
+            GetPagedProductsRecommendQuery queryPagedProduct = new GetPagedProductsRecommendQuery
+            {
+                PageCurrent = pageCurrent,
+                PageSize = pageSize,
+                StringSearch = stringSearch,
+                InteractedProductIds = model.InteractedProductIds.ToArray(),
+            };
+
+            var pagedProductModel = await _mediator.Send(queryPagedProduct);
+
+            PaginationDto pagination = new PaginationDto()
+            {
+                CurrentPage = pagedProductModel.PageCurrent,
+                PageSize = pagedProductModel.PageSize,
+                TotalRecords = pagedProductModel.TotalCount,
+            };
+
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagination));
+            _apiResponse.Result = pagedProductModel.Items;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+            return Ok(_apiResponse);
+        }
+        #endregion
     }
 }

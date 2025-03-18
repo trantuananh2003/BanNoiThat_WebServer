@@ -25,7 +25,7 @@ namespace BanNoiThat.Application.Service.UserService
             var userEntity = await _uow.UserRepository.GetAsync(x => x.Id == userId);
             _uow.UserRepository.AttachEntity(userEntity);
 
-            userEntity.BirthDay = modelRequest.BirthDay;
+            userEntity.Birthday = modelRequest.BirthDay;
             userEntity.IsMale = modelRequest.IsMale;
             userEntity.FullName = modelRequest.FullName;
 
@@ -39,5 +39,7 @@ namespace BanNoiThat.Application.Service.UserService
 
             return infoUserResponse;
         }
+        
+
     }
 }

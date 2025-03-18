@@ -45,8 +45,11 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             //Total
             var totalCount = query.Count();
 
-            //Query
-            query = query.Skip((pageCurrent - 1) * pageSize).Take(pageSize);
+            if (pageSize != 0 && pageCurrent != 0)
+            {
+                //Query
+                query = query.Skip((pageCurrent - 1) * pageSize).Take(pageSize);
+            }
 
             //Select
             var resultQuery = query.Include(x => x.ProductItems)
@@ -57,6 +60,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                     Name = product.Name,
                     Slug = product.Slug,
                     ThumbnailUrl = product.ThumbnailUrl,
+                    Keyword = product.Keyword,
                     Price = product.ProductItems.Any() ? product.ProductItems.Min(x => x.Price) : 0,
                     SalePrice = product.ProductItems.Any() ? product.ProductItems.Min(x => x.SalePrice) : 0,
                 });

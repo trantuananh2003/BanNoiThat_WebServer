@@ -19,7 +19,7 @@ namespace BanNoiThat.API.Mapper
 
             //Brand
             CreateMap<CreateBrandRequest, Brand>();
-            CreateMap<Brand, BrandResponse>();
+            CreateMap<Brand, BrandResponse>().ForMember(dest => dest.Name, opt => opt.MapFrom(brand => brand.BrandName));
 
             //Product Items
             CreateMap<CreateProductItem, ProductItem>();
