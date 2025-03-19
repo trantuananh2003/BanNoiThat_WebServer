@@ -1,19 +1,20 @@
-﻿using BanNoiThat.Application.DTOs;
+﻿using BanNoiThat.Domain.Interface;
 
-namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
+namespace BanNoiThat.Application.Service.RecommendSystem
 {
-    public class BasedRecommendations
+    public class BasedRecommendations<T> where T : IEntityRecommend
     {
         private string[] vocabularyKeyword;
 
-        public BasedRecommendations(string[] vocabularyKeyword) {
+        public BasedRecommendations(string[] vocabularyKeyword)
+        {
             this.vocabularyKeyword = vocabularyKeyword;
         }
 
-        public List<ProductHomeResponse> GetContentBasedRecommendations(string[] interactedProductIds, List<ProductHomeResponse> productsData, List<Dictionary<string, double>> tfidfVectors)
+        public List<T> GetContentBasedRecommendations(string[] interactedProductIds, List<T> productsData, List<Dictionary<string, double>> tfidfVectors)
         {
             if (interactedProductIds == null || interactedProductIds.Length == 0)
-                return new List<ProductHomeResponse>();
+                return new List<T>();
 
             // Lấy vector TF-IDF của các sản phẩm đã tương tác
             var interactedVectors = new List<Dictionary<string, double>>();
@@ -27,11 +28,11 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
             }
 
             // Tính điểm tương đồng cho tất cả sản phẩm
-            var scores = new List<(ProductHomeResponse Product, double Score)>();
+            var scores = new List<(T Product, double Score)>();
             for (int i = 0; i < tfidfVectors.Count; i++)
             {
                 var productId = GetProductIdByIndex(i, productsData);
-                if (interactedProductIds.Contains(productId)) continue; // Bỏ qua sản phẩm đã tương tác
+                //if (interactedProductIds.Contains(productId)) continue; // Bỏ qua sản phẩm đã tương tác
 
                 double totalSimilarity = 0;
                 foreach (var interactedVector in interactedVectors)
@@ -46,18 +47,18 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
             // Sắp xếp sản phẩm theo điểm số giảm dần
             scores = scores.OrderByDescending(score => score.Score).ToList();
 
-            // Trả về danh sách sản phẩm đề xuất (top 10)
-            return scores.Take(10).Select(score => score.Product).ToList();
+            var modelsReturn =  scores.Select(score => score.Product).ToList();
+            return modelsReturn;
         }
 
         // Hàm hỗ trợ: Lấy index sản phẩm theo ID
-        private int GetProductIndexById(string productId, List<ProductHomeResponse> productsData)
+        private int GetProductIndexById(string productId, List<T> productsData)
         {
             return productsData.FindIndex(product => product.Id == productId);
         }
 
         // Hàm hỗ trợ: Lấy ID sản phẩm theo index
-        private string GetProductIdByIndex(int index, List<ProductHomeResponse> productsData)
+        private string GetProductIdByIndex(int index, List<T> productsData)
         {
             return productsData[index].Id;
         }
@@ -84,7 +85,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
             return tfidfArray;
         }
 
-        public List<Dictionary<string, double>> ComputeTF(List<ProductHomeResponse> products)
+        public List<Dictionary<string, double>> ComputeTF(List<T> products)
         {
             // Danh sách lưu trữ kết quả TF cho từng sản phẩm
             var tfArray = new List<Dictionary<string, double>>();
@@ -113,7 +114,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
             return tfArray;
         }
 
-        public Dictionary<string, double> ComputeIDF(List<ProductHomeResponse> products)
+        public Dictionary<string, double> ComputeIDF(List<T> products)
         {
             // Từ điển lưu giá trị IDF cho từng term
             var idf = new Dictionary<string, double>();
@@ -163,7 +164,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
             magnitudeA = Math.Sqrt(magnitudeA);
             magnitudeB = Math.Sqrt(magnitudeB);
 
-            return (magnitudeA * magnitudeB == 0) ? 0 : dotProduct / (magnitudeA * magnitudeB);
+            return magnitudeA * magnitudeB == 0 ? 0 : dotProduct / (magnitudeA * magnitudeB);
         }
         #endregion
     }

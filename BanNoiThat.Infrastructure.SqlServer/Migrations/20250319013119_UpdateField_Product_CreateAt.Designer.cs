@@ -4,6 +4,7 @@ using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250319013119_UpdateField_Product_CreateAt")]
+    partial class UpdateField_Product_CreateAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +38,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands", (string)null);
+                    b.ToTable("Brands");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Cart", b =>
@@ -49,7 +52,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.CartItem", b =>
@@ -77,7 +80,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.HasIndex("ProductItem_Id")
                         .IsUnique();
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Category", b =>
@@ -102,7 +105,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Parent_Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Order", b =>
@@ -146,7 +149,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.OrderItem", b =>
@@ -183,7 +186,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("ProductItem_Id");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Product", b =>
@@ -225,7 +228,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Category_Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.ProductConfig", b =>
@@ -249,7 +252,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Product_Id");
 
-                    b.ToTable("ProductConfigs", (string)null);
+                    b.ToTable("ProductConfigs");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.ProductItem", b =>
@@ -284,7 +287,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Product_Id");
 
-                    b.ToTable("ProductItems", (string)null);
+                    b.ToTable("ProductItems");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.User", b =>
@@ -318,7 +321,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.CartItem", b =>

@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BanNoiThat.Domain.Interface;
 
 namespace BanNoiThat.Domain.Entities
 {
-    public class Product
+    public class Product : IEntityRecommend
     {
         public string Id { get; set; } = string.Empty;
         public string? Category_Id { get; set; }
@@ -17,5 +17,6 @@ namespace BanNoiThat.Domain.Entities
         public string Description { get; set; } = string.Empty;
         public string ThumbnailUrl { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
+        public DateTime CreateAt { get; set; }
     }
 }

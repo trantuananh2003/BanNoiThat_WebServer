@@ -5,6 +5,7 @@ using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.JsonPatch;
 using AutoMapper;
+using Azure.Core;
 
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 {
@@ -40,7 +41,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 
             //OrderBy and Desc
             //query.OrderBy(x => x.CreateAt);
-            query = query.OrderBy(x => x.Name);
+            query = query.OrderByDescending(x => x.CreateAt);
 
             //Total
             var totalCount = query.Count();

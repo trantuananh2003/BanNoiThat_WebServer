@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace BanNoiThat.Application.Common
+namespace BanNoiThat.Application.Service.RecommendSystem
 {
     public static class HandleKeyword
     {
@@ -78,7 +78,7 @@ namespace BanNoiThat.Application.Common
                 return null;
             }
 
-             
+
         }
     }
 }

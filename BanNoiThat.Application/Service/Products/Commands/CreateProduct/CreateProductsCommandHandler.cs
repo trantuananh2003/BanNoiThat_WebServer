@@ -6,6 +6,7 @@ using BanNoiThat.Domain.Entities;
 using MediatR;
 using System.Text.RegularExpressions;
 using System.Text;
+using BanNoiThat.Application.Service.RecommendSystem;
 
 namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
 {
@@ -26,6 +27,7 @@ namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
             entityProduct.Brand_Id = request.Brand_Id;
             entityProduct.ProductItems = new();
             entityProduct.Keyword = HandleSaveKeyWord(entityProduct);
+            entityProduct.CreateAt = DateTime.Now;
             HandleKeyword.AddKeyWord(entityProduct.Keyword);
 
 
