@@ -52,6 +52,7 @@ namespace BanNoiThat.API.Mapper
             //User
             CreateMap<InfoUserRequest, User>();
             CreateMap<User, InfoUserResponse>();
+            CreateMap<User, UnitUserMangeReponse>();
         }
     }
 }

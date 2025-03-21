@@ -1,8 +1,11 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.DTOs.User;
 using BanNoiThat.Application.Interfaces.IService;
+using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Reflection;
 
 namespace BanNoiThat.API.Controllers
 {
@@ -33,27 +36,43 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetAllUser()
+        public async Task<ActionResult<ApiResponse>> GetAllUser(int pageCurrent, int pageSize, string? stringSearch)
         {
-            var userId = HttpContext.User.Claims.First().Value;
+            //var userId = HttpContext.User.Claims.First().Value;
 
-            var modelResponse = await _serviceUser.GetInfoUser(userId);
+            var modelPagedResponse = await _serviceUser.GetAllUser(stringSearch, pageCurrent, pageSize);
 
             _apiResponse.IsSuccess = true;
-            _apiResponse.Result = modelResponse;
+            _apiResponse.Result = modelPagedResponse.Items;
 
             return _apiResponse;
         }
 
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<ActionResult<ApiResponse>> UpdateInfoUser([FromRoute]string id, [FromForm] InfoUserRequest modelRequest)
+        public async Task<ActionResult<ApiResponse>> UpdateInfoUser([FromRoute] string id, [FromForm] InfoUserRequest modelRequest)
         {
             var userId = HttpContext.User.Claims.First().Value;
 
             await _serviceUser.UpdateInfoUser(userId, modelRequest);
 
             _apiResponse.IsSuccess = true;
+            return _apiResponse;
+        }
+
+        [HttpPatch("{id}/{fieldName}")]
+        public async Task<ActionResult<ApiResponse>> UpdatePatchUser(string id, string fieldName, [FromForm] string value)
+        {
+            Type userType = typeof(User);
+
+            if (userType.GetProperty(fieldName) == null)
+            {
+                return BadRequest();
+            }
+
+            await _serviceUser.UpdateFieldUser(id, fieldName, value);
+
+
             return _apiResponse;
         }
     }

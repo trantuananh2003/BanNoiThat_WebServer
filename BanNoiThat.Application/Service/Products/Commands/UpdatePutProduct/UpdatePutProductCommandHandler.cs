@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using Azure;
 using BanNoiThat.Application.Common;
-using BanNoiThat.Application.DTOs.Product;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.OutService;
-using BanNoiThat.Domain.Entities;
 using MediatR;namespace BanNoiThat.Application.Service.Products.Commands.UpdatePatchProduct
 {
     public class UpdatePutProductCommandHandler(IUnitOfWork uow, IMapper mapper, IBlobService blob) : IRequestHandler<UpdateProductCommand>
