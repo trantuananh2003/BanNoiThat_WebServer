@@ -105,7 +105,7 @@ namespace BanNoiThat.API.Controllers
         //Update product
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<ActionResult<ApiResponse>> UpdateProductByIdAsync([FromRoute]string id, [FromBody] UpdateProductRequest modelUpdateRequest)
+        public async Task<ActionResult<ApiResponse>> UpdateProductByIdAsync([FromRoute]string id, [FromForm] UpdateProductRequest modelUpdateRequest)
         {
             await _mediator.Send(new UpdateProductCommand() { Id = id, updateProductRequest = modelUpdateRequest });
             return Ok();
