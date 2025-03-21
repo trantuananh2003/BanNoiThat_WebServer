@@ -1,4 +1,7 @@
-﻿namespace BanNoiThat.Application.DTOs
+﻿using BanNoiThat.Application.Service.CategoriesService;
+using BanNoiThat.Domain.Entities;
+
+namespace BanNoiThat.Application.DTOs
 {
     public class ProductHomeResponse
     {
@@ -9,5 +12,7 @@
         public double Price { get; set; }
         public double SalePrice { get; set; }
         public string? Keyword { get; set; }
+        public Brand Brand { get; set; }
+        public Category Category { get; set; }
     }
 }

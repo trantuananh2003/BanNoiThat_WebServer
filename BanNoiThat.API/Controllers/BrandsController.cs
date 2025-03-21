@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BanNoiThat.API.Model;
-using BanNoiThat.Application.DTOs.Brand;
+using BanNoiThat.Application.DTOs.BrandDto;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Service.BrandService;
 using Microsoft.AspNetCore.Mvc;

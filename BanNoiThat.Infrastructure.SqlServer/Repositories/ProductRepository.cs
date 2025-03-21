@@ -65,6 +65,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                 query = query.Skip((pageCurrent - 1) * pageSize).Take(pageSize);
             }
 
+            query = query.Include(x => x.Brand).Include(x=>x.Category);
+
             //Select
             var resultQuery = query.Include(x => x.ProductItems)
                 .Select(
@@ -77,6 +79,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                     Keyword = product.Keyword,
                     Price = product.ProductItems.Any() ? product.ProductItems.Min(x => x.Price) : 0,
                     SalePrice = product.ProductItems.Any() ? product.ProductItems.Min(x => x.SalePrice) : 0,
+                    Brand = product.Brand,
+                    Category = product.Category,
                 });
 
             var listEntity = await resultQuery.ToListAsync();

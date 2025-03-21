@@ -1,4 +1,4 @@
-﻿namespace BanNoiThat.Application.DTOs.Brand
+﻿namespace BanNoiThat.Application.DTOs.BrandDto
 {
     public class BrandResponse
     {

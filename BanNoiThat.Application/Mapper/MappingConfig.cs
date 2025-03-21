@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BanNoiThat.Application.DTOs;
-using BanNoiThat.Application.DTOs.Brand;
+using BanNoiThat.Application.DTOs.BrandDto;
 using BanNoiThat.Application.DTOs.Product;
 using BanNoiThat.Application.DTOs.User;
 using BanNoiThat.Application.Service.BrandService;
@@ -34,6 +34,7 @@ namespace BanNoiThat.API.Mapper
             CreateMap<Product, ProductResponse>();
             CreateMap<JsonPatchDocument<UpdateProductRequest>, JsonPatchDocument<Product>>();
             CreateMap<UpdateProductRequest, Product>();
+            CreateMap<Product, ProductHomeResponse>();
 
             //Cart Item
             CreateMap<Cart, CartResponse>();

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BanNoiThat.Application.DTOs.Brand;
+using BanNoiThat.Application.DTOs.BrandDto;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Domain.Entities;

@@ -56,7 +56,5 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.IsSuccess = true;
             return _apiResponse;
         }
-
-
     }
 }
