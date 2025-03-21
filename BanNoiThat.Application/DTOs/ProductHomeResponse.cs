@@ -1,5 +1,4 @@
-﻿using BanNoiThat.Application.Service.CategoriesService;
-using BanNoiThat.Domain.Entities;
+﻿using BanNoiThat.Domain.Entities;
 
 namespace BanNoiThat.Application.DTOs
 {
@@ -12,6 +11,7 @@ namespace BanNoiThat.Application.DTOs
         public double Price { get; set; }
         public double SalePrice { get; set; }
         public string? Keyword { get; set; }
+        public string? Description { get; set; }
         public Brand Brand { get; set; }
         public Category Category { get; set; }
     }

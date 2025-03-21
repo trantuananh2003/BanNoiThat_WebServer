@@ -28,7 +28,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
 
         public async Task<PagedList<ProductHomeResponse>> Handle(GetPagedProductsRecommendQuery request, CancellationToken cancellationToken)
         {
-            var listEntity = await _uow.ProductRepository.GetAllAsync(includeProperties: "ProductItems");
+           var listEntity = await _uow.ProductRepository.GetAllAsync(includeProperties: "ProductItems");
             if (request.PageCurrent == 0)
             {
                 foreach(var entity in listEntity)
