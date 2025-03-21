@@ -3,6 +3,7 @@ using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.MomoService.Momo;
 using BanNoiThat.Domain.Entities;
+using System.Security.Cryptography;
 
 namespace BanNoiThat.Application.Service.PaymentService
 {
@@ -32,7 +33,8 @@ namespace BanNoiThat.Application.Service.PaymentService
                 orderEntity.PaymentMethod = orderInfo.PaymentMethod;
                 orderEntity.PaymentStatus = StaticDefine.Status_Payment_Pending;
                 orderEntity.OrderStatus = StaticDefine.Status_Order_Pending;
-                orderEntity.ShippingAddress = orderInfo.ShippingAddress;
+                string address = orderInfo.ShippingAddress.Replace('-', ' ');
+                orderEntity.ShippingAddress = $"{orderInfo.Province}-{orderInfo.District}-{orderInfo.Ward}-{address}";
                 orderEntity.PhoneNumber = orderInfo.PhoneNumber;
                 orderEntity.PaymentIntentId = orderInfo.FullName; //*
 
@@ -69,7 +71,7 @@ namespace BanNoiThat.Application.Service.PaymentService
                 {
                     OrderId = orderEntity.Id,
                     FullName = orderInfo.FullName,
-                    ShippingAddress = orderEntity.ShippingAddress,
+                    ShippingAddress = $"{orderEntity.ShippingAddress}",
                     PhoneNumber = orderInfo.PhoneNumber,
                     TotalPrice = totalPrice,
                 };

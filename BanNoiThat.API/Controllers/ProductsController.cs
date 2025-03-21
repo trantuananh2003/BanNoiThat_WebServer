@@ -1,5 +1,6 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.DTOs;
+using BanNoiThat.Application.DTOs.Product;
 using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
 using BanNoiThat.Application.Service.Products.Commands.UpdatePatchProduct;
 using BanNoiThat.Application.Service.Products.Commands.UpdateProductItems;
@@ -8,6 +9,7 @@ using BanNoiThat.Application.Service.Products.Queries.GetProductsPaging;
 using BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend;
 using BanNoiThat.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -73,6 +75,7 @@ namespace BanNoiThat.API.Controllers
         #region Admin
         //Create product
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> CreateProductAsync([FromForm] CreateProductsCommand command)
         {
             await _mediator.Send(command);
@@ -99,16 +102,18 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
-        //Get product for paged list
-        [HttpPatch("{id}")]
-        public async Task<ActionResult<ApiResponse>> UpdateProductByIdAsync([FromRoute]string id, [FromBody] JsonPatchDocument<Product> jsonPatchProduct)
+        //Update product
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse>> UpdateProductByIdAsync([FromRoute]string id, [FromBody] UpdateProductRequest modelUpdateRequest)
         {
-            await _mediator.Send(new UpdatePatchProductCommand() { Id = id, JsonPatchProductDto = jsonPatchProduct });
+            await _mediator.Send(new UpdateProductCommand() { Id = id, updateProductRequest = modelUpdateRequest });
             return Ok();
         }
 
         //Cập nhập product item trong product id
         [HttpPut("{productId}/product-items")]
+        [Authorize]
         public async Task<ActionResult<ApiResponse>> UpdateProductItems([FromRoute]string productId, [FromBody] List<ProductItemRequest> items)
         {
             var command = new UpsertProductItemsCommand() {
@@ -119,6 +124,7 @@ namespace BanNoiThat.API.Controllers
             await _mediator.Send(command);
             return NoContent();
         }
+
         #endregion
 
         #region Client 

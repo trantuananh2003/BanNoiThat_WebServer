@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BanNoiThat.Application.DTOs;
+using BanNoiThat.Application.DTOs.Brand;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Domain.Entities;
@@ -40,6 +40,18 @@ namespace BanNoiThat.Application.Service.BrandService
             var modelReponse = _mapper.Map<BrandResponse>(entity);
 
             return modelReponse;
+        }
+
+
+        public async Task UpdateBrandAsync(string id, UpdateBrandRequest modelRequest)
+        {
+            var entity = await _uow.BrandRepository.GetAsync(x => x.Id == id);
+            _uow.BrandRepository.AttachEntity(entity);
+
+            entity.Slug = modelRequest.Slug;
+            entity.Name = modelRequest.Name;
+
+            await _uow.SaveChangeAsync();
         }
     }
 }

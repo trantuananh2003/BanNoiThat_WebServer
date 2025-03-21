@@ -4,7 +4,6 @@ using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.Interfaces.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BanNoiThat.API.Controllers
 {

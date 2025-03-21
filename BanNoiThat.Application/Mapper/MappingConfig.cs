@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BanNoiThat.Application.DTOs;
+using BanNoiThat.Application.DTOs.Brand;
+using BanNoiThat.Application.DTOs.Product;
 using BanNoiThat.Application.DTOs.User;
 using BanNoiThat.Application.Service.BrandService;
 using BanNoiThat.Application.Service.CategoriesService;
@@ -19,7 +21,8 @@ namespace BanNoiThat.API.Mapper
 
             //Brand
             CreateMap<CreateBrandRequest, Brand>();
-            CreateMap<Brand, BrandResponse>().ForMember(dest => dest.Name, opt => opt.MapFrom(brand => brand.BrandName));
+            CreateMap<Brand, BrandResponse>();
+            CreateMap<UpdateBrandRequest, Brand>();
 
             //Product Items
             CreateMap<CreateProductItem, ProductItem>();
@@ -29,8 +32,8 @@ namespace BanNoiThat.API.Mapper
 
             //Product
             CreateMap<Product, ProductResponse>();
-            CreateMap<JsonPatchDocument<UpdatePatchProductDto>, JsonPatchDocument<Product>>();
-            CreateMap<UpdatePatchProductDto, Product>();
+            CreateMap<JsonPatchDocument<UpdateProductRequest>, JsonPatchDocument<Product>>();
+            CreateMap<UpdateProductRequest, Product>();
 
             //Cart Item
             CreateMap<Cart, CartResponse>();

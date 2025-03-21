@@ -6,6 +6,7 @@ namespace BanNoiThat.Application.DTOs
         public string Id { get; set; }
         public string TotalPrice { get; set; }
         public List<OrderItemResponse> OrderItems { get; set; }
+        public string ShippingAddress { get; set; }
         public string PaymentStatus { get; set; }
         public string OrderStatus { get; set; }
         public DateTime OrderPaidTime { get; set; }

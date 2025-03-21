@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BanNoiThat.API.Model;
+using BanNoiThat.Application.DTOs.Brand;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Service.BrandService;
 using Microsoft.AspNetCore.Mvc;
@@ -50,6 +51,19 @@ namespace BanNoiThat.API.Controllers
             await _serviceBrands.CreateBrandAsync(modelRequest);
 
             _logger.LogInformation("END: Create Brand Success");
+
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+            _apiResponse.IsSuccess = true;
+
+            return Ok(_apiResponse);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ApiResponse>> UpdateBrand(string id, [FromForm] UpdateBrandRequest modelRequest )
+        {
+            await _serviceBrands.UpdateBrandAsync(id, modelRequest);
+
+            _logger.LogInformation("END: Update Brand Success");
 
             _apiResponse.StatusCode = HttpStatusCode.OK;
             _apiResponse.IsSuccess = true;

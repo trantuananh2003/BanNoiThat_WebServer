@@ -1,4 +1,5 @@
-﻿using BanNoiThat.Application.Service.CategoriesService;
+﻿using BanNoiThat.Application.DTOs.Brand;
+using BanNoiThat.Application.Service.CategoriesService;
 
 namespace BanNoiThat.Application.DTOs
 {

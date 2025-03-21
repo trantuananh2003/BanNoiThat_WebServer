@@ -44,7 +44,13 @@ builder.Services.AddCors(options =>
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials()
-                   .WithExposedHeaders("X-Pagination"); 
+                   .WithExposedHeaders("X-Pagination");
+
+            builder.WithOrigins("http://localhost:3006")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials()
+                   .WithExposedHeaders("X-Pagination");
         });
 });
 

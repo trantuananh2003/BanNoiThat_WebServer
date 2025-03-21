@@ -27,11 +27,24 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             //Condition
             if(!string.IsNullOrEmpty(stringSearch))
             {
-                var categoryEntity = await _db.Categories.AsNoTracking().Where(c => c.Slug == stringSearch).FirstOrDefaultAsync();
+                var categoryEntity = await _db.Categories.AsNoTracking().Where(c => c.Slug == stringSearch).Include(x => x.Children).FirstOrDefaultAsync();
+                var brandEntity = await _db.Brands.AsNoTracking().Where(c => c.Slug == stringSearch).FirstOrDefaultAsync();
 
                 if (categoryEntity != null)
                 {
-                    query = query.Where(x => x.Category_Id == categoryEntity.Id);
+                    if (categoryEntity.Parent_Id == null)
+                    {
+                        var categoryIds = categoryEntity.Children.Select(c => c.Id).ToList();
+                        query = query.Where(x => categoryIds.Contains(x.Category_Id));
+                    }
+                    else
+                    {
+                        query = query.Where(x => x.Category_Id == categoryEntity.Id);
+                    }
+                }
+                else if(brandEntity != null)
+                {
+                    query = query.Where(x => x.Brand_Id == brandEntity.Id);
                 }
                 else
                 {

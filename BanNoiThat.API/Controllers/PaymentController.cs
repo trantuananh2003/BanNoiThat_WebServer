@@ -1,6 +1,4 @@
-﻿using Azure;
-using BanNoiThat.API.Model;
-using BanNoiThat.Application.Common;
+﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Service.MomoService.Momo;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +25,7 @@ namespace BanNoiThat.API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ApiResponse>> CreatePaymentUrl([FromForm]OrderInfoRequest model) 
+        public async Task<ActionResult<ApiResponse>> CreatePaymentUrl([FromForm] OrderInfoRequest model) 
         {
             var emailUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)!.Value;
 
