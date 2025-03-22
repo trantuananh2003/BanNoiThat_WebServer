@@ -126,7 +126,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                         productItem.Id = Guid.NewGuid().ToString();
                         productItem.Product_Id = productId;
                         
-                        
                         _db.ProductItems.Add(productItem);
                     }
                 }
@@ -135,11 +134,29 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             await _db.SaveChangesAsync();
         }
 
+        public void UpdateProductItem(ProductItem productItem)
+        {
+            _db.ProductItems.Update(productItem);
+        }
+
+        public void AddProductItem(ProductItem productItem)
+        {
+            _db.ProductItems.Add(productItem);
+        }
+
+
         public async Task<ProductItem> GetProductItemByIdAsync(string productItemId)
         {
             var productItemEntity = await _db.ProductItems.Where(x => x.Id == productItemId).FirstOrDefaultAsync();
 
             return productItemEntity;
+        }
+
+        public async Task<List<ProductItem>> GetListProductItemByProductIdAsync(string productId)
+        {
+            var varListProductItems = await _db.ProductItems.Where(x => x.Product_Id == productId).AsNoTracking().ToListAsync();
+
+            return varListProductItems;
         }
     }
 }

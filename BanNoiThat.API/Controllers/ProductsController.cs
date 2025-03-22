@@ -113,8 +113,7 @@ namespace BanNoiThat.API.Controllers
 
         //Cập nhập product item trong product id
         [HttpPut("{productId}/product-items")]
-        [Authorize]
-        public async Task<ActionResult<ApiResponse>> UpdateProductItems([FromRoute]string productId, [FromBody] List<ProductItemRequest> items)
+        public async Task<ActionResult<ApiResponse>> UpdateProductItems([FromRoute]string productId, [FromForm] List<ProductItemRequest> items)
         {
             var command = new UpsertProductItemsCommand() {
                 ProductId = productId,

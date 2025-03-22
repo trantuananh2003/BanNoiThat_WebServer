@@ -4,8 +4,7 @@ using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Reflection;
+using System.Net;
 
 namespace BanNoiThat.API.Controllers
 {
@@ -70,9 +69,9 @@ namespace BanNoiThat.API.Controllers
                 return BadRequest();
             }
 
+            _apiResponse.IsSuccess = true;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
             await _serviceUser.UpdateFieldUser(id, fieldName, value);
-
-
             return _apiResponse;
         }
     }
