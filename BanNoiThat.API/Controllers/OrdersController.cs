@@ -69,7 +69,7 @@ namespace BanNoiThat.API.Controllers
             var roleUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
 
             //Chỉ có user mới đc hủy đơn
-            await _serviceOrder.OrderUpdateStatus(userId, orderId, order.OrderStatus);
+            await _serviceOrder.OrderUpdateStatus(orderId, order.OrderStatus);
             return _apiResponse;
         }
     }

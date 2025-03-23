@@ -49,7 +49,7 @@ namespace BanNoiThat.Application.Service.PaymentService
                         throw new ArgumentException();
                     }
 
-                    totalPrice = cartItem.Quantity * cartItem.ProductItem.Price;
+                    totalPrice = cartItem.Quantity * cartItem.ProductItem.SalePrice;
                     orderEntity.OrderItems.Add(new OrderItem()
                     {
                         Id = Guid.NewGuid().ToString(),
@@ -57,7 +57,7 @@ namespace BanNoiThat.Application.Service.PaymentService
                         NameItem = cartItem.ProductItem.Product.Name,
                         ImageItemUrl = cartItem.ProductItem.ImageUrl,
                         Quantity = cartItem.Quantity,
-                        Price = cartItem.ProductItem.Price,
+                        Price = cartItem.ProductItem.SalePrice,
                         ProductItem_Id = cartItem.ProductItem_Id,
                     });
                 }

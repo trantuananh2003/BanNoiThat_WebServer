@@ -7,6 +7,7 @@ using BanNoiThat.Application.Service.MomoService;
 using BanNoiThat.Application.Service.OrderService;
 using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Application.Service.PaymentService;
+using BanNoiThat.Application.Service.PayVnService;
 using BanNoiThat.Application.Service.UserService;
 
 namespace BanNoiThat.API.Extensions
@@ -23,6 +24,7 @@ namespace BanNoiThat.API.Extensions
             services.AddTransient<IServiceOrder, OrderService>();
             services.AddTransient<IServiceUser, ServiceUser>();
             services.AddScoped<IMomoService, MomoService>();
+            services.AddScoped<IVnPayService, VnPayService>();
         }
     }
 }

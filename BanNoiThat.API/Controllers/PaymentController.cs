@@ -1,6 +1,9 @@
 ﻿using BanNoiThat.API.Model;
+using BanNoiThat.Application.Common;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Service.MomoService.Momo;
+using BanNoiThat.Application.Service.PayVnService;
+using BanNoiThat.Application.Service.PayVnService.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -15,12 +18,16 @@ namespace BanNoiThat.API.Controllers
         private readonly ApiResponse _apiResponse;
         private IMomoService _momoService;
         private IServicePayment _paymentService;
+        private IVnPayService _vnpayService;
+        private IServiceOrder _orderService;
         
-        public PaymentController(IMomoService momoservice, IServicePayment paymentService)
+        public PaymentController(IMomoService momoservice, IVnPayService vnpayService,IServicePayment paymentService, IServiceOrder orderService)
         {
             _apiResponse = new ApiResponse();
             _momoService = momoservice;
             _paymentService = paymentService;
+            _vnpayService = vnpayService;
+            _orderService = orderService;
         }
 
         [HttpPost]
@@ -44,10 +51,43 @@ namespace BanNoiThat.API.Controllers
                 _apiResponse.Result = resultMomo.PayUrl;
                 return Ok(_apiResponse);
             }
+            else if(model.PaymentMethod == "vnpay" && orderModel != null)
+            {
+                var modelPaymentVNPAY = new PaymentInformationModel()
+                {
+                    OrderType = "other",
+                    Amount = (int)orderModel.TotalPrice,
+                    OrderDescription = orderModel.OrderInformation,
+                    Name = orderModel.FullName,
+                    OrderId = orderModel.OrderId
+                };
+
+                var url =  _vnpayService.CreatePaymentUrl(modelPaymentVNPAY, HttpContext);
+                _apiResponse.IsSuccess = true;
+                _apiResponse.Result = url;
+                return Ok(_apiResponse);
+            }
             else
             {
                 return BadRequest();
             }
+        }
+
+        [HttpGet("redirect")]
+        public async Task<ActionResult<ApiResponse>> PaymentCallbackVnpay()
+        {
+            var response = _vnpayService.PaymentExecute(Request.Query);
+
+            if (response.VnPayResponseCode == "00")
+            {
+                await _orderService.OrderUpdateStatus(response.OrderId, StaticDefine.Status_Order_Processing, StaticDefine.Status_Payment_Paid);
+            }
+            else if (response.VnPayResponseCode == "24")
+            {
+                await _orderService.OrderUpdateStatus(response.OrderId, StaticDefine.Status_Order_Cancelled, StaticDefine.Status_Order_Cancelled);
+            }
+
+            return Ok(response);
         }
 
         //Ket qua thong tin giao dich

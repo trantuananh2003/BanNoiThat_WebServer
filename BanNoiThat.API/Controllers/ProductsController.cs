@@ -115,12 +115,18 @@ namespace BanNoiThat.API.Controllers
         [HttpPut("{productId}/product-items")]
         public async Task<ActionResult<ApiResponse>> UpdateProductItems([FromRoute]string productId, [FromForm] List<ProductItemRequest> items)
         {
+            if(!items.Any() || string.IsNullOrEmpty(productId))
+            {
+                return BadRequest();
+            }
+
             var command = new UpsertProductItemsCommand() {
                 ProductId = productId,
                 ListProductItems = items
             };
 
             await _mediator.Send(command);
+
             return NoContent();
         }
         #endregion
