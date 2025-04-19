@@ -1,4 +1,4 @@
-﻿using BanNoiThat.Application.Service.MomoService.Momo;
+﻿using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
 using BanNoiThat.Application.Service.PaymentService;
 
 namespace BanNoiThat.Application.Interfaces.IService

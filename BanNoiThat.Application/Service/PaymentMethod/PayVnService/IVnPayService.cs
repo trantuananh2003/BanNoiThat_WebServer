@@ -1,7 +1,7 @@
-﻿using BanNoiThat.Application.Service.PayVnService.Model;
+﻿using BanNoiThat.Application.Service.PaymentMethod.PayVnService.Model;
 using Microsoft.AspNetCore.Http;
 
-namespace BanNoiThat.Application.Service.PayVnService
+namespace BanNoiThat.Application.Service.PaymentMethod.PayVnService
 {
     public interface IVnPayService
     {

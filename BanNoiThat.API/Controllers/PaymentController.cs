@@ -1,9 +1,8 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
 using BanNoiThat.Application.Interfaces.IService;
-using BanNoiThat.Application.Service.MomoService.Momo;
-using BanNoiThat.Application.Service.PayVnService;
-using BanNoiThat.Application.Service.PayVnService.Model;
+using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
+using BanNoiThat.Application.Service.PaymentMethod.PayVnService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -53,7 +52,7 @@ namespace BanNoiThat.API.Controllers
             }
             else if(model.PaymentMethod == "vnpay" && orderModel != null)
             {
-                var modelPaymentVNPAY = new PaymentInformationModel()
+                var modelPaymentVNPAY = new Application.Service.PaymentMethod.PayVnService.Model.PaymentInformationModel()
                 {
                     OrderType = "other",
                     Amount = (int)orderModel.TotalPrice,
@@ -99,5 +98,6 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(response);
         }
+
     }
 }

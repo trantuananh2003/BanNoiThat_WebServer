@@ -204,6 +204,9 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Keyword")
                         .HasColumnType("nvarchar(max)");
 
@@ -260,6 +263,9 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ModelUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NameOption")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
@@ -306,7 +312,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<bool>("IsMale")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

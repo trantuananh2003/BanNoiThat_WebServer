@@ -53,5 +53,11 @@ namespace BanNoiThat.Application.Service.BrandService
 
             await _uow.SaveChangeAsync();
         }
+
+        public async Task DeleteBrandAsync(string id)
+        {
+            await _uow.BrandRepository.DeleteEntityHard(id);
+            await _uow.SaveChangeAsync();
+        }
     }
 }

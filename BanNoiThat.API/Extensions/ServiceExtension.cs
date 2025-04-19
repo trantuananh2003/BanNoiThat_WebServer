@@ -3,12 +3,15 @@ using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Service.BrandService;
 using BanNoiThat.Application.Service.CartsService;
 using BanNoiThat.Application.Service.Database;
-using BanNoiThat.Application.Service.MomoService;
 using BanNoiThat.Application.Service.OrderService;
 using BanNoiThat.Application.Service.OutService;
+using BanNoiThat.Application.Service.PaymentMethod.MomoService;
+using BanNoiThat.Application.Service.PaymentMethod.PayVnService;
 using BanNoiThat.Application.Service.PaymentService;
-using BanNoiThat.Application.Service.PayVnService;
+using BanNoiThat.Application.Service.StatisticService;
 using BanNoiThat.Application.Service.UserService;
+using BanNoiThat.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace BanNoiThat.API.Extensions
 {
@@ -25,6 +28,8 @@ namespace BanNoiThat.API.Extensions
             services.AddTransient<IServiceUser, ServiceUser>();
             services.AddScoped<IMomoService, MomoService>();
             services.AddScoped<IVnPayService, VnPayService>();
+            services.AddTransient<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddTransient<IStatisticService, StatisticService>();
         }
     }
 }

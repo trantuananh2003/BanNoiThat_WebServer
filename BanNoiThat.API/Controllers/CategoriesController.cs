@@ -31,7 +31,7 @@ namespace BanNoiThat.API.Controllers
         {
             var modelsResponse = await _serviceCategories.GetCategoriesForClientAsync();
 
-            if (modelsResponse.IsNullOrEmpty()) {
+            if (modelsResponse.Any()) {
                 _logger.LogWarning("END: Get list models reponse null");
             }
 
@@ -47,8 +47,9 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> GetAllCategoryForAdmin()
         {
             var modelsResponse = await _serviceCategories.GetCategoriesForAdminAsync();
-
-            if (modelsResponse.IsNullOrEmpty())
+            
+            //Có thể bị lỗi
+            if (modelsResponse.Any())
             {
                 _logger.LogWarning("END: Get list models reponse null");
             }
@@ -67,6 +68,17 @@ namespace BanNoiThat.API.Controllers
             await _serviceCategories.CreateCategoryAsync(model);
 
             _logger.LogInformation("END: Create Category Success");
+
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+            _apiResponse.IsSuccess = true;
+
+            return Ok(_apiResponse);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ApiResponse>> DeleteCategoryHardAsync(string id)
+        {
+            await _serviceCategories.DeleteCategoryHardAsync(id);
 
             _apiResponse.StatusCode = HttpStatusCode.OK;
             _apiResponse.IsSuccess = true;

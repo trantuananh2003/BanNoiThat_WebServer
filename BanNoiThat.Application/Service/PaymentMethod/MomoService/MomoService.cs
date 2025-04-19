@@ -1,7 +1,5 @@
-﻿using BanNoiThat.API.Model;
-using BanNoiThat.API.Model.Momo;
-using BanNoiThat.Application.Interfaces.IService;
-using BanNoiThat.Application.Service.MomoService.Momo;
+﻿using BanNoiThat.Application.Interfaces.IService;
+using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
 using BanNoiThat.Application.Service.PaymentService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -10,7 +8,7 @@ using RestSharp;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BanNoiThat.Application.Service.MomoService
+namespace BanNoiThat.Application.Service.PaymentMethod.MomoService
 {
     public class MomoService : IMomoService
     {
@@ -56,7 +54,7 @@ namespace BanNoiThat.Application.Service.MomoService
                 orderInfo = model.OrderInformation,
                 requestId = model.OrderId,
                 extraData = "",
-                signature = signature
+                signature
             };
 
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);

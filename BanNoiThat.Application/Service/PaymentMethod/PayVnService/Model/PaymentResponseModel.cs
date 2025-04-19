@@ -1,4 +1,4 @@
-﻿namespace BanNoiThat.Application.Service.PayVnService.Model
+﻿namespace BanNoiThat.Application.Service.PaymentMethod.PayVnService.Model
 {
     public class PaymentResponseModel
     {

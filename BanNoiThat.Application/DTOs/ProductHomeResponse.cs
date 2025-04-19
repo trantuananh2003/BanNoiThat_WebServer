@@ -12,6 +12,7 @@ namespace BanNoiThat.Application.DTOs
         public double SalePrice { get; set; }
         public string? Keyword { get; set; }
         public string? Description { get; set; }
+        public Boolean IsDeleted { get; set; }
         public Brand Brand { get; set; }
         public Category Category { get; set; }
     }

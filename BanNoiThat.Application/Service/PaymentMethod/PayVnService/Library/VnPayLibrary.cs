@@ -1,12 +1,12 @@
-﻿using BanNoiThat.Application.Service.PayVnService.Model;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Net.Sockets;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Globalization;
+using BanNoiThat.Application.Service.PaymentMethod.PayVnService.Model;
 
-namespace BanNoiThat.Application.Service.PayVnService.Library
+namespace BanNoiThat.Application.Service.PaymentMethod.PayVnService.Library
 {
     public class VnPayLibrary
     {

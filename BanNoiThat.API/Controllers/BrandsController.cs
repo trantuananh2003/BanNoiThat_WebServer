@@ -32,7 +32,7 @@ namespace BanNoiThat.API.Controllers
         {
             var modelsResponse = await _serviceBrands.GetAllBrandAsync();
 
-            if (modelsResponse.IsNullOrEmpty())
+            if (modelsResponse.Any())
             {
                 _logger.LogWarning("END: Get list models reponse null");
             }
@@ -71,5 +71,14 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ApiResponse>> DeleteBrandHard(string id)
+        {
+            await _serviceBrands.DeleteBrandAsync(id);
+
+            _apiResponse.IsSuccess = true;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+            return Ok(_apiResponse);
+        }
     }
 }

@@ -19,13 +19,26 @@ namespace BanNoiThat.Application.Service.Products.Commands.UpdateProductItems
  
             foreach (var modelProductItem in request.ListProductItems)
             {
+                var _entityProductItem = listEntityProductItems.Where(x => x.Id == modelProductItem.Id).FirstOrDefault();
                 var entityProductItem = _mapper.Map<ProductItem>(modelProductItem);
 
                 //Đã tồn tại
-                if (listEntityProductItems.Any(x => x.Id == modelProductItem.Id))
+                if (_entityProductItem != null)
                 {
-                    entityProductItem.Product_Id = request.ProductId;
-                    _uow.ProductRepository.UpdateProductItem(entityProductItem);
+                    if (modelProductItem.IsDelete)
+                    {
+                        _uow.ProductRepository.DeleteProductItem(entityProductItem);
+                    }
+                    else
+                    {
+                        entityProductItem.Product_Id = request.ProductId;
+                        if(modelProductItem.ImageProductItem is null)
+                        {
+                            entityProductItem.ImageUrl = _entityProductItem.ImageUrl;
+                        }
+                        
+                        _uow.ProductRepository.UpdateProductItem(entityProductItem);
+                    }
                 }
                 //Chưa tồn tại
                 else
@@ -36,12 +49,12 @@ namespace BanNoiThat.Application.Service.Products.Commands.UpdateProductItems
                 } 
 
                 var modelRequest = listEntityProductItems.Where(x => x.Id == modelProductItem.Id).FirstOrDefault();
-                if (modelProductItem != null && modelProductItem.Image != null && modelProductItem.Image.Length > 0)
+                if (modelProductItem != null && modelProductItem.ImageProductItem != null && modelProductItem.ImageProductItem.Length > 0)
                 {
                     if(modelRequest != null &&!string.IsNullOrEmpty(modelRequest.ImageUrl))
                         await _blobService.DeleteBlob(modelRequest.ImageUrl, StaticDefine.SD_Storage_Containter);
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(modelProductItem.Image.FileName)}";
-                    entityProductItem.ImageUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, modelProductItem.Image);
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(modelProductItem.ImageProductItem.FileName)}";
+                    entityProductItem.ImageUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, modelProductItem.ImageProductItem);
                 }
             }
 

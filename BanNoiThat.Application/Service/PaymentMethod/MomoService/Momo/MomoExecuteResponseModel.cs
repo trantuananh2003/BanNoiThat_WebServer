@@ -1,4 +1,4 @@
-﻿namespace BanNoiThat.API.Model.Momo
+﻿namespace BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo
 {
     public class MomoExecuteResponseModel
     {

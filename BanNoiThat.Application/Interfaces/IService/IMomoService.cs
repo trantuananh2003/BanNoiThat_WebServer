@@ -1,4 +1,4 @@
-﻿using BanNoiThat.API.Model.Momo;
+﻿using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
 using BanNoiThat.Application.Service.PaymentService;
 using Microsoft.AspNetCore.Http;
 

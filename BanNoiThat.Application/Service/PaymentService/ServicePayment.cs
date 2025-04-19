@@ -1,7 +1,7 @@
 ﻿using BanNoiThat.Application.Common;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
-using BanNoiThat.Application.Service.MomoService.Momo;
+using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
 using BanNoiThat.Domain.Entities;
 using System.Security.Cryptography;
 

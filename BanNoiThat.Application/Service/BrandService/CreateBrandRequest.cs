@@ -2,6 +2,7 @@
 {
     public class CreateBrandRequest
     {
-        public string BrandName { get; set; }
+        public string Name { get; set; }
+        public string Slug { get; set; }
     }
 }

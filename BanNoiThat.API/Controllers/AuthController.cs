@@ -9,6 +9,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 using BanNoiThat.Application.Common;
+using Microsoft.AspNetCore.Identity;
 
 namespace BanNoiThat.API.Controllers
 {
@@ -20,21 +21,29 @@ namespace BanNoiThat.API.Controllers
         private IConfiguration _configuration;
         private IUnitOfWork _uow;
         private string _secretKey;
+        private IPasswordHasher<User> _passwordHasher;
 
-        public AuthController(IUnitOfWork uow, IConfiguration configuration)
+        public AuthController(IUnitOfWork uow, IConfiguration configuration, IPasswordHasher<User> passwordHasher)
         {
             _apiResponse = new ApiResponse();
             _uow = uow;
             _configuration = configuration;
             _secretKey = _configuration.GetValue<string>("ApiSetting:Secret");
+            _passwordHasher = passwordHasher;
         }
 
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromForm] LoginRequest loginRequest)
         {
             //Check account
-            var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == loginRequest.Email && x.Password == loginRequest.Password);
+            var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == loginRequest.Email);
             if (userEntity == null)
+            {
+                return Unauthorized();
+            }
+
+            var resultValidate = _passwordHasher.VerifyHashedPassword(userEntity, userEntity.PasswordHash, loginRequest.Password);
+            if(resultValidate == PasswordVerificationResult.Failed)
             {
                 return Unauthorized();
             }
@@ -79,9 +88,11 @@ namespace BanNoiThat.API.Controllers
                 Id = Guid.NewGuid().ToString(),
                 FullName = registerRequest.FullName,
                 Email = registerRequest.Email,
-                Password = registerRequest.Password,
                 Role = StaticDefine.Role_Customer,
             };
+
+            var passwordHash = _passwordHasher.HashPassword(userEntity, registerRequest.Password);
+            userEntity.PasswordHash = passwordHash;
 
             await _uow.UserRepository.CreateAsync(userEntity);
             await _uow.SaveChangeAsync();

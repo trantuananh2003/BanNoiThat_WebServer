@@ -3,11 +3,9 @@ using BanNoiThat.API.Mapper;
 using Azure.Storage.Blobs;
 using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
 using Microsoft.AspNetCore.Mvc;
-using BanNoiThat.API.Model;
+using BanNoiThat.Application.Service.PaymentMethod.MomoService;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoApi"));
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
@@ -40,17 +38,35 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontEnd",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3005")
+            builder.WithOrigins("http://161.248.146.74")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials()
                    .WithExposedHeaders("X-Pagination");
+
+            builder.WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .WithExposedHeaders("X-Pagination");
+
+            builder.WithOrigins("http://localhost:3005")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials()
+               .WithExposedHeaders("X-Pagination");
 
             builder.WithOrigins("http://localhost:3006")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials()
                    .WithExposedHeaders("X-Pagination");
+
+            builder.WithOrigins("https://udify.app/")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials()
+               .WithExposedHeaders("X-Pagination");
         });
 });
 
@@ -65,10 +81,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapGet("/", () => "Hello World!");
 app.Run();

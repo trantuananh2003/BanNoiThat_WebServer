@@ -18,5 +18,6 @@ namespace BanNoiThat.Domain.Entities
         public string ThumbnailUrl { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         public DateTime CreateAt { get; set; }
+        public Boolean IsDeleted { get; set; }
     }
 }

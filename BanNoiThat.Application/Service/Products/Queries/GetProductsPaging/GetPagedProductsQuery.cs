@@ -8,5 +8,6 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsPaging
         public int PageSize { get; set; }
         public int PageCurrent { get; set; }
         public string? StringSearch { get; set; }
+        public Boolean IsDeleted { get; set; } = false;
     }
 }

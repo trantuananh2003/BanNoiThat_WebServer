@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 {
-    public class Repository<T> : IRepository<T> where T :class
+    public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _db;
         internal DbSet<T> _dbSet;
@@ -90,6 +90,12 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             {
                 throw new Exception("An error occurred while update the entity.", ex);
             }
+        }
+
+        public async Task DeleteEntityHard(string id)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            _dbSet.Remove(entity);
         }
     }
 }

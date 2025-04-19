@@ -9,5 +9,6 @@ namespace BanNoiThat.Application.Interfaces.Database
         Task<CategoryResponse> GetCategoryAsync(string id);
         Task<IEnumerable<CategoryResponse>> GetCategoriesForClientAsync();
         Task<IEnumerable<CategoryResponse>> GetCategoriesForAdminAsync();
+        Task DeleteCategoryHardAsync(string id);
     }
 }

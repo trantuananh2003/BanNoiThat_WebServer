@@ -75,5 +75,11 @@ namespace BanNoiThat.Application.Service.Database
 
             return modelReponse;
         }
+
+        public async Task DeleteCategoryHardAsync(string id)
+        {
+            await _uow.CategoriesRepository.DeleteEntityHard(id);
+            await _uow.SaveChangeAsync();
+        }
     }
 }

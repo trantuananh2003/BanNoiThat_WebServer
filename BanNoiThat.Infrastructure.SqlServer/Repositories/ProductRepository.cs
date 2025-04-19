@@ -4,8 +4,6 @@ using BanNoiThat.Domain.Entities;
 using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.JsonPatch;
-using AutoMapper;
-using Azure.Core;
 
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 {
@@ -18,7 +16,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             _db = context;
         }
 
-        public async Task<PagedList<ProductHomeResponse>> GetPagedListProduct(string stringSearch,int pageSize, int pageCurrent)
+        public async Task<PagedList<ProductHomeResponse>> GetPagedListProduct(string stringSearch,int pageSize, int pageCurrent, Boolean IsDeleted)
         {
             var query = _db.Products.AsQueryable();
             #region Use Method Syntax
@@ -50,7 +48,10 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                 {
                     query = query.Where(x => x.Name.Contains(stringSearch));
                 }
+
             }
+            //Filter delete
+            query = query.Where(x => x.IsDeleted == IsDeleted);
 
             //OrderBy and Desc
             //query.OrderBy(x => x.CreateAt);
@@ -82,6 +83,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                     SalePrice = product.ProductItems.Any() ? product.ProductItems.Min(x => x.SalePrice) : 0,
                     Brand = product.Brand,
                     Category = product.Category,
+                    IsDeleted = product.IsDeleted,
                 });
 
             var listEntity = await resultQuery.ToListAsync();
@@ -144,6 +146,10 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             _db.ProductItems.Add(productItem);
         }
 
+        public void DeleteProductItem(ProductItem productItem)
+        {
+            _db.ProductItems.Remove(productItem);
+        }
 
         public async Task<ProductItem> GetProductItemByIdAsync(string productItemId)
         {
@@ -157,6 +163,22 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             var varListProductItems = await _db.ProductItems.Where(x => x.Product_Id == productId).AsNoTracking().ToListAsync();
 
             return varListProductItems;
+        }
+
+        public async Task DeleteSoft(string id,Boolean isDeleted = true)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            if (isDeleted)
+            {
+                if (entity != null)
+                    entity.IsDeleted = true;
+            }
+            else
+            {
+                if (entity != null)
+                    entity.IsDeleted = false;
+            }
+
         }
     }
 }

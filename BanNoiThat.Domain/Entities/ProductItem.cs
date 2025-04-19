@@ -11,5 +11,6 @@
         public double SalePrice { get; set; }
         public string Sku { get; set; }
         public string? ImageUrl { get; set; }
+        public string? ModelUrl { get; set; }
     }
 }

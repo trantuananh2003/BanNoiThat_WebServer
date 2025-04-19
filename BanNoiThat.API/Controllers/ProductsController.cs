@@ -1,16 +1,15 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.DTOs.Product;
+using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
 using BanNoiThat.Application.Service.Products.Commands.UpdatePatchProduct;
 using BanNoiThat.Application.Service.Products.Commands.UpdateProductItems;
 using BanNoiThat.Application.Service.Products.Queries.FindProduct;
 using BanNoiThat.Application.Service.Products.Queries.GetProductsPaging;
 using BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend;
-using BanNoiThat.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
@@ -23,10 +22,13 @@ namespace BanNoiThat.API.Controllers
     {
         private readonly IMediator _mediator;
         private ApiResponse _apiResponse;
+        private readonly IUnitOfWork _uow;
 
-        public ProductsController(IMediator mediator)
+
+        public ProductsController(IMediator mediator, IUnitOfWork uow)
         {
             _mediator = mediator;
+            _uow = uow;
             _apiResponse = new ApiResponse();
         }
 
@@ -41,7 +43,7 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.Result = modelResponse;
             _apiResponse.StatusCode = HttpStatusCode.OK;
 
-            return _apiResponse;
+            return Ok(_apiResponse);
         }
 
         //Get product for paged list
@@ -85,6 +87,7 @@ namespace BanNoiThat.API.Controllers
 
         //Get product for paged list
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<ApiResponse>> GetPagedListProductAsync([FromQuery] GetPagedProductsQuery queryPagedProduct)
         {
             var pagedProductModel = await _mediator.Send(queryPagedProduct);
@@ -102,7 +105,7 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
-        //Update product
+        //Update producte
         [HttpPut("{id}")]
         [Authorize]
         public async Task<ActionResult<ApiResponse>> UpdateProductByIdAsync([FromRoute]string id, [FromForm] UpdateProductRequest modelUpdateRequest)
@@ -113,6 +116,7 @@ namespace BanNoiThat.API.Controllers
 
         //Cập nhập product item trong product id
         [HttpPut("{productId}/product-items")]
+        [Authorize]
         public async Task<ActionResult<ApiResponse>> UpdateProductItems([FromRoute]string productId, [FromForm] List<ProductItemRequest> items)
         {
             if(!items.Any() || string.IsNullOrEmpty(productId))
@@ -127,12 +131,30 @@ namespace BanNoiThat.API.Controllers
 
             await _mediator.Send(command);
 
-            return NoContent();
+            return Ok();
         }
         #endregion
 
-        #region Client 
+        [HttpDelete("{productId}")]
+        public async Task<ActionResult<ApiResponse>> DeleteSoftProduct(string productId,[FromQuery] Boolean isDeleted = true)
+        {
+            await _uow.ProductRepository.DeleteSoft(productId, isDeleted);
+            await _uow.SaveChangeAsync();
+            return Ok();
+        }
 
+        #region Client
+        //Get product item by "slug" or "id"
+        [HttpGet("product-items/{productItemId}")]
+        public async Task<ActionResult<ApiResponse>> GetProductItems([FromRoute] string productItemId)
+        {
+            var model = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
+
+            _apiResponse.Result = model;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+
+            return Ok(_apiResponse);
+        }
         #endregion
     }
 }
