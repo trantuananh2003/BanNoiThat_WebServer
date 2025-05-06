@@ -1,4 +1,5 @@
-﻿using BanNoiThat.Application.Interfaces.IService;
+﻿using BanNoiThat.API.Model;
+using BanNoiThat.Application.Interfaces.IService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BanNoiThat.API.Controllers

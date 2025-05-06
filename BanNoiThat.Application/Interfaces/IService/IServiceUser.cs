@@ -9,5 +9,6 @@ namespace BanNoiThat.Application.Interfaces.IService
         Task<InfoUserResponse> GetInfoUser(string userId);
         Task UpdateFieldUser(string userId, string field, string valueField);
         Task UpdateInfoUser(string userId, InfoUserRequest modelRequest);
+        Task UpdateUserBlock(string userId, bool isBlock);
     }
 }

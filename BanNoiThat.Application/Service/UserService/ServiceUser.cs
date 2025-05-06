@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Storage.Blobs.Models;
 using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.DTOs.User;
@@ -69,6 +70,15 @@ namespace BanNoiThat.Application.Service.UserService
             }
             
             // Lưu thay đổi
+            await _uow.SaveChangeAsync();
+        }
+
+        public async Task UpdateUserBlock(string userId, Boolean isBlock)
+        {
+            var userEntity = await _uow.UserRepository.GetAsync(x => x.Id == userId);
+            _uow.UserRepository.AttachEntity(userEntity);
+            userEntity.IsBlocked = isBlock;
+
             await _uow.SaveChangeAsync();
         }
     }

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BanNoiThat.API.Model;
 using BanNoiThat.Application.Interfaces.Database;
+using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.CategoriesService;
+using BanNoiThat.Infrastructure.SqlServer.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
@@ -16,13 +18,15 @@ namespace BanNoiThat.API.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<CategoriesController> _logger;
         private ApiResponse _apiResponse;
+        private IUnitOfWork _uow;
 
-        public CategoriesController(IServiceCategories serviceCategories, ILogger<CategoriesController> logger,
+        public CategoriesController(IServiceCategories serviceCategories, ILogger<CategoriesController> logger, IUnitOfWork uow,
             IMapper mapper)
         {
             _serviceCategories = serviceCategories;
             _mapper = mapper;
             _logger = logger;
+            _uow = uow;
             _apiResponse = new ApiResponse();
         }
 
@@ -83,6 +87,15 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.StatusCode = HttpStatusCode.OK;
             _apiResponse.IsSuccess = true;
 
+            return Ok(_apiResponse);
+        }
+
+        [HttpGet("homepage")]
+        public async Task<ActionResult<ApiResponse>> GetQuantityCategories(int number)
+        {
+            var listCategories = await _uow.CategoriesRepository.GetAllAsync(x => x.IsShow != 0);
+            _apiResponse.Result = listCategories;
+            _apiResponse.IsSuccess = true;
             return Ok(_apiResponse);
         }
     }

@@ -89,6 +89,8 @@ namespace BanNoiThat.API.Controllers
                 FullName = registerRequest.FullName,
                 Email = registerRequest.Email,
                 Role = StaticDefine.Role_Customer,
+                IsBlocked = false,
+                IsMale = false
             };
 
             var passwordHash = _passwordHasher.HashPassword(userEntity, registerRequest.Password);

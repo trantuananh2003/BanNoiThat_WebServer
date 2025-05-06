@@ -8,5 +8,7 @@ namespace BanNoiThat.Application.DTOs.User
         public string Email { get; set; }
         public Boolean IsMale { get; set; }
         public DateTime Birthday { get; set; }
+        public string? Address { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }

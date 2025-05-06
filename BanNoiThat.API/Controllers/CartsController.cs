@@ -1,4 +1,5 @@
 ﻿using BanNoiThat.API.Model;
+using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.Interfaces.IService;
 using Microsoft.AspNetCore.Authorization;
@@ -22,9 +23,11 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetCartAsyncByIdUser([FromQuery] string email)
+        public async Task<ActionResult<ApiResponse>> GetCartAsyncByIdUser()
         {
-            var modelResponse = await _cartService.GetCartByUserEmail(email);
+            var userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value;
+
+            var modelResponse = await _cartService.GetCartByUserId(userId);
 
             _apiResponse.Result = modelResponse;
             _apiResponse.StatusCode = HttpStatusCode.OK;
@@ -35,8 +38,8 @@ namespace BanNoiThat.API.Controllers
         [HttpPost]
         public async Task<ActionResult<ApiResponse>> UpdateCartItem([FromForm] CartItemRequest cartItemRequest)
         {
-            var userEmail = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)!.Value;
-            await _cartService.UpdateQuantityItemCartByUserId(userEmail, cartItemRequest);
+            var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
+            await _cartService.UpdateQuantityItemCartByUserId(userId, cartItemRequest);
 
             return _apiResponse;
         }

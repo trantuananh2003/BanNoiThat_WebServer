@@ -10,5 +10,6 @@
         public List<Category> Children { get; set; } = new List<Category>();
         public string? CategoryUrlImage { get; set; }
         public IEnumerable<Product> Products { get; set; }
+        public int IsShow { get; set; }
     }
 }

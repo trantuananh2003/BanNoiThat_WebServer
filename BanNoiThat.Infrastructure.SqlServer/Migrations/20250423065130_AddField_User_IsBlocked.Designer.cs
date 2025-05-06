@@ -4,6 +4,7 @@ using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250423065130_AddField_User_IsBlocked")]
+    partial class AddField_User_IsBlocked
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,9 +91,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("CategoryUrlImage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IsShow")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
@@ -106,28 +106,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.HasIndex("Parent_Id");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("BanNoiThat.Domain.Entities.FavoriteProducts", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Product_Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("User_Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Product_Id");
-
-                    b.HasIndex("User_Id");
-
-                    b.ToTable("FavoriteProducts");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Order", b =>
@@ -323,9 +301,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("date");
 
@@ -345,9 +320,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
@@ -387,25 +359,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .HasForeignKey("Parent_Id");
 
                     b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("BanNoiThat.Domain.Entities.FavoriteProducts", b =>
-                {
-                    b.HasOne("BanNoiThat.Domain.Entities.Product", "Product")
-                        .WithMany("LikesProduct")
-                        .HasForeignKey("Product_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BanNoiThat.Domain.Entities.User", "User")
-                        .WithMany("LikesProduct")
-                        .HasForeignKey("User_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.OrderItem", b =>
@@ -491,14 +444,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                 {
                     b.Navigation("Configs");
 
-                    b.Navigation("LikesProduct");
-
                     b.Navigation("ProductItems");
-                });
-
-            modelBuilder.Entity("BanNoiThat.Domain.Entities.User", b =>
-                {
-                    b.Navigation("LikesProduct");
                 });
 #pragma warning restore 612, 618
         }

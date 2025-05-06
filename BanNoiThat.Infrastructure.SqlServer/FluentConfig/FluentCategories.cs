@@ -9,6 +9,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.FluentConfig
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.HasKey(o => o.Id);
+            builder.HasKey(o => o.Id);
             builder.Property(o => o.Name).IsRequired();
             builder.HasOne(o => o.Parent).WithMany(x => x.Children).HasForeignKey(o => o.Parent_Id);
             builder.Property(o => o.Name).HasColumnType("nvarchar(255)");

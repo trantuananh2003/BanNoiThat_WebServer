@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
+using System.IO.Compression;
 
 namespace BanNoiThat.Application.Service.OutService
 {

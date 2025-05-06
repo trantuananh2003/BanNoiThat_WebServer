@@ -1,6 +1,7 @@
 ﻿using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
@@ -60,9 +61,14 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             }
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null,bool isTracked = false, string? includeProperties = null)
         {
             IQueryable<T> query = _dbSet;
+
+            if (!isTracked)
+            {
+                query = query.AsNoTracking();
+            }
 
             if (includeProperties != null)
             {

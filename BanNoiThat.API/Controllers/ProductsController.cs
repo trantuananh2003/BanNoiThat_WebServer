@@ -2,6 +2,7 @@
 using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.DTOs.Product;
 using BanNoiThat.Application.Interfaces.Repository;
+using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
 using BanNoiThat.Application.Service.Products.Commands.UpdatePatchProduct;
 using BanNoiThat.Application.Service.Products.Commands.UpdateProductItems;
@@ -23,12 +24,13 @@ namespace BanNoiThat.API.Controllers
         private readonly IMediator _mediator;
         private ApiResponse _apiResponse;
         private readonly IUnitOfWork _uow;
+        private IBlobService _blob;
 
-
-        public ProductsController(IMediator mediator, IUnitOfWork uow)
+        public ProductsController(IMediator mediator, IUnitOfWork uow, IBlobService blob)
         {
             _mediator = mediator;
             _uow = uow;
+            _blob = blob;
             _apiResponse = new ApiResponse();
         }
 
@@ -156,5 +158,47 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
         #endregion
+
+        #region model 3
+
+        //Get file model 3D
+        [HttpGet("product-items/{productItemId}/model")]
+        public async Task<ActionResult<ApiResponse>> GetFileModel3D([FromRoute] string productItemId)
+        {
+            var model = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
+
+            _apiResponse.Result = model;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+
+            return Ok(_apiResponse);
+        }
+
+        [HttpPost("product-items/{productItemId}/model")]
+        public async Task<ActionResult<ApiResponse>> UpdateFileModel3D([FromRoute] string productItemId, [FromForm] IFormFile fileModel3D)
+        {
+            var url = await _blob.UploadBlob(fileModel3D.FileName, "bannoithat-3dmodel", fileModel3D);
+            var entity = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
+            entity.ImageUrl = url;
+
+            await _uow.SaveChangeAsync();
+
+            return Ok(_apiResponse);
+        }
+
+        [HttpPost("product-items/{productItemId}/models")]
+        public async Task<ActionResult<ApiResponse>> UpdateFilesModel3D([FromRoute] string productItemId, [FromForm] IFormFile[] model3DFiles)
+        {
+            foreach (var model3DFile in model3DFiles)
+            {
+                var url = await _blob.UploadBlob(model3DFile.FileName, "bannoithat-3dmodel", model3DFile);
+                var entity = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
+                entity.ImageUrl = url;
+            }
+
+            await _uow.SaveChangeAsync();
+
+            return Ok(_apiResponse);
+        }
+        #endregion 3D
     }
 }

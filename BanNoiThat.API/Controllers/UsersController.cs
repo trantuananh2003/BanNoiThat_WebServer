@@ -1,10 +1,13 @@
 ﻿using BanNoiThat.API.Model;
+using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.User;
 using BanNoiThat.Application.Interfaces.IService;
+using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace BanNoiThat.API.Controllers
 {
@@ -14,10 +17,12 @@ namespace BanNoiThat.API.Controllers
     {
         public ApiResponse _apiResponse;
         private readonly IServiceUser _serviceUser;
+        private IUnitOfWork _unitOfWork;
 
-        public UsersController(IServiceUser serviceUser) {
+        public UsersController(IServiceUser serviceUser, IUnitOfWork uof) {
             _apiResponse = new ApiResponse();
             _serviceUser = serviceUser;
+            _unitOfWork = uof;
         }
 
         [HttpGet("{userId}")]
@@ -25,7 +30,7 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> GetInfoUserById()
         {
             var userId = HttpContext.User.Claims.First().Value;
-
+                
             var modelResponse = await _serviceUser.GetInfoUser(userId);
 
             _apiResponse.IsSuccess = true;
@@ -72,6 +77,39 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.IsSuccess = true;
             _apiResponse.StatusCode = HttpStatusCode.OK;
             await _serviceUser.UpdateFieldUser(id, fieldName, value);
+            return _apiResponse;
+        }
+
+        [HttpPost("{userId}/is-block")]
+        public async Task<ActionResult<ApiResponse>> BlockUserAsync(string userId,[FromForm] Boolean isBlock)
+        {
+            await _serviceUser.UpdateUserBlock(userId, isBlock);
+            return Ok();
+        }
+
+        [HttpPost("{userId}/set-role")]
+        public async Task<ActionResult<ApiResponse>> SetRoleUser(string userId, string roleUser)
+        {
+            var userEntity = await _unitOfWork.UserRepository.GetAsync(x => x.Id == userId);
+            _unitOfWork.UserRepository.AttachEntity(userEntity);
+
+            userEntity.Role = roleUser;
+            await _unitOfWork.SaveChangeAsync();
+            return Ok();
+        }
+
+        [HttpPost("favorite-product/{productId}")]
+        public async Task<ActionResult<ApiResponse>> LikeProduct([FromRoute]string productId)
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
+
+            var entity = new FavoriteProducts() {
+                User_Id = userId,
+                Product_Id = productId,
+            };
+
+            await _unitOfWork.UserRepository.AddFavoriteProduct(entity);
+            await _unitOfWork.SaveChangeAsync();
             return _apiResponse;
         }
     }

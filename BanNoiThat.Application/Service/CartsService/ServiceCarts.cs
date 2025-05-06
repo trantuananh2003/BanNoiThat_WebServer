@@ -11,9 +11,9 @@ namespace BanNoiThat.Application.Service.CartsService
         public IUnitOfWork _uow = uow;
         public IMapper _mapper = mapper;
 
-        public async Task<CartResponse> GetCartByUserEmail(string email)
+        public async Task<CartResponse> GetCartByUserId(string userId)
         {
-            var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == email);
+            var userEntity = await _uow.UserRepository.GetAsync(x => x.Id == userId);
             var cartEntity = await _uow.CartRepository.GetCartByIdUser(userEntity.Id);
             //*Nếu giỏ hàng chưa tồn tại
             if (cartEntity is null)
@@ -28,14 +28,9 @@ namespace BanNoiThat.Application.Service.CartsService
         }
 
         //Thêm hoặc giảm chưa áp dụng chỉnh việc nhập số lượng cố định
-        public async Task UpdateQuantityItemCartByUserId(string userEmail, CartItemRequest cartItemRequest)
+        public async Task UpdateQuantityItemCartByUserId(string userId, CartItemRequest cartItemRequest)
         {
-            if (cartItemRequest.IsAddManual)
-            {
-                cartItemRequest.Quantity /= Math.Abs(cartItemRequest.Quantity);
-            }
-
-            var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == userEmail);
+            var userEntity = await _uow.UserRepository.GetAsync(x => x.Id == userId);
             var cartEntity = await _uow.CartRepository.GetAsync(x => x.User_Id == userEntity.Id, includeProperties: "CartItems");
 
             //*Nếu giỏ hàng chưa tồn tại
@@ -50,9 +45,16 @@ namespace BanNoiThat.Application.Service.CartsService
 
             var productItem = await _uow.ProductRepository.GetProductItemByIdAsync(cartItemRequest.ProductItem_Id);
             var existingCartItem = cartEntity.CartItems is not null ? cartEntity.CartItems.FirstOrDefault(x => x.ProductItem_Id == productItem.Id) : null;
+            int countQuantity = 0;
 
             //* Kiểm tra quantity muốn thêm vào có vượt quá
-            var countQuantity = ((existingCartItem is not null) ? existingCartItem.Quantity : 0) + cartItemRequest.Quantity;
+            if (cartItemRequest.IsAddManual) {
+                countQuantity = ((existingCartItem is not null) ? existingCartItem.Quantity : 0) + cartItemRequest.Quantity;
+            }
+            else
+            {
+                countQuantity = cartItemRequest.Quantity;
+            }
 
             //Kiểm tra số lượng hiện tại "Lớn hơn" ?  Báo lỗi vượt quá : Thao tác update cartEntity item
             if (countQuantity > productItem.Quantity)
@@ -60,6 +62,7 @@ namespace BanNoiThat.Application.Service.CartsService
                 //Trả về thông báo số lượng vượt quá
                 throw new Exception()
                 {
+
                 };
             }
 
@@ -67,8 +70,16 @@ namespace BanNoiThat.Application.Service.CartsService
             //"Có cartEntity item" ? "Sử dụng lại cartEntity item" : tạo ra 1 cái cartEntity item mới
             if (existingCartItem != null)
             {
-                existingCartItem.Quantity += cartItemRequest.Quantity;
-                if(existingCartItem.Quantity <= 0)
+                if (cartItemRequest.IsAddManual)
+                {
+                    existingCartItem.Quantity += cartItemRequest.Quantity;
+                }
+                else
+                {
+                    existingCartItem.Quantity = countQuantity;
+                }
+
+                if (existingCartItem.Quantity <= 0)
                 {
                     cartEntity.CartItems.Remove(existingCartItem);
                 }

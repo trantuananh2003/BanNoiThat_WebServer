@@ -5,5 +5,6 @@ namespace BanNoiThat.Application.Interfaces.IRepository
 {
     public interface IUserRepository : IRepository<User>
     {
+        Task AddFavoriteProduct(FavoriteProducts entity);
     }
 }

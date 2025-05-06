@@ -11,6 +11,7 @@ namespace BanNoiThat.Domain.Entities
         public Brand Brand { get; set; }
         public List<ProductConfig> Configs { get; set; }
         public List<ProductItem> ProductItems { get; set; }
+        public ICollection<FavoriteProducts> LikesProduct { get; set; }
         public string? Keyword { get; set; }
 
         public string Name { get; set; } = string.Empty;
