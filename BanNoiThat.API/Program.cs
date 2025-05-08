@@ -4,10 +4,13 @@ using Azure.Storage.Blobs;
 using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
 using Microsoft.AspNetCore.Mvc;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService;
+using BanNoiThat.API.Filter;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoApi"));
-builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddControllers(option => {
+    option.Filters.Add<CustomExceptionFilter>();
+}).AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(CreateProductsCommand).Assembly);
