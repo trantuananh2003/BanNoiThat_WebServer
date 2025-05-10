@@ -4,11 +4,11 @@ namespace BanNoiThat.Application.Service.RecommendSystem
 {
     public class BasedRecommendations<T> where T : IEntityRecommend
     {
-        private string[] vocabularyKeyword;
+        private List<string> _vocabularyKeyword;
 
-        public BasedRecommendations(string[] vocabularyKeyword)
+        public BasedRecommendations(List<string> vocabularyKeyword)
         {
-            this.vocabularyKeyword = vocabularyKeyword;
+            _vocabularyKeyword = vocabularyKeyword;
         }
 
         public List<T> GetContentBasedRecommendations(string[] interactedProductIds, List<T> productsData, List<Dictionary<string, double>> tfidfVectors)
@@ -98,7 +98,7 @@ namespace BanNoiThat.Application.Service.RecommendSystem
                 // Từ điển để lưu TF cho từng từ khóa trong vocabulary
                 var tf = new Dictionary<string, double>();
 
-                foreach (var term in vocabularyKeyword)
+                foreach (var term in _vocabularyKeyword)
                 {
                     // Đếm số lần xuất hiện của term trong danh sách từ khóa
                     var termCount = keywords.Count(k => k == term);
@@ -122,7 +122,7 @@ namespace BanNoiThat.Application.Service.RecommendSystem
             // Tổng số sản phẩm
             int totalDocs = products.Count;
 
-            foreach (var term in vocabularyKeyword)
+            foreach (var term in _vocabularyKeyword)
             {
                 // Đếm số lượng sản phẩm chứa từ khóa term
                 int docsWithTerm = 0;

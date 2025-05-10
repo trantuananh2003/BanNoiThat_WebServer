@@ -159,7 +159,7 @@ namespace BanNoiThat.API.Controllers
         }
         #endregion
 
-        #region model 3
+        #region model 3d
 
         //Get file model 3D
         [HttpGet("product-items/{productItemId}/model")]
@@ -199,6 +199,6 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(_apiResponse);
         }
-        #endregion 3D
+        #endregion 3DD
     }
 }

@@ -25,7 +25,12 @@ namespace BanNoiThat.API.Controllers
         [HttpGet]
         public async Task<ActionResult<ApiResponse>> GetCartAsyncByIdUser()
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)?.Value;
+
+            if(userId is null)
+            {
+                throw new Exception("Vui lòng đăng nhập để hiện thị giỏ hàng !");
+            }
 
             var modelResponse = await _cartService.GetCartByUserId(userId);
 

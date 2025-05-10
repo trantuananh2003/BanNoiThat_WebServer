@@ -28,27 +28,28 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
 
         public async Task<PagedList<ProductHomeResponse>> Handle(GetPagedProductsRecommendQuery request, CancellationToken cancellationToken)
         {
-           var listEntity = await _uow.ProductRepository.GetAllAsync(x => x.ProductItems.Any(x => x.Quantity > 0), includeProperties: "ProductItems");
+            var listProduct = await _uow.ProductRepository.GetAllAsync(x => x.ProductItems.Any(x => x.Quantity > 0), includeProperties: "ProductItems");
+            List<string> keywords = new List<string>();
 
-            if (request.PageCurrent == 0)
+            foreach(var entity in listProduct)
             {
-                foreach(var entity in listEntity)
-                {
-                    _uow.ProductRepository.AttachEntity(entity);
-                    entity.Keyword = HandleSaveKeyWord(entity);
-                    HandleKeyword.AddKeyWord(entity.Keyword);
-                }
-                await _uow.SaveChangeAsync();
+                _uow.ProductRepository.AttachEntity(entity);
+                entity.Keyword = HandleSaveKeyWord(entity);
+
+                //HandleKeyword.AddKeyWord(entity.Keyword);
+                keywords.Add(entity.Keyword);
             }
+  
+            //var recommendSystem = new BasedRecommendations<Product>(await HandleKeyword.ReadKeywordFromVocal());
+            var recommendSystem = new BasedRecommendations<Product>(keywords);
 
-            var recommendSystem = new BasedRecommendations<Product>(await HandleKeyword.ReadKeywordFromVocal());
 
-            var tfArray = recommendSystem.ComputeTF((List<Product>)listEntity);
-            var idf = recommendSystem.ComputeIDF((List<Product>)listEntity);
+            var tfArray = recommendSystem.ComputeTF((List<Product>)listProduct);
+            var idf = recommendSystem.ComputeIDF((List<Product>)listProduct);
 
             var vectorTFIDF = recommendSystem.ComputeTFIDF(tfArray,idf);
 
-            var listEntityRecommend = recommendSystem.GetContentBasedRecommendations(request.InteractedProductIds, (List<Product>)listEntity, vectorTFIDF);
+            var listEntityRecommend = recommendSystem.GetContentBasedRecommendations(request.InteractedProductIds, (List<Product>)listProduct, vectorTFIDF);
             var totalEntity = listEntityRecommend.Count();
 
             if (request.PageCurrent != 0 && request.PageSize != 0)
@@ -74,16 +75,16 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
             return paged;
         }
 
-
+        //Xử lý keyword
         private string HandleSaveKeyWord(Product product)
         {
             string keyword;
 
-            var names = product.Name.Split(' ');
             var slugs = product.Slug.Split('-');
+            var description = product.Description.Split(' ');
 
-            keyword = string.Join(" ", names);
-            keyword += string.Join(" ", slugs);
+            keyword = string.Join(" ", slugs);
+            keyword += string.Join(" ", description);
 
             keyword = RemoveSpecialCharacters(keyword);
 
