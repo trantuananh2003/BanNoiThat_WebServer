@@ -41,6 +41,9 @@ namespace BanNoiThat.API.Controllers
             {
                 _apiResponse.IsSuccess = true;
                 _apiResponse.StatusCode = HttpStatusCode.OK;
+
+                await _orderService.OrderUpdateStatus(orderModel.OrderId, StaticDefine.Status_Order_Processing, StaticDefine.Status_Payment_Pending);
+
                 return Ok(_apiResponse);
             }
             else if (model.PaymentMethod == "momo" && orderModel != null)
@@ -72,6 +75,7 @@ namespace BanNoiThat.API.Controllers
             }
         }
 
+        //Ket qua thong tin giao dich VN pay
         [HttpGet("redirect")]
         public async Task<ActionResult<ApiResponse>> PaymentCallbackVnpay()
         {
@@ -83,13 +87,13 @@ namespace BanNoiThat.API.Controllers
             }
             else if (response.VnPayResponseCode == "24")
             {
-                await _orderService.OrderUpdateStatus(response.OrderId, StaticDefine.Status_Order_Cancelled, StaticDefine.Status_Order_Cancelled);
+                await _orderService.OrderUpdateStatus(response.OrderId, StaticDefine.Status_Order_Cancelled, StaticDefine.Status_Payment_Failed);
             }
 
             return Ok(response);
         }
 
-        //Ket qua thong tin giao dich
+        //Ket qua thong tin giao dich momo
         [HttpGet("momo/payment-call-back")]
         public async Task<ActionResult> PaymentCallBack()
         {

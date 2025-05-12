@@ -1,7 +1,10 @@
-﻿using BanNoiThat.API.Model;
+﻿using Azure;
+using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.Interfaces.IService;
+using BanNoiThat.Application.Interfaces.Repository;
+using BanNoiThat.Application.Service.OrderService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,13 +16,16 @@ namespace BanNoiThat.API.Controllers
     {
         private ApiResponse _apiResponse;
         private IServiceOrder _serviceOrder;
+        private IUnitOfWork _uow;
         private ILogger<OrdersController> _logger;
 
-        public OrdersController(IServiceOrder serviceOrder, ILogger<OrdersController> logger)
+
+        public OrdersController(IServiceOrder serviceOrder, IUnitOfWork uow ,ILogger<OrdersController> logger)
         {
             _apiResponse = new ApiResponse();
             _serviceOrder = serviceOrder;
             _logger = logger;
+            _uow = uow;
         }
 
         [HttpGet("{id}")]
@@ -68,9 +74,29 @@ namespace BanNoiThat.API.Controllers
             var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
             var roleUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
 
-            //Chỉ có user mới đc hủy đơn
-            await _serviceOrder.OrderUpdateStatus(orderId, order.OrderStatus);
+            //User chỉ được quyền hủy
+            await _serviceOrder.OrderUpdateStatus(orderId, orderStatus:order.OrderStatus);
             return _apiResponse;
+        }
+
+        [HttpPut("{orderId}/approve")]
+        public async Task<ActionResult<ApiResponse>> ApproveOrder([FromRoute] string orderId, [FromForm] string addresscode)
+        {
+            var entity = await _uow.OrderRepository.GetAsync(order => order.Id == orderId);
+            await _serviceOrder.OrderUpdateStatus(orderId, orderStatus: StaticDefine.Status_Order_Shipping);
+
+            await _uow.SaveChangeAsync();
+            return Ok();
+        }
+
+        [HttpPut("{orderId}/done")]
+        public async Task<ActionResult<ApiResponse>> ApproveOrderSuccess([FromRoute] string orderId)
+        {
+            var entity = await _uow.OrderRepository.GetAsync(order => order.Id == orderId);
+            await _serviceOrder.OrderUpdateStatus(orderId, orderStatus: StaticDefine.Status_Order_Done);
+
+            await _uow.SaveChangeAsync();
+            return Ok();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
@@ -39,23 +40,36 @@ namespace BanNoiThat.Application.Service.OrderService
             return listOrderResponse;
         }
 
-        public async Task OrderUpdateStatus(string orderId, string orderStatus)
+        public async Task OrderUpdateStatus(string orderId, string orderStatus=null, string paymentStatus=null)
         {
             var entity = await _uow.OrderRepository.GetAsync(x => x.Id == orderId);
             _uow.OrderRepository.AttachEntity(entity);
 
-            entity.OrderStatus = orderStatus;
+            if(!string.IsNullOrEmpty(orderStatus))
+            {
+                entity.OrderStatus = orderStatus;
+            }
+            if(!string.IsNullOrEmpty(paymentStatus))
+            {
+                entity.PaymentStatus = paymentStatus;
+            }
+
+            if (paymentStatus == StaticDefine.Status_Order_Cancelled)
+            {
+                await ReturnQuantityProduct(orderId);
+            }
+
             await _uow.SaveChangeAsync();
         }
 
-        public async Task OrderUpdateStatus(string orderId, string orderStatus, string paymentStatus)
+        private async Task ReturnQuantityProduct(string orderId)
         {
-            var entity = await _uow.OrderRepository.GetAsync(x => x.Id == orderId);
-            _uow.OrderRepository.AttachEntity(entity);
-
-            entity.OrderStatus = orderStatus;
-            entity.PaymentStatus = paymentStatus;
-            await _uow.SaveChangeAsync();
+            var order = await _uow.OrderRepository.GetOrderIncludeAsync(orderId);
+            
+            foreach(var orderItem in order.OrderItems)
+            {
+                orderItem.ProductItem.Quantity += orderItem.Quantity;
+            }
         }
     }
 }
