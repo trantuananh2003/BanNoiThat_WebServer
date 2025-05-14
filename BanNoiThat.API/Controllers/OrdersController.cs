@@ -1,7 +1,7 @@
 ﻿using Azure;
 using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
-using BanNoiThat.Application.DTOs;
+using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.OrderService;
@@ -80,12 +80,15 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpPut("{orderId}/approve")]
-        public async Task<ActionResult<ApiResponse>> ApproveOrder([FromRoute] string orderId, [FromForm] string addresscode)
+        public async Task<ActionResult<ApiResponse>> ApproveOrder([FromRoute] string orderId,[FromForm] OrderApproveRequest modelRequest)
         {
-            var entity = await _uow.OrderRepository.GetAsync(order => order.Id == orderId);
+            var entity = await _uow.OrderRepository.GetAsync(order => order.Id == orderId, tracked: true);
+            entity.AddressCode = modelRequest.AddressCode;
+            entity.TransferService = modelRequest.TransferService;
+            await _uow.SaveChangeAsync();
+
             await _serviceOrder.OrderUpdateStatus(orderId, orderStatus: StaticDefine.Status_Order_Shipping);
 
-            await _uow.SaveChangeAsync();
             return Ok();
         }
 

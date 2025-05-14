@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace BanNoiThat.Application.DTOs
+﻿namespace BanNoiThat.Application.DTOs.ProductDtos
 {
-    public class ProductItemRequest
+    public class ProductItemResponse
     {
         public string? Id { get; set; }
         public string NameOption { get; set; }
@@ -10,7 +8,7 @@ namespace BanNoiThat.Application.DTOs
         public double Price { get; set; }
         public double SalePrice { get; set; }
         public string Sku { get; set; }
-        public IFormFile? ImageProductItem { get; set; }
-        public Boolean IsDelete { get; set; }
+        public string ImageUrl { get; set; }
+        public string ModelUrl { get; set; }
     }
 }

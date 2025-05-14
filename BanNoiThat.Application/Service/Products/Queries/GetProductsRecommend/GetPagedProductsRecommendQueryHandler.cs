@@ -7,6 +7,7 @@ using BanNoiThat.Application.Service.RecommendSystem;
 using AutoMapper;
 using System.Text.RegularExpressions;
 using System.Text;
+using BanNoiThat.Application.DTOs.ProductDtos;
 
 namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
 {

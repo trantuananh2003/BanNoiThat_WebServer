@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.DTOs.BrandDto;
+using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.DTOs.Product;
+using BanNoiThat.Application.DTOs.ProductDtos;
 using BanNoiThat.Application.DTOs.User;
 using BanNoiThat.Application.Service.BrandService;
 using BanNoiThat.Application.Service.CategoriesService;

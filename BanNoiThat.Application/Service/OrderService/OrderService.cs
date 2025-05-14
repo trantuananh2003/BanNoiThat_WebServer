@@ -1,7 +1,7 @@
 ﻿
 using AutoMapper;
 using BanNoiThat.Application.Common;
-using BanNoiThat.Application.DTOs;
+using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Domain.Entities;

@@ -1,6 +1,6 @@
 ﻿using BanNoiThat.API.Model;
-using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.DTOs.Product;
+using BanNoiThat.Application.DTOs.ProductDtos;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Application.Service.Products.Commands.CreateProduct;

@@ -4,6 +4,7 @@ using BanNoiThat.Domain.Entities;
 using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.JsonPatch;
+using BanNoiThat.Application.DTOs.ProductDtos;
 
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 {

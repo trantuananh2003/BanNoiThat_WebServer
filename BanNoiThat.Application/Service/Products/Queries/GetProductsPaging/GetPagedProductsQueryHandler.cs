@@ -1,4 +1,5 @@
 ﻿using BanNoiThat.Application.DTOs;
+using BanNoiThat.Application.DTOs.ProductDtos;
 using BanNoiThat.Application.Interfaces.Repository;
 using MediatR;
 

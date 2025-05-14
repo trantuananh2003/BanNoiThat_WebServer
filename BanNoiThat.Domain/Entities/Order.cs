@@ -8,7 +8,7 @@
         public DateTime OrderPaidTime { get; set; }
         public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
-        public double TotalPrice { get; set; } 
+        public double TotalPrice { get; set; }
 
         public string PaymentMethod { get; set; } //Cod, Online
         public string PaymentIntentId { get; set; }
@@ -19,5 +19,6 @@
         public string ShippingAddress { get; set; }
         public string PhoneNumber { get; set; }
         public string AddressCode { get; set; }
+        public string TransferService {get;set;}
     }
 }

@@ -1,4 +1,4 @@
-﻿using BanNoiThat.Application.DTOs;
+﻿using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Domain.Entities;
 
 namespace BanNoiThat.Application.Interfaces.IService

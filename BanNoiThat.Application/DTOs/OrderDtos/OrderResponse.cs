@@ -1,5 +1,4 @@
-﻿
-namespace BanNoiThat.Application.DTOs
+﻿namespace BanNoiThat.Application.DTOs.OrderDtos
 {
     public class OrderResponse
     {

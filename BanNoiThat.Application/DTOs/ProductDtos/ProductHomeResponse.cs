@@ -1,6 +1,6 @@
 ﻿using BanNoiThat.Domain.Entities;
 
-namespace BanNoiThat.Application.DTOs
+namespace BanNoiThat.Application.DTOs.ProductDtos
 {
     public class ProductHomeResponse
     {
@@ -12,7 +12,7 @@ namespace BanNoiThat.Application.DTOs
         public double SalePrice { get; set; }
         public string? Keyword { get; set; }
         public string? Description { get; set; }
-        public Boolean IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
         public Brand Brand { get; set; }
         public Category Category { get; set; }
     }

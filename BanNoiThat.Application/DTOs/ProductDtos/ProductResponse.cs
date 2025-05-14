@@ -1,7 +1,7 @@
 ﻿using BanNoiThat.Application.DTOs.BrandDto;
 using BanNoiThat.Application.Service.CategoriesService;
 
-namespace BanNoiThat.Application.DTOs
+namespace BanNoiThat.Application.DTOs.ProductDtos
 {
     public class ProductResponse
     {
