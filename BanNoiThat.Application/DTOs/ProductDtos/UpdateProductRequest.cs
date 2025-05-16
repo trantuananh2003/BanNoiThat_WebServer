@@ -9,6 +9,6 @@ namespace BanNoiThat.Application.DTOs.Product
         public string? Category_Id { get; set; }
         public string? Brand_Id { get; set; }
         public string Description { get; set; } = string.Empty;
-        public string Slug { get; set; } = string.Empty;
+        public string? Slug { get; set; }
     }
 }

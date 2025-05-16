@@ -18,18 +18,22 @@ namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
 
         public async Task<Unit> Handle(CreateProductsCommand request, CancellationToken cancellationToken)
         {
+            if(string.IsNullOrEmpty(request.Slug))
+            {
+                request.Slug = request.Name.GenerateSlug();
+            }
+
             var entityProduct = new Product();
             entityProduct.Id = Guid.NewGuid().ToString();
             entityProduct.Name = request.Name;
             entityProduct.Description = request.Description;
-            entityProduct.Slug = request.Slug;
             entityProduct.Category_Id = request.Category_Id;
+            entityProduct.Slug = request.Slug;
             entityProduct.Brand_Id = request.Brand_Id;
             entityProduct.ProductItems = new();
             entityProduct.Keyword = HandleSaveKeyWord(entityProduct);
             entityProduct.CreateAt = DateTime.Now;
             HandleKeyword.AddKeyWord(entityProduct.Keyword);
-
 
             if (request.ThumbnailImage != null && request.ThumbnailImage.Length > 0)
             {

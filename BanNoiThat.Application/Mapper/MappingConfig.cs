@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.DTOs.BrandDto;
 using BanNoiThat.Application.DTOs.OrderDtos;
@@ -18,13 +19,12 @@ namespace BanNoiThat.API.Mapper
     {
         public MappingConfig() {
             //Category
-            CreateMap<CreateCategoriesRequest, Category>();
+            CreateMap<CreateCategoriesRequest, Category>().
+                                ForMember(dest => dest.Slug, opt => opt.MapFrom(x => string.IsNullOrEmpty(x.Slug) ? x.Name.GenerateSlug() : x.Slug));
             CreateMap<Category, CategoryResponse>();
 
             //Brand
-            CreateMap<CreateBrandRequest, Brand>();
             CreateMap<Brand, BrandResponse>();
-            CreateMap<UpdateBrandRequest, Brand>();
 
             //Product Items
             CreateMap<CreateProductItem, ProductItem>();

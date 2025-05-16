@@ -12,6 +12,11 @@ using MediatR;namespace BanNoiThat.Application.Service.Products.Commands.UpdateP
 
         public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
+            if(string.IsNullOrEmpty(request.updateProductRequest.Slug))
+            {
+                request.updateProductRequest.Slug = request.updateProductRequest.Name.GenerateSlug();
+            }
+
             var entity = await _uow.ProductRepository.GetAsync(x => x.Id == request.Id);
             _uow.ProductRepository.AttachEntity(entity);
 

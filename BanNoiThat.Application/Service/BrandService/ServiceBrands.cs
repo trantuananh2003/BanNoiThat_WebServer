@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.BrandDto;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
@@ -20,7 +21,17 @@ namespace BanNoiThat.Application.Service.BrandService
         //Nếu khong async nó sẽ lỗi return
         public async Task CreateBrandAsync(CreateBrandRequest modelRequest)
         {
-            var entityBrand = _mapper.Map<Brand>(modelRequest);
+            if (string.IsNullOrEmpty(modelRequest.Slug))
+            {
+                modelRequest.Slug = modelRequest.Name.GenerateSlug();
+            }
+
+            var entityBrand = new Brand
+            {
+                Name = modelRequest.Name,
+                Slug = modelRequest.Slug
+            };
+
             entityBrand.Id = Guid.NewGuid().ToString();
             await _uow.BrandRepository.CreateAsync(entityBrand);
             await _uow.SaveChangeAsync();
@@ -42,14 +53,17 @@ namespace BanNoiThat.Application.Service.BrandService
             return modelReponse;
         }
 
-
         public async Task UpdateBrandAsync(string id, UpdateBrandRequest modelRequest)
         {
-            var entity = await _uow.BrandRepository.GetAsync(x => x.Id == id);
-            _uow.BrandRepository.AttachEntity(entity);
+            var entity = await _uow.BrandRepository.GetAsync(x => x.Id == id, tracked: true);
 
-            entity.Slug = modelRequest.Slug;
+            if (string.IsNullOrEmpty(modelRequest.Slug))
+            {
+                modelRequest.Slug = modelRequest.Name.GenerateSlug();
+            }
+
             entity.Name = modelRequest.Name;
+            entity.Slug = modelRequest.Slug;
 
             await _uow.SaveChangeAsync();
         }
