@@ -2,6 +2,7 @@
 using BanNoiThat.API.Model;
 using BanNoiThat.Application.DTOs.BrandDto;
 using BanNoiThat.Application.Interfaces.IService;
+using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.BrandService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -17,13 +18,16 @@ namespace BanNoiThat.API.Controllers
         private readonly IMapper _mapper;
         private readonly ILogger<CategoriesController> _logger;
         private ApiResponse _apiResponse;
+        private IUnitOfWork _uow;
 
         public BrandsController(IServiceBrands serviceBrands, ILogger<CategoriesController> logger,
+            IUnitOfWork uow,
             IMapper mapper)
         {
             _serviceBrands = serviceBrands;
             _mapper = mapper;
             _logger = logger;
+            _uow = uow;
             _apiResponse = new ApiResponse();
         }
 
@@ -41,6 +45,21 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.IsSuccess = true;
 
             _logger.LogInformation("END: Get list models reponse");
+
+            return Ok(_apiResponse);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ApiResponse>> GetBrandById([FromRoute] string id)
+        {
+            var modelReponse = await _uow.BrandRepository.GetAsync(x => x.Id == id);
+
+            _apiResponse.Result = new
+            {
+                Id = modelReponse.Id,
+                Name = modelReponse.Name,
+                Slug = modelReponse.Slug,
+            };
 
             return Ok(_apiResponse);
         }

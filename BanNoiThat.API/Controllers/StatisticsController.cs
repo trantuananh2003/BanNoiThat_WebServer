@@ -47,7 +47,7 @@ namespace BanNoiThat.API.Controllers
             _apiReponse.Result = new
             {
                 revenueLastWeek = revenueLastWeek,
-                revenueWeek = revenueWeek,
+                revenueCurrentWeek = revenueWeek,
             };
 
             return Ok(_apiReponse);
@@ -68,7 +68,7 @@ namespace BanNoiThat.API.Controllers
             _apiReponse.Result = new
             {
                 NumberLastWeek = entityLastWeek,
-                NumberWeek = entityWeek,
+                NumberCurrentWeek = entityWeek,
             };
 
             _apiReponse.IsSuccess = true;

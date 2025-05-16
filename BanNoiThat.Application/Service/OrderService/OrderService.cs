@@ -42,8 +42,7 @@ namespace BanNoiThat.Application.Service.OrderService
 
         public async Task OrderUpdateStatus(string orderId, string orderStatus=null, string paymentStatus=null)
         {
-            var entity = await _uow.OrderRepository.GetAsync(x => x.Id == orderId);
-            _uow.OrderRepository.AttachEntity(entity);
+            var entity = await _uow.OrderRepository.GetAsync(x => x.Id == orderId, tracked: true);
 
             if(!string.IsNullOrEmpty(orderStatus))
             {

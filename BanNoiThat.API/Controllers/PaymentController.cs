@@ -83,11 +83,11 @@ namespace BanNoiThat.API.Controllers
 
             if (response.VnPayResponseCode == "00")
             {
-                await _orderService.OrderUpdateStatus(response.OrderId, StaticDefine.Status_Order_Processing, StaticDefine.Status_Payment_Paid);
+                await _orderService.OrderUpdateStatus(response.OrderId, orderStatus: StaticDefine.Status_Order_Processing, paymentStatus: StaticDefine.Status_Payment_Paid);
             }
             else if (response.VnPayResponseCode == "24")
             {
-                await _orderService.OrderUpdateStatus(response.OrderId, StaticDefine.Status_Order_Cancelled, StaticDefine.Status_Payment_Failed);
+                await _orderService.OrderUpdateStatus(response.OrderId, orderStatus: StaticDefine.Status_Order_Cancelled, paymentStatus: StaticDefine.Status_Payment_Failed);
             }
 
             return Ok(response);

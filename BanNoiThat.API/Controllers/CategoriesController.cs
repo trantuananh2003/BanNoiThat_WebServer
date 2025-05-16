@@ -66,6 +66,20 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ApiResponse>> GetCategoryById([FromRoute]string id)
+        {
+            var modelReponse = await _uow.CategoriesRepository.GetAsync(x => x.Id == id);
+
+            _apiResponse.Result = new {
+                Id = modelReponse.Id,
+                Name = modelReponse.Name,
+                Slug = modelReponse.Slug,
+                CategoryUrlImage = modelReponse.CategoryUrlImage,
+            };
+            return Ok(_apiResponse);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ApiResponse>> CreateCategory([FromForm] CreateCategoriesRequest model)
         {
