@@ -1,8 +1,0 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
-WORKDIR /src
-COPY ./BanNoiThat.API.csproj ./
-RUN dotnet restore "BanNoiThat.API.csproj"
-COPY . .
-RUN dotnet publish ./BanNoiThat.API.csproj -c Release -o /app/
-
-FROM  mcr.microsoft.com/dotnet/sdk:8.0 as final
