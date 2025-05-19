@@ -1,4 +1,5 @@
-﻿using BanNoiThat.Application.Service.CategoriesService;
+﻿using BanNoiThat.Application.DTOs.CategoryDtos;
+using BanNoiThat.Application.Service.CategoriesService;
 using BanNoiThat.Domain.Entities;
 
 namespace BanNoiThat.Application.Interfaces.Database
@@ -10,5 +11,6 @@ namespace BanNoiThat.Application.Interfaces.Database
         Task<IEnumerable<CategoryResponse>> GetCategoriesForClientAsync();
         Task<IEnumerable<CategoryResponse>> GetCategoriesForAdminAsync();
         Task DeleteCategoryHardAsync(string id);
+        Task UpdateCategoryAsync(string id, UpdateCategoryRequest modelRequest);
     }
 }

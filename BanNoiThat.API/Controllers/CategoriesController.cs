@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BanNoiThat.API.Model;
+using BanNoiThat.Application.DTOs.BrandDto;
+using BanNoiThat.Application.DTOs.CategoryDtos;
 using BanNoiThat.Application.Interfaces.Database;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.CategoriesService;
@@ -80,6 +82,18 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ApiResponse>> UpdateBrand(string id, [FromForm] UpdateCategoryRequest modelRequest)
+        {
+            await _serviceCategories.UpdateCategoryAsync(id, modelRequest);
+
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+            _apiResponse.IsSuccess = true;
+
+            return Ok(_apiResponse);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ApiResponse>> CreateCategory([FromForm] CreateCategoriesRequest model)
         {
@@ -112,5 +126,7 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.IsSuccess = true;
             return Ok(_apiResponse);
         }
+
+
     }
 }
