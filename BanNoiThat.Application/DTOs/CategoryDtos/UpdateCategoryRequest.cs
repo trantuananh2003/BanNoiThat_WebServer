@@ -11,7 +11,7 @@ namespace BanNoiThat.Application.DTOs.CategoryDtos
     {
         public string Name { get; set; }
         public string? Slug { get; set; }
-        public IFormFile FileImage { get; set; }
+        public IFormFile? FileImage { get; set; }
         public bool? IsShow { get; set; }
     }
 }
