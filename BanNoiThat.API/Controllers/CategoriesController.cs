@@ -84,7 +84,7 @@ namespace BanNoiThat.API.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ApiResponse>> UpdateBrand(string id, [FromForm] UpdateCategoryRequest modelRequest)
+        public async Task<ActionResult<ApiResponse>> UpdateCategory(string id, [FromForm] UpdateCategoryRequest modelRequest)
         {
             await _serviceCategories.UpdateCategoryAsync(id, modelRequest);
 
