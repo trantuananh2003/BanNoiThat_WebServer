@@ -13,5 +13,6 @@
         public string? ImageUrl { get; set; }
         public string? ModelUrl { get; set; }
         public string? Sizes { get; set; }
+        public string? Colors { get; set; }
     }
 }
