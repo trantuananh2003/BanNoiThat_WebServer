@@ -5,6 +5,9 @@ using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.JsonPatch;
 using BanNoiThat.Application.DTOs.ProductDtos;
+using BanNoiThat.Application.Service.Products.Queries.GetProductsPaging;
+using System.Linq.Expressions;
+using LinqKit;
 
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 {
@@ -17,7 +20,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             _db = context;
         }
 
-        public async Task<PagedList<ProductHomeResponse>> GetPagedListProduct(string stringSearch,int pageSize, int pageCurrent, Boolean IsDeleted)
+        public async Task<PagedList<ProductHomeResponse>> GetPagedListProduct(string stringSearch,int pageSize, int pageCurrent, Boolean IsDeleted, List<PriceRange> priceRanges)
         {
             var query = _db.Products.AsQueryable();
             #region Use Method Syntax
@@ -69,6 +72,19 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 
             query = query.Include(x => x.Brand).Include(x=>x.Category);
 
+            if (priceRanges != null)
+            {
+                Expression<Func<Product, bool>> expression = x => false; // Khởi tạo với false
+                foreach (var priceRange in priceRanges)
+                {
+                    var minPrice = priceRange.MinPrice;
+                    var maxPrice = priceRange.MaxPrice;
+
+                    expression = expression.Or(x => x.ProductItems.Any(item => item.Price >= minPrice && item.Price <= maxPrice));
+                }
+                query = query.Where(expression);
+            }
+
             //Select
             var resultQuery = query.Include(x => x.ProductItems)
                 .Select(
@@ -86,7 +102,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                     Category = product.Category,
                     IsDeleted = product.IsDeleted,
                 });
-
             var listEntity = await resultQuery.ToListAsync();
             #endregion
 

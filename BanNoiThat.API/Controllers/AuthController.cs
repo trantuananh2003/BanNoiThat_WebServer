@@ -71,6 +71,7 @@ namespace BanNoiThat.API.Controllers
             {
                 Email = userEntity.Email,
                 FullName = userEntity.FullName,
+                UserId = userEntity.Id,
                 Token = tokenHandler.WriteToken(token)
             };
 

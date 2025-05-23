@@ -16,7 +16,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsPaging
 
         public async Task<PagedList<ProductHomeResponse>> Handle(GetPagedProductsQuery request, CancellationToken cancellationToken)
         {
-            var entityPadeawait = await _uow.ProductRepository.GetPagedListProduct(request.StringSearch, request.PageSize, request.PageCurrent, request.IsDeleted);
+            var entityPadeawait = await _uow.ProductRepository.GetPagedListProduct(request.StringSearch, request.PageSize, request.PageCurrent, request.IsDeleted, request.PriceRanges);
 
             return entityPadeawait;
         }

@@ -47,33 +47,6 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(_apiResponse);
         }
-
-        //Get product for paged list
-        [HttpPost("recommend")]
-        public async Task<ActionResult<ApiResponse>> GetPagedListProductRecommendAsync(int pageCurrent, int pageSize, string? stringSearch, [FromForm] RecommendRequest model)
-        {
-            GetPagedProductsRecommendQuery queryPagedProduct = new GetPagedProductsRecommendQuery
-            {
-                PageCurrent = pageCurrent,
-                PageSize = pageSize,
-                StringSearch = stringSearch,
-                InteractedProductIds = model.InteractedProductIds.ToArray(),
-            };
-
-            var pagedProductModel = await _mediator.Send(queryPagedProduct);
-
-            PaginationDto pagination = new PaginationDto()
-            {
-                CurrentPage = pagedProductModel.PageCurrent,
-                PageSize = pagedProductModel.PageSize,
-                TotalRecords = pagedProductModel.TotalCount,
-            };
-
-            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagination));
-            _apiResponse.Result = pagedProductModel.Items;
-            _apiResponse.StatusCode = HttpStatusCode.OK;
-            return Ok(_apiResponse);
-        }
         #endregion
 
         #region Admin
@@ -157,7 +130,35 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(_apiResponse);
         }
+
+        //Get product for paged list
+        [HttpPost("recommend")]
+        public async Task<ActionResult<ApiResponse>> GetPagedListProductRecommendAsync(int pageCurrent, int pageSize, string? stringSearch, [FromForm] RecommendRequest model)
+        {
+            GetPagedProductsRecommendQuery queryPagedProduct = new GetPagedProductsRecommendQuery
+            {
+                PageCurrent = pageCurrent,
+                PageSize = pageSize,
+                StringSearch = stringSearch,
+                InteractedProductIds = model.InteractedProductIds.ToArray(),
+            };
+
+            var pagedProductModel = await _mediator.Send(queryPagedProduct);
+
+            PaginationDto pagination = new PaginationDto()
+            {
+                CurrentPage = pagedProductModel.PageCurrent,
+                PageSize = pagedProductModel.PageSize,
+                TotalRecords = pagedProductModel.TotalCount,
+            };
+
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagination));
+            _apiResponse.Result = pagedProductModel.Items;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+            return Ok(_apiResponse);
+        }
         #endregion
+
 
         #region model 3d
 
