@@ -11,12 +11,20 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsPaging
         public string? StringSearch { get; set; }
         public Boolean IsDeleted { get; set; } = false;
         public List<PriceRange>? PriceRanges { get; set; }
-        public List<string>? material { get; set; }
+        public List<string>? Colors { get; set; }
+        public SizeProductItem? Size { get; set; }
     }
 
     public class PriceRange
     {
         public double? MinPrice { get; set; }
         public double? MaxPrice { get; set; }
+    }
+
+    public class SizeProductItem
+    {
+        public int? longSize {get;set;}
+        public int? widthSize { get; set; }
+        public int? heightSize { get; set; }
     }
 }

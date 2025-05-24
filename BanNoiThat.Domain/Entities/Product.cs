@@ -13,12 +13,12 @@ namespace BanNoiThat.Domain.Entities
         public List<ProductItem> ProductItems { get; set; }
         public ICollection<FavoriteProducts> LikesProduct { get; set; }
         public string? Keyword { get; set; }
-
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string ThumbnailUrl { get; set; } = string.Empty;
         public string Slug { get; set; } = string.Empty;
         public DateTime CreateAt { get; set; }
         public Boolean IsDeleted { get; set; }
+       
     }
 }

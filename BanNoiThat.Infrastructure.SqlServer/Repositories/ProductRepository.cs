@@ -8,6 +8,7 @@ using BanNoiThat.Application.DTOs.ProductDtos;
 using BanNoiThat.Application.Service.Products.Queries.GetProductsPaging;
 using System.Linq.Expressions;
 using LinqKit;
+using System.Drawing;
 
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 {
@@ -20,7 +21,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             _db = context;
         }
 
-        public async Task<PagedList<ProductHomeResponse>> GetPagedListProduct(string stringSearch,int pageSize, int pageCurrent, Boolean IsDeleted, List<PriceRange> priceRanges)
+        public async Task<PagedList<ProductHomeResponse>> GetPagedListProduct(string stringSearch,int pageSize, int pageCurrent, Boolean IsDeleted, 
+            List<PriceRange> priceRanges, List<string> colors,SizeProductItem size)
         {
             var query = _db.Products.AsQueryable();
             #region Use Method Syntax
@@ -57,20 +59,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             //Filter delete
             query = query.Where(x => x.IsDeleted == IsDeleted);
 
-            //OrderBy and Desc
-            //query.OrderBy(x => x.CreateAt);
-            query = query.OrderByDescending(x => x.CreateAt);
-
-            //Total
-            var totalCount = query.Count();
-
-            if (pageSize != 0 && pageCurrent != 0)
-            {
-                //Query
-                query = query.Skip((pageCurrent - 1) * pageSize).Take(pageSize);
-            }
-
-            query = query.Include(x => x.Brand).Include(x=>x.Category);
+            query = query.Include(x => x.Brand).Include(x => x.Category);
 
             if (priceRanges != null)
             {
@@ -84,6 +73,47 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                 }
                 query = query.Where(expression);
             }
+
+            if (colors != null)
+            {
+                Expression<Func<Product, bool>> expression = x => false; // Khởi tạo với false
+                foreach (var color in colors)
+                {
+                    expression = expression.Or(x => x.ProductItems.Any(item => item.Colors.Contains(color)));
+                }
+                query = query.Where(expression);
+            }
+
+            if (size != null)
+            {
+                if (size.heightSize != null)
+                {
+                    query = query.Where(x => x.ProductItems.Any(x => x.HeightSize <= size.heightSize));
+                }
+                if (size.widthSize != null)
+                {
+                    query = query.Where(x => x.ProductItems.Any(x => x.WidthSize <= size.widthSize));
+                }
+                if (size.longSize != null)
+                {
+                    query = query.Where(x => x.ProductItems.Any(x => x.LongSize <= size.longSize));
+                }
+            }
+
+
+            //OrderBy and Desc
+            //query.OrderBy(x => x.CreateAt);
+            query = query.OrderByDescending(x => x.CreateAt);
+
+            //Total
+            var totalCount = query.Count();
+
+            if (pageSize != 0 && pageCurrent != 0)
+            {
+                //Query
+                query = query.Skip((pageCurrent - 1) * pageSize).Take(pageSize);
+            }
+
 
             //Select
             var resultQuery = query.Include(x => x.ProductItems)

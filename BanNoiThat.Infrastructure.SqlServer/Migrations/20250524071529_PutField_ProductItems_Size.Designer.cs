@@ -4,6 +4,7 @@ using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250524071529_PutField_ProductItems_Size")]
+    partial class PutField_ProductItems_Size
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -296,14 +299,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("Colors")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HeightSize")
-                        .HasColumnType("int");
-
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LongSize")
-                        .HasColumnType("int");
 
                     b.Property<string>("ModelUrl")
                         .HasColumnType("nvarchar(max)");
@@ -328,7 +325,13 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("WidthSize")
+                    b.Property<int?>("heightSize")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("longSize")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("widthSize")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
