@@ -34,7 +34,6 @@ namespace BanNoiThat.API.Controllers
             _apiResponse = new ApiResponse();
         }
 
-        #region Both Admin and Client
         //Get product by "slug" or "id"
         [HttpGet("{value}")]
         public async Task<ActionResult<ApiResponse>> GetProductByIdentityAsync([FromRoute] string value)
@@ -47,17 +46,17 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(_apiResponse);
         }
-        #endregion
 
-        #region Admin
-        //Create product
-        [HttpPost]
-        [Authorize]
-        public async Task<ActionResult> CreateProductAsync([FromForm] CreateProductsCommand command)
+        //Get product item by "slug" or "id"
+        [HttpGet("product-items/{productItemId}")]
+        public async Task<ActionResult<ApiResponse>> GetProductItems([FromRoute] string productItemId)
         {
-            await _mediator.Send(command);
+            var model = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
 
-            return Ok();
+            _apiResponse.Result = model;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+
+            return Ok(_apiResponse);
         }
 
         //Get product for paged list
@@ -107,27 +106,15 @@ namespace BanNoiThat.API.Controllers
 
             return Ok();
         }
-        #endregion
 
-        [HttpDelete("{productId}")]
-        public async Task<ActionResult<ApiResponse>> DeleteSoftProduct(string productId,[FromQuery] Boolean isDeleted = true)
+        //Create product
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult> CreateProductAsync([FromForm] CreateProductsCommand command)
         {
-            await _uow.ProductRepository.DeleteSoft(productId, isDeleted);
-            await _uow.SaveChangeAsync();
+            await _mediator.Send(command);
+
             return Ok();
-        }
-
-        #region Client
-        //Get product item by "slug" or "id"
-        [HttpGet("product-items/{productItemId}")]
-        public async Task<ActionResult<ApiResponse>> GetProductItems([FromRoute] string productItemId)
-        {
-            var model = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
-
-            _apiResponse.Result = model;
-            _apiResponse.StatusCode = HttpStatusCode.OK;
-
-            return Ok(_apiResponse);
         }
 
         //Get product for paged list
@@ -157,7 +144,14 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
-        #endregion
+        [HttpDelete("{productId}")]
+        public async Task<ActionResult<ApiResponse>> DeleteSoftProduct(string productId, [FromQuery] Boolean isDeleted = true)
+        {
+            await _uow.ProductRepository.DeleteSoft(productId, isDeleted);
+            await _uow.SaveChangeAsync();
+            return Ok();
+        }
+
 
         #region model 3d
         //Get file model 3D
