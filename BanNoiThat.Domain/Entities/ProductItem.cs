@@ -12,7 +12,7 @@
         public string Sku { get; set; }
         public string? ImageUrl { get; set; }
         public string? ModelUrl { get; set; }
-        public int? LongSize { get; set; }
+        public int? LengthSize { get; set; }
         public int? WidthSize { get; set; }
         public int? HeightSize { get; set; }
         public string? Colors { get; set; }

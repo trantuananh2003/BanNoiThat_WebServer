@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250524071529_PutField_ProductItems_Size")]
-    partial class PutField_ProductItems_Size
+    [Migration("20250529151732_ChangeName_ProductItem_Lenght")]
+    partial class ChangeName_ProductItem_Lenght
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,8 +77,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Cart_Id");
 
-                    b.HasIndex("ProductItem_Id")
-                        .IsUnique();
+                    b.HasIndex("ProductItem_Id");
 
                     b.ToTable("CartItems");
                 });
@@ -238,7 +237,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -299,8 +298,14 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("Colors")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("HeightSize")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("LengthSize")
+                        .HasColumnType("int");
 
                     b.Property<string>("ModelUrl")
                         .HasColumnType("nvarchar(max)");
@@ -325,13 +330,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("heightSize")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("lengthSize")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("widthSize")
+                    b.Property<int?>("WidthSize")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -393,8 +392,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .IsRequired();
 
                     b.HasOne("BanNoiThat.Domain.Entities.ProductItem", "ProductItem")
-                        .WithOne()
-                        .HasForeignKey("BanNoiThat.Domain.Entities.CartItem", "ProductItem_Id")
+                        .WithMany()
+                        .HasForeignKey("ProductItem_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

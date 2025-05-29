@@ -16,7 +16,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                 newName: "WidthSize");
 
             migrationBuilder.RenameColumn(
-                name: "longSize",
+                name: "lengthSize",
                 table: "ProductItems",
                 newName: "LongSize");
 
@@ -37,7 +37,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
             migrationBuilder.RenameColumn(
                 name: "LongSize",
                 table: "ProductItems",
-                newName: "longSize");
+                newName: "lengthSize");
 
             migrationBuilder.RenameColumn(
                 name: "HeightSize",

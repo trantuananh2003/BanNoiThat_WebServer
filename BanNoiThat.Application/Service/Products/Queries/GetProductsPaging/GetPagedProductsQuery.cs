@@ -23,7 +23,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsPaging
 
     public class SizeProductItem
     {
-        public int? longSize {get;set;}
+        public int? lengthSize {get;set;}
         public int? widthSize { get; set; }
         public int? heightSize { get; set; }
     }

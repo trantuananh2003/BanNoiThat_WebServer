@@ -94,9 +94,9 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                 {
                     query = query.Where(x => x.ProductItems.Any(x => x.WidthSize <= size.widthSize));
                 }
-                if (size.longSize != null)
+                if (size.lengthSize != null)
                 {
-                    query = query.Where(x => x.ProductItems.Any(x => x.LongSize <= size.longSize));
+                    query = query.Where(x => x.ProductItems.Any(x => x.LengthSize <= size.lengthSize));
                 }
             }
 

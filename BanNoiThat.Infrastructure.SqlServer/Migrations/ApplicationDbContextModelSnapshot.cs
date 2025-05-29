@@ -301,7 +301,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LongSize")
+                    b.Property<int?>("LengthSize")
                         .HasColumnType("int");
 
                     b.Property<string>("ModelUrl")

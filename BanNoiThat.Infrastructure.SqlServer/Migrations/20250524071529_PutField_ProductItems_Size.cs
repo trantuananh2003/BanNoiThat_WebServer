@@ -21,7 +21,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "longSize",
+                name: "lengthSize",
                 table: "ProductItems",
                 type: "int",
                 nullable: true);
@@ -41,7 +41,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                 table: "ProductItems");
 
             migrationBuilder.DropColumn(
-                name: "longSize",
+                name: "lengthSize",
                 table: "ProductItems");
 
             migrationBuilder.DropColumn(

@@ -132,7 +132,7 @@ namespace BanNoiThat.API.Controllers
 
         //Get product for paged list
         [HttpPost("recommend")]
-        public async Task<ActionResult<ApiResponse>> GetPagedListProductRecommendAsync(int pageCurrent, int pageSize, string? stringSearch, [FromForm] RecommendRequest model)
+        public async Task<ActionResult<ApiResponse>> GetPagedListProductRecommendAsync(int pageCurrent, int pageSize, string? stringSearch,[FromForm] RecommendRequest model)
         {
             GetPagedProductsRecommendQuery queryPagedProduct = new GetPagedProductsRecommendQuery
             {
@@ -156,11 +156,10 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.StatusCode = HttpStatusCode.OK;
             return Ok(_apiResponse);
         }
+
         #endregion
 
-
         #region model 3d
-
         //Get file model 3D
         [HttpGet("product-items/{productItemId}/model")]
         public async Task<ActionResult<ApiResponse>> GetFileModel3D([FromRoute] string productItemId)
