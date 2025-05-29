@@ -10,7 +10,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.FluentConfig
         {
             builder.HasKey(o => o.Id);
             builder.Property(o => o.Name).HasColumnType("nvarchar(255)");
-            builder.Property(o => o.Description).HasColumnType("nvarchar(255)");
+            builder.Property(o => o.Description).HasColumnType("nvarchar(max)");
             builder.Property(o => o.CreateAt).HasColumnType("date");
             builder.HasOne(o => o.Category).WithMany(x => x.Products).HasForeignKey(o => o.Category_Id).OnDelete(DeleteBehavior.SetNull);
             builder.HasOne(o => o.Brand).WithMany(x => x.Products).HasForeignKey(o => o.Brand_Id).OnDelete(DeleteBehavior.SetNull);

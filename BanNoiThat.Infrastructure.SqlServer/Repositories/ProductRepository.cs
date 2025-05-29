@@ -69,7 +69,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                     var minPrice = priceRange.MinPrice;
                     var maxPrice = priceRange.MaxPrice;
 
-                    expression = expression.Or(x => x.ProductItems.Any(item => item.Price >= minPrice && item.Price <= maxPrice));
+                    expression = expression.Or(x => x.ProductItems.Any(item => item.SalePrice >= minPrice && item.SalePrice <= maxPrice));
                 }
                 query = query.Where(expression);
             }
@@ -99,7 +99,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                     query = query.Where(x => x.ProductItems.Any(x => x.LongSize <= size.longSize));
                 }
             }
-
 
             //OrderBy and Desc
             //query.OrderBy(x => x.CreateAt);

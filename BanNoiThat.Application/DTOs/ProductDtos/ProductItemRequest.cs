@@ -12,5 +12,8 @@ namespace BanNoiThat.Application.DTOs.ProductDtos
         public string Sku { get; set; }
         public IFormFile? ImageProductItem { get; set; }
         public bool IsDelete { get; set; }
+        public int? HeightSize { get; set; }
+        public int? WidthSize { get; set; }
+        public int? LongSize { get; set; }
     }
 }

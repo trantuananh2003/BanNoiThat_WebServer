@@ -59,11 +59,23 @@ builder.Services.AddCors(options =>
                .AllowCredentials()
                .WithExposedHeaders("X-Pagination");
 
+            builder.WithOrigins("http://localhost:3000")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials()
+               .WithExposedHeaders("X-Pagination");
+
             builder.WithOrigins("http://localhost:3006")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials()
                    .WithExposedHeaders("X-Pagination");
+
+            builder.WithOrigins("http://localhost:5501")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials()
+               .WithExposedHeaders("X-Pagination");
 
             builder.WithOrigins("https://udify.app/")
                .AllowAnyHeader()

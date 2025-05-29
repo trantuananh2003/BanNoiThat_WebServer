@@ -91,7 +91,6 @@ namespace BanNoiThat.API.Controllers
 
         //Cập nhập product item trong product id
         [HttpPut("{productId}/product-items")]
-        [Authorize]
         public async Task<ActionResult<ApiResponse>> UpdateProductItems([FromRoute]string productId, [FromForm] List<ProductItemRequest> items)
         {
             if(!items.Any() || string.IsNullOrEmpty(productId))
