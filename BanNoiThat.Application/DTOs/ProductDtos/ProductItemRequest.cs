@@ -14,6 +14,6 @@ namespace BanNoiThat.Application.DTOs.ProductDtos
         public bool IsDelete { get; set; }
         public int? HeightSize { get; set; }
         public int? WidthSize { get; set; }
-        public int? LongSize { get; set; }
+        public int? LengthSize { get; set; }
     }
 }
