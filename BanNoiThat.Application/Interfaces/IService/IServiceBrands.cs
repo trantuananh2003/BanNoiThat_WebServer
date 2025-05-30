@@ -1,5 +1,4 @@
 ﻿using BanNoiThat.Application.DTOs.BrandDto;
-using BanNoiThat.Application.Service.BrandService;
 
 namespace BanNoiThat.Application.Interfaces.IService
 {

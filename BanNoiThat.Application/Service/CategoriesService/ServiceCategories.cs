@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.CategoryDtos;
 using BanNoiThat.Application.Interfaces.Database;
 using BanNoiThat.Application.Interfaces.Repository;
-using BanNoiThat.Application.Service.CategoriesService;
 using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Domain.Entities;
 
@@ -97,7 +95,10 @@ namespace BanNoiThat.Application.Service.Database
             if (modelRequest.FileImage != null && modelRequest.FileImage.Length > 0)
             {
                 string fileName = $"{Guid.NewGuid()}{Path.GetExtension(modelRequest.FileImage.FileName)}";
-                await _blobService.DeleteBlob(category.CategoryUrlImage.Split('/').Last(), StaticDefine.SD_Storage_Containter);
+                if(string.IsNullOrEmpty(category.CategoryUrlImage))
+                {
+                    await _blobService.DeleteBlob(category.CategoryUrlImage.Split('/').Last(), StaticDefine.SD_Storage_Containter);
+                }
                 category.CategoryUrlImage = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, modelRequest.FileImage);
             }
 

@@ -1,4 +1,4 @@
-﻿using BanNoiThat.Application.DTOs;
+﻿using BanNoiThat.Application.DTOs.ProductDtos;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 

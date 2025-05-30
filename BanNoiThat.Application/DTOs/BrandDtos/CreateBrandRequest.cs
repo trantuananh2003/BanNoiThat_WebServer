@@ -1,4 +1,4 @@
-﻿namespace BanNoiThat.Application.Service.BrandService
+﻿namespace BanNoiThat.Application.DTOs.BrandDto
 {
     public class CreateBrandRequest
     {

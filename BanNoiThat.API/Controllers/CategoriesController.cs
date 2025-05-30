@@ -4,7 +4,6 @@ using BanNoiThat.Application.DTOs.BrandDto;
 using BanNoiThat.Application.DTOs.CategoryDtos;
 using BanNoiThat.Application.Interfaces.Database;
 using BanNoiThat.Application.Interfaces.Repository;
-using BanNoiThat.Application.Service.CategoriesService;
 using BanNoiThat.Infrastructure.SqlServer.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;

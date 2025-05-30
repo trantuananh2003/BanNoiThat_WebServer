@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using BanNoiThat.Application.Common;
-using BanNoiThat.Application.DTOs;
 using BanNoiThat.Application.DTOs.BrandDto;
+using BanNoiThat.Application.DTOs.CartDtos;
+using BanNoiThat.Application.DTOs.CategoryDtos;
 using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.DTOs.Product;
 using BanNoiThat.Application.DTOs.ProductDtos;
 using BanNoiThat.Application.DTOs.User;
 using BanNoiThat.Application.Service.BrandService;
-using BanNoiThat.Application.Service.CategoriesService;
 using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
 using BanNoiThat.Application.Service.Products.Commands.UpdatePatchProduct;
 using BanNoiThat.Domain.Entities;

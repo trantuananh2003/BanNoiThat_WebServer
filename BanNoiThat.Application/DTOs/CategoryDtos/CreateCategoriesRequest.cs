@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace BanNoiThat.Application.Service.CategoriesService
+namespace BanNoiThat.Application.DTOs.CategoryDtos
 {
     public class CreateCategoriesRequest
     {
@@ -9,4 +9,4 @@ namespace BanNoiThat.Application.Service.CategoriesService
         public IFormFile? CategoryImage { get; set; }
         public string? Slug { get; set; }
     }
-}   
+}

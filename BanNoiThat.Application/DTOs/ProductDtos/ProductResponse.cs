@@ -1,5 +1,5 @@
 ﻿using BanNoiThat.Application.DTOs.BrandDto;
-using BanNoiThat.Application.Service.CategoriesService;
+using BanNoiThat.Application.DTOs.CategoryDtos;
 
 namespace BanNoiThat.Application.DTOs.ProductDtos
 {

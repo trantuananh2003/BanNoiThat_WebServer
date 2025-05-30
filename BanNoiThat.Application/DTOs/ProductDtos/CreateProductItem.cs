@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace BanNoiThat.Application.DTOs
+namespace BanNoiThat.Application.DTOs.ProductDtos
 {
     public class CreateProductItem
     {

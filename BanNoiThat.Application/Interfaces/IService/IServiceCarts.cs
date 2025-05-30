@@ -1,4 +1,4 @@
-﻿using BanNoiThat.Application.DTOs;
+﻿using BanNoiThat.Application.DTOs.CartDtos;
 
 namespace BanNoiThat.Application.Interfaces.IService
 {

@@ -1,4 +1,4 @@
-﻿namespace BanNoiThat.Application.DTOs
+﻿namespace BanNoiThat.Application.DTOs.CartDtos
 {
     public class CartResponse
     {

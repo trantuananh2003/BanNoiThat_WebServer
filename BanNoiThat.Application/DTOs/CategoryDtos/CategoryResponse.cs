@@ -1,4 +1,4 @@
-﻿namespace BanNoiThat.Application.Service.CategoriesService
+﻿namespace BanNoiThat.Application.DTOs.CategoryDtos
 {
     public class CategoryResponse
     {

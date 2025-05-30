@@ -1,6 +1,6 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
-using BanNoiThat.Application.DTOs;
+using BanNoiThat.Application.DTOs.CartDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
