@@ -13,6 +13,6 @@ namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
         public string Description { get; set; }
         public string? Slug { get; set; }
         public IFormFile? ThumbnailImage { get; set; }
-        public List<CreateProductItem> ListProductItems { get; set; }
+        public List<CreateProductItem>? ListProductItems { get; set; }
     }
 }

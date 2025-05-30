@@ -7,6 +7,5 @@ namespace BanNoiThat.Application.Service.Products.Commands.UpdateProductItems
     {
         public string ProductId { get; set; }
         public IEnumerable<ProductItemRequest> ListProductItems { get; set; }
-
     }
 }

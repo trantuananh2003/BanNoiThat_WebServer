@@ -8,7 +8,7 @@ namespace BanNoiThat.Application.DTOs.Product
         public IFormFile? Image { get; set; }
         public string? Category_Id { get; set; }
         public string? Brand_Id { get; set; }
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
         public string? Slug { get; set; }
     }
 }

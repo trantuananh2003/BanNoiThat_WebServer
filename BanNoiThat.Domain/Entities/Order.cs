@@ -18,7 +18,7 @@
 
         public string ShippingAddress { get; set; }
         public string PhoneNumber { get; set; }
-        public string AddressCode { get; set; }
-        public string TransferService {get;set;}
+        public string? AddressCode { get; set; }
+        public string? TransferService {get;set;}
     }
 }

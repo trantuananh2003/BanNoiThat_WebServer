@@ -84,6 +84,8 @@ namespace BanNoiThat.API.Controllers
             if (response.VnPayResponseCode == "00")
             {
                 await _orderService.OrderUpdateStatus(response.OrderId, orderStatus: StaticDefine.Status_Order_Processing, paymentStatus: StaticDefine.Status_Payment_Paid);
+                Response.Redirect("http://localhost:3005/payment-successful");
+                return null;
             }
             else if (response.VnPayResponseCode == "24")
             {

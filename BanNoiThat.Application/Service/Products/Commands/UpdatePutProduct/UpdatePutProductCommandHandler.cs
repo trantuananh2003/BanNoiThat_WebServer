@@ -28,7 +28,10 @@ using MediatR;namespace BanNoiThat.Application.Service.Products.Commands.UpdateP
             if (request.updateProductRequest.Image != null && request.updateProductRequest.Image.Length > 0)
             {
                 string fileName = $"{Guid.NewGuid()}{Path.GetExtension(request.updateProductRequest.Image.FileName)}";
-                await _blobService.DeleteBlob(entity.ThumbnailUrl.Split('/').Last(), StaticDefine.SD_Storage_Containter);
+                if(!string.IsNullOrEmpty(entity.ThumbnailUrl))
+                {
+                    await _blobService.DeleteBlob(entity.ThumbnailUrl.Split('/').Last(), StaticDefine.SD_Storage_Containter);
+                }
                 entity.ThumbnailUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, request.updateProductRequest.Image);
             }
 

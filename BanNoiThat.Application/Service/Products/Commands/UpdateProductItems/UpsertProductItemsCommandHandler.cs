@@ -36,6 +36,10 @@ namespace BanNoiThat.Application.Service.Products.Commands.UpdateProductItems
                         {
                             entityProductItem.ImageUrl = _entityProductItem.ImageUrl;
                         }
+                        if(modelProductItem.Model3DProductItem is null)
+                        {
+                            entityProductItem.ModelUrl = _entityProductItem.ModelUrl;
+                        }
                         
                         _uow.ProductRepository.UpdateProductItem(entityProductItem);
                     }
@@ -55,6 +59,14 @@ namespace BanNoiThat.Application.Service.Products.Commands.UpdateProductItems
                         await _blobService.DeleteBlob(modelRequest.ImageUrl, StaticDefine.SD_Storage_Containter);
                     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(modelProductItem.ImageProductItem.FileName)}";
                     entityProductItem.ImageUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, modelProductItem.ImageProductItem);
+                }
+
+                if (modelProductItem != null && modelProductItem.Model3DProductItem != null && modelProductItem.Model3DProductItem.Length > 0)
+                {
+                    if (modelRequest != null && !string.IsNullOrEmpty(modelRequest.ModelUrl))
+                        await _blobService.DeleteBlob(modelRequest.ModelUrl, StaticDefine.SD_Storage_Containter);
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(modelProductItem.Model3DProductItem.FileName)}";
+                    entityProductItem.ModelUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, modelProductItem.Model3DProductItem);
                 }
             }
 

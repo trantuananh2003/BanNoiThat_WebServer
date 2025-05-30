@@ -41,17 +41,20 @@ namespace BanNoiThat.Application.Service.Products.Commands.CreateProduct
                 entityProduct.ThumbnailUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, request.ThumbnailImage);
             }
 
-            foreach (var productItem in request.ListProductItems)
+            if(request.ListProductItems is not null)
             {
-                var entityProductItem = _mapper.Map<ProductItem>(productItem);
-                entityProductItem.Id = Guid.NewGuid().ToString();
-                entityProductItem.Product_Id = entityProduct.Id;
-                entityProduct.ProductItems.Add(entityProductItem);
-
-                if(productItem.Image != null && productItem.Image.Length > 0)
+                foreach (var productItem in request.ListProductItems)
                 {
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(productItem.Image.FileName)}";
-                    entityProductItem.ImageUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, productItem.Image);
+                    var entityProductItem = _mapper.Map<ProductItem>(productItem);
+                    entityProductItem.Id = Guid.NewGuid().ToString();
+                    entityProductItem.Product_Id = entityProduct.Id;
+                    entityProduct.ProductItems.Add(entityProductItem);
+
+                    if (productItem.Image != null && productItem.Image.Length > 0)
+                    {
+                        var fileName = $"{Guid.NewGuid()}{Path.GetExtension(productItem.Image.FileName)}";
+                        entityProductItem.ImageUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, productItem.Image);
+                    }
                 }
             }
 

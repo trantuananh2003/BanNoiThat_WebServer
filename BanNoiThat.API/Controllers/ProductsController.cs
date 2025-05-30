@@ -49,7 +49,7 @@ namespace BanNoiThat.API.Controllers
 
         //Get product item by "slug" or "id"
         [HttpGet("product-items/{productItemId}")]
-        public async Task<ActionResult<ApiResponse>> GetProductItems([FromRoute] string productItemId)
+        public async Task<ActionResult<ApiResponse>> GetProductItemsAsync([FromRoute] string productItemId)
         {
             var model = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
 
@@ -109,7 +109,6 @@ namespace BanNoiThat.API.Controllers
 
         //Create product
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult> CreateProductAsync([FromForm] CreateProductsCommand command)
         {
             await _mediator.Send(command);
@@ -151,7 +150,6 @@ namespace BanNoiThat.API.Controllers
             await _uow.SaveChangeAsync();
             return Ok();
         }
-
 
         #region model 3d
         //Get file model 3D
