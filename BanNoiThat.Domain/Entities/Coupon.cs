@@ -10,6 +10,8 @@ namespace BanNoiThat.Domain.Entities
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
+        public string Categories { get; set; }
+
         public string DiscountType { get; set; } //percent, fixed_amount
         public double DiscountValue { get; set; }
         public double MaxDiscount { get; set; }

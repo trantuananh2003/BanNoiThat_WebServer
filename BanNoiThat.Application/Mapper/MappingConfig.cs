@@ -54,7 +54,8 @@ namespace BanNoiThat.API.Mapper
             //User
             CreateMap<InfoUserRequest, User>();
             CreateMap<User, InfoUserResponse>();
-            CreateMap<User, UnitUserMangeReponse>();
+            CreateMap<User, UnitUserMangeReponse>()
+                        .ForMember(dest => dest.RoleName, opt => opt.MapFrom(x => x.Role.Name));
         }
     }
 }

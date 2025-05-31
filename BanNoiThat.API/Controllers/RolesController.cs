@@ -24,7 +24,7 @@ namespace BanNoiThat.API.Controllers
         [HttpGet]
         public async Task<ActionResult<ApiResponse>> GetRolesAsync()
         {
-            var listEntity = await _uow.RolesRepository.GetAllAsync();
+            var listEntity = await _uow.RolesRepository.GetAllAsync(includeProperties: "RoleClaims");
 
             _apiResponse.IsSuccess = true;
             _apiResponse.Result = listEntity;

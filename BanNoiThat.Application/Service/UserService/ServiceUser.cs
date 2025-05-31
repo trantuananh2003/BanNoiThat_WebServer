@@ -46,7 +46,7 @@ namespace BanNoiThat.Application.Service.UserService
 
         public async Task<PagedList<UnitUserMangeReponse>> GetAllUser(string stringSearch, int pageCurrent,int pageSize)
         {
-            var listEntity = await _uow.UserRepository.GetAllAsync();
+            var listEntity = await _uow.UserRepository.GetAllAsync(includeProperties: "Role");
 
             listEntity = listEntity.Skip((pageCurrent-1) * pageSize).Take(pageSize);
 
