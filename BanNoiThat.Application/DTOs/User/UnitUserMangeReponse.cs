@@ -7,5 +7,6 @@
         public string Email { get; set; }
         public string IsMale { get; set; }
         public DateTime Birthday { get; set; }
+        public string Role_Id { get; set; }
     }
 }
