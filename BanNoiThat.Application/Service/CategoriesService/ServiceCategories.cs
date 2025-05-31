@@ -95,7 +95,7 @@ namespace BanNoiThat.Application.Service.Database
             if (modelRequest.FileImage != null && modelRequest.FileImage.Length > 0)
             {
                 string fileName = $"{Guid.NewGuid()}{Path.GetExtension(modelRequest.FileImage.FileName)}";
-                if(string.IsNullOrEmpty(category.CategoryUrlImage))
+                if(!string.IsNullOrEmpty(category.CategoryUrlImage))
                 {
                     await _blobService.DeleteBlob(category.CategoryUrlImage.Split('/').Last(), StaticDefine.SD_Storage_Containter);
                 }
