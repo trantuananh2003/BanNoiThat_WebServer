@@ -26,6 +26,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.DataContext
         public DbSet<FavoriteProducts> FavoriteProducts { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleClaim> RoleClaims { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
