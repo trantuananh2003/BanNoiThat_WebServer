@@ -5,12 +5,15 @@ using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
 using Microsoft.AspNetCore.Mvc;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService;
 using BanNoiThat.API.Filter;
+using BanNoiThat.API.Extensions.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoApi"));
 builder.Services.AddControllers(option => {
     option.Filters.Add<CustomExceptionFilter>();
-}).AddNewtonsoftJson();
+}).AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(CreateProductsCommand).Assembly);
@@ -33,7 +36,8 @@ builder.Services.AddVersionedApiExplorer(
 );
 builder.Services.AddSingleton(u => new BlobServiceClient(builder.Configuration.GetConnectionString("StorageAccount")));
 builder.Services.RegisterDIService();
-builder.Services.SetUpAuthorization(builder.Configuration);
+builder.Services.SetUpAuthentication(builder.Configuration);
+builder.Services.SetupAuthorization();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>

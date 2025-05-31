@@ -26,7 +26,6 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet("{userId}")]
-        [Authorize]
         public async Task<ActionResult<ApiResponse>> GetInfoUserById()
         {
             var userId = HttpContext.User.Claims.First().Value;
@@ -53,7 +52,6 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<ActionResult<ApiResponse>> UpdateInfoUser([FromRoute] string id, [FromForm] InfoUserRequest modelRequest)
         {
             var userId = HttpContext.User.Claims.First().Value;
@@ -76,11 +74,12 @@ namespace BanNoiThat.API.Controllers
 
             _apiResponse.IsSuccess = true;
             _apiResponse.StatusCode = HttpStatusCode.OK;
-            await _serviceUser.UpdateFieldUser(id, fieldName, value);
+            //await _serviceUser.UpdateFieldUser(id, fieldName, value);
             return _apiResponse;
         }
 
-        [HttpPost("{userId}/is-block")]
+        [HttpPut("{userId}/is-block")]
+        [Authorize(Policy = "AllowBlockUser")]
         public async Task<ActionResult<ApiResponse>> BlockUserAsync(string userId,[FromForm] Boolean isBlock)
         {
             await _serviceUser.UpdateUserBlock(userId, isBlock);
@@ -88,12 +87,12 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpPost("{userId}/set-role")]
-        public async Task<ActionResult<ApiResponse>> SetRoleUser(string userId, string roleUser)
+        public async Task<ActionResult<ApiResponse>> SetRoleUser(string userId,[FromForm] string roleId)
         {
             var userEntity = await _unitOfWork.UserRepository.GetAsync(x => x.Id == userId);
             _unitOfWork.UserRepository.AttachEntity(userEntity);
 
-            userEntity.Role = roleUser;
+            userEntity.Role_Id = roleId;
             await _unitOfWork.SaveChangeAsync();
             return Ok();
         }

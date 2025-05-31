@@ -6,7 +6,7 @@ namespace BanNoiThat.API.Extensions
 {
     public static class AuthenticationExtension
     {
-        public static void SetUpAuthorization(this IServiceCollection services, IConfiguration configuration)
+        public static void SetUpAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var key = configuration.GetValue<string>("ApiSetting:Secret");
             services.AddAuthentication(u =>

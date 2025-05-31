@@ -9,6 +9,6 @@ namespace BanNoiThat.Application.DTOs.ProductDtos
         public double? Price { get; set; }
         public double? SalePrice { get; set; }
         public string? Sku { get; set; }
-        public IFormFile Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

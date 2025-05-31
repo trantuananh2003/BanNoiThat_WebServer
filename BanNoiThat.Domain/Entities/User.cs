@@ -8,7 +8,8 @@
         public DateTime Birthday { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
-        public string? Role { get; set; } //admin , customer, staff
+        public string? Role_Id { get; set; }
+        public Role Role { get; set; }
         public Boolean? IsBlocked { get; set; }
         public string? Address { get; set; }
         public ICollection<FavoriteProducts> LikesProduct { get; set; }

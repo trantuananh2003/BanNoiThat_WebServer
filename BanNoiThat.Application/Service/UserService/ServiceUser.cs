@@ -57,21 +57,7 @@ namespace BanNoiThat.Application.Service.UserService
             return listPagedEntity;
         }
 
-        public async Task UpdateFieldUser(string userId, string field, string valueField)
-        {
-            var entity = await _uow.UserRepository.GetAsync(x => x.Id == userId);
-            _uow.UserRepository.AttachEntity(entity);
 
-            var propertyInfo = entity.GetType().GetProperty(field);
-            
-            if(field == "Role")
-            {
-                entity.Role = valueField;
-            }
-            
-            // Lưu thay đổi
-            await _uow.SaveChangeAsync();
-        }
 
         public async Task UpdateUserBlock(string userId, Boolean isBlock)
         {

@@ -59,7 +59,8 @@ namespace BanNoiThat.API.Controllers
                     new Claim(StaticDefine.Claim_User_Id, userEntity.Id),
                     new Claim(ClaimTypes.Email, userEntity.Email),
                     new Claim(StaticDefine.Claim_FullName, userEntity.FullName),
-                    new Claim(StaticDefine.Claim_User_Role, userEntity.Role)
+                    new Claim(StaticDefine.Claim_User_Role, !string.IsNullOrEmpty(userEntity.Role_Id) ? userEntity.Role_Id : "")
+                    //new Claim(SDClaimAccess.ManageUser, SDClaimAccess.ClaimBlockUser)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -89,7 +90,7 @@ namespace BanNoiThat.API.Controllers
                 Id = Guid.NewGuid().ToString(),
                 FullName = registerRequest.FullName,
                 Email = registerRequest.Email,
-                Role = StaticDefine.Role_Customer,
+                Role_Id = StaticDefine.Role_Customer,
                 IsBlocked = false,
                 IsMale = false
             };

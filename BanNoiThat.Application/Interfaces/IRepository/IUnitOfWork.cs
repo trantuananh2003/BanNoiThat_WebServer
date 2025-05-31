@@ -15,6 +15,7 @@ namespace BanNoiThat.Application.Interfaces.Repository
         ICartRepository CartRepository { get; }
         IOrdersRepository OrderRepository { get; }
         IUserRepository UserRepository { get; }
+        IRolesRepository RolesRepository { get; }
 
         Task SaveChangeAsync();
     }

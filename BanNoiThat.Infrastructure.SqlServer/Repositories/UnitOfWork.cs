@@ -15,6 +15,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
         private ICartRepository _cartRepository;
         private IOrdersRepository _orderRepository;
         private IUserRepository _userRepository;
+        private IRolesRepository _rolesRepository;
 
         public ICategoriesRepository CategoriesRepository => _categoriesRepository = new CategoriesRepository(_dbContext);
         public IProductRepository ProductRepository => _productsRepository = new ProductRepository(_dbContext);
@@ -22,6 +23,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
         public ICartRepository CartRepository => _cartRepository = new CartRepository(_dbContext);
         public IOrdersRepository OrderRepository => _orderRepository = new OrderRepository(_dbContext);
         public IUserRepository UserRepository => _userRepository = new UserRepository(_dbContext);
+        public IRolesRepository RolesRepository => _rolesRepository = new RoleRepository(_dbContext);
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {

@@ -24,6 +24,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.DataContext
         public DbSet<User> Users { get; set; }
         public DbSet<ProductConfig> ProductConfigs { get; set; }
         public DbSet<FavoriteProducts> FavoriteProducts { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RoleClaim> RoleClaims { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +44,9 @@ namespace BanNoiThat.Infrastructure.SqlServer.DataContext
             modelBuilder.ApplyConfiguration(new FluentOrderItems());
 
             modelBuilder.ApplyConfiguration(new FluentUsers());
+            modelBuilder.ApplyConfiguration(new FluentRoles());
+            modelBuilder.ApplyConfiguration(new FluentRoleClaims());
+
             modelBuilder.ApplyConfiguration(new FluentFavoriteProducts());
         }
     }

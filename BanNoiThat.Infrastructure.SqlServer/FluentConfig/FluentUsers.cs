@@ -12,6 +12,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.FluentConfig
             builder.HasIndex(x => x.Email).IsUnique();
             builder.Property(x => x.Birthday).HasColumnType("date");
             builder.Property(o => o.FullName).HasColumnType("nvarchar(255)");
+            builder.HasOne(x => x.Role).WithMany().HasForeignKey(x => x.Role_Id);
         }
     }
 }
