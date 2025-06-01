@@ -2,8 +2,6 @@
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.BrandService;
 using BanNoiThat.Infrastructure.SqlServer.DataContext;
-using System;
-using System.Collections.Generic;
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
@@ -16,7 +14,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
         private IOrdersRepository _orderRepository;
         private IUserRepository _userRepository;
         private IRolesRepository _rolesRepository;
-        private ICouponsRepository _couponsRepository;
+        private ICouponRepository _couponsRepository;
+        private ICouponUsageRepository _couponUsageRepository;
 
         public ICategoriesRepository CategoriesRepository => _categoriesRepository = new CategoriesRepository(_dbContext);
         public IProductRepository ProductRepository => _productsRepository = new ProductRepository(_dbContext);
@@ -25,7 +24,9 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
         public IOrdersRepository OrderRepository => _orderRepository = new OrderRepository(_dbContext);
         public IUserRepository UserRepository => _userRepository = new UserRepository(_dbContext);
         public IRolesRepository RolesRepository => _rolesRepository = new RoleRepository(_dbContext);
-        public ICouponsRepository CouponsRepository => _couponsRepository = new CouponsRepository(_dbContext);
+        public ICouponRepository CouponsRepository => _couponsRepository = new CouponsRepository(_dbContext);
+        public ICouponUsageRepository CouponUsageRepository => _couponUsageRepository = new CouponUsageRepository(_dbContext);
+
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {

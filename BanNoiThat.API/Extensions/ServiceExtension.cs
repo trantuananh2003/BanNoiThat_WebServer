@@ -2,6 +2,7 @@
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Service.BrandService;
 using BanNoiThat.Application.Service.CartsService;
+using BanNoiThat.Application.Service.CouponsService;
 using BanNoiThat.Application.Service.Database;
 using BanNoiThat.Application.Service.OrderService;
 using BanNoiThat.Application.Service.OutService;
@@ -30,6 +31,8 @@ namespace BanNoiThat.API.Extensions
             services.AddScoped<IVnPayService, VnPayService>();
             services.AddTransient<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddTransient<IStatisticService, StatisticService>();
+
+            services.AddTransient<IServiceCoupon, CouponService>();
         }
     }
 }

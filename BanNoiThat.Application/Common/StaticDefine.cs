@@ -29,5 +29,10 @@
         public const string Role_Admin = "admin";
         public const string Role_Customer = "customer";
         public const string Role_Staff = "staff";
+
+        //Coupon
+        public const string DiscountType_Percent = "percent";
+        public const string DiscountType_FixedAmount = "fixed_amount";
+
     }
 }

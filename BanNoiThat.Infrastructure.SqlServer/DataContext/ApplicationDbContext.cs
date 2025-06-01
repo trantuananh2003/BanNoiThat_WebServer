@@ -27,6 +27,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.DataContext
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleClaim> RoleClaims { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<CouponUsage> CouponUsages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,6 +50,10 @@ namespace BanNoiThat.Infrastructure.SqlServer.DataContext
             modelBuilder.ApplyConfiguration(new FluentRoleClaims());
 
             modelBuilder.ApplyConfiguration(new FluentFavoriteProducts());
+
+            modelBuilder.ApplyConfiguration(new FluentCoupons());
+            modelBuilder.ApplyConfiguration(new FluentCouponUsages());
+
         }
     }
 }

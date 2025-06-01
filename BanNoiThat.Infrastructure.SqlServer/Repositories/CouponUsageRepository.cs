@@ -4,9 +4,9 @@ using BanNoiThat.Infrastructure.SqlServer.DataContext;
 
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 {
-    public class CouponsRepository : Repository<Coupon>, ICouponRepository
+    public class CouponUsageRepository : Repository<CouponUsage>, ICouponUsageRepository
     {
-        public CouponsRepository(ApplicationDbContext db) : base(db)
+        public CouponUsageRepository(ApplicationDbContext db) : base(db)
         {
         }
     }

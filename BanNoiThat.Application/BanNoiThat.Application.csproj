@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Service\CouponsService\" />
+    <Folder Include="DTOs\PaymentDtos\" />
   </ItemGroup>
 
 </Project>

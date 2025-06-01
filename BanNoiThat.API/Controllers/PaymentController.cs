@@ -1,8 +1,11 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
+using BanNoiThat.Application.DTOs.CouponDtos;
 using BanNoiThat.Application.Interfaces.IService;
+using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
 using BanNoiThat.Application.Service.PaymentMethod.PayVnService;
+using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -19,14 +22,19 @@ namespace BanNoiThat.API.Controllers
         private IServicePayment _paymentService;
         private IVnPayService _vnpayService;
         private IServiceOrder _orderService;
+        private IServiceCoupon _couponService;
+        private IUnitOfWork _uow;
         
-        public PaymentController(IMomoService momoservice, IVnPayService vnpayService,IServicePayment paymentService, IServiceOrder orderService)
+        public PaymentController(IMomoService momoservice, IVnPayService vnpayService, IUnitOfWork uow,
+            IServicePayment paymentService, IServiceOrder orderService, IServiceCoupon serviceCoupon)
         {
             _apiResponse = new ApiResponse();
             _momoService = momoservice;
             _paymentService = paymentService;
             _vnpayService = vnpayService;
             _orderService = orderService;
+            _couponService = serviceCoupon;
+            _uow = uow;
         }
 
         [HttpPost]
@@ -34,8 +42,24 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> CreatePaymentUrl([FromForm] OrderInfoRequest model) 
         {
             var emailUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)!.Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
 
-            var orderModel =  await _paymentService.CreatePayment(emailUser, model);
+            var cart = await _uow.CartRepository.GetCartByIdUser(userId);
+            List<ResultCheckCoupon> resultCheckCoupons = new List<ResultCheckCoupon>();
+
+            foreach (var couponCode in model.CouponCodes)
+            {
+                var result = await _couponService.CheckCouponInOrder(couponCode, cart);
+                resultCheckCoupons.Add(result);
+                if (!result.IsCanApply)
+                {
+                    _apiResponse.IsSuccess = false;
+                    _apiResponse.ErrorMessages.Add("Không thể áp mã");
+                    return BadRequest(_apiResponse);
+                }
+            }
+
+            var orderModel =  await _paymentService.CreatePayment(emailUser, model, resultCheckCoupons);
 
             if(model.PaymentMethod == "cod")
             {

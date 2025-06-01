@@ -1,6 +1,8 @@
 ﻿using BanNoiThat.Application.Common;
+using BanNoiThat.Application.DTOs.CouponDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
+using BanNoiThat.Application.Service.CouponsService;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
 using BanNoiThat.Domain.Entities;
 using System.Security.Cryptography;
@@ -18,7 +20,7 @@ namespace BanNoiThat.Application.Service.PaymentService
             _uow = uow;
         }
 
-        public async Task<OrderInfoModel> CreatePayment(string email, OrderInfoRequest orderInfo)
+        public async Task<OrderInfoModel> CreatePayment(string email, OrderInfoRequest orderInfo, List<ResultCheckCoupon> listResultCoupon)
         {
             try
             {
@@ -62,7 +64,23 @@ namespace BanNoiThat.Application.Service.PaymentService
                     });
                 }
 
-                orderEntity.TotalPrice = totalPrice;
+                double amountDiscount = 0;
+                foreach(var resultCoupon in listResultCoupon)
+                {
+                    amountDiscount += resultCoupon.AmountDiscount;
+                    await _uow.CouponUsageRepository.CreateAsync(new CouponUsage {
+                        Id = Guid.NewGuid().ToString(),
+                        Coupon_Id = resultCoupon.Coupon_Id,
+                        CouponCode = resultCoupon.CouponCode,
+                        User_Id = userEntity.Id,
+                        Order_Id = orderEntity.Id,
+                        UsageDate = DateTime.Now,
+                        DiscountAmount = resultCoupon.AmountDiscount
+                    });
+                }
+
+                orderEntity.TotalPrice = totalPrice - amountDiscount;
+               
 
                 await _uow.OrderRepository.CreateAsync(orderEntity);
                 await _uow.SaveChangeAsync();

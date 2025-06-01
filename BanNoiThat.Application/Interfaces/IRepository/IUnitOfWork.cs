@@ -1,9 +1,4 @@
 ﻿using BanNoiThat.Application.Interfaces.IRepository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BanNoiThat.Application.Interfaces.Repository
 {
@@ -16,7 +11,8 @@ namespace BanNoiThat.Application.Interfaces.Repository
         IOrdersRepository OrderRepository { get; }
         IUserRepository UserRepository { get; }
         IRolesRepository RolesRepository { get; }
-        ICouponsRepository CouponsRepository { get; }
+        ICouponRepository CouponsRepository { get; }
+        ICouponUsageRepository CouponUsageRepository { get; }
 
         Task SaveChangeAsync();
     }

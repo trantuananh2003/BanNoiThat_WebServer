@@ -1,9 +1,10 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.CouponDtos;
+using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 
@@ -15,11 +16,15 @@ namespace BanNoiThat.API.Controllers
     {
         private ApiResponse _apiResponse;
         private IUnitOfWork _uow;
+        private IServiceCoupon _serviceCoupon;
+        private IServiceCarts _serviceCart;
 
-        public CouponController(IUnitOfWork uow)
+        public CouponController(IUnitOfWork uow, IServiceCoupon serviceCoupon, IServiceCarts serviceCart)
         {
             _apiResponse = new ApiResponse();
             _uow = uow;
+            _serviceCoupon = serviceCoupon;
+            _serviceCart = serviceCart;
         }
 
 
@@ -36,7 +41,7 @@ namespace BanNoiThat.API.Controllers
 
             await _uow.CouponsRepository.CreateAsync(new Coupon {
                 Id = Guid.NewGuid().ToString(),
-                Code = GenerateRandomString.Generate(10),
+                CouponCode = GenerateRandomString.Generate(10),
                 Description = model.Description,
                 StartDate = startDate,
                 EndDate = endDate,
@@ -53,6 +58,24 @@ namespace BanNoiThat.API.Controllers
             _apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
             _apiResponse.IsSuccess = true;
 
+            return Ok(_apiResponse);
+        }
+
+        [HttpGet("checkcoupon")]
+        public async Task<ActionResult<ApiResponse>> CheckCouponAsync([FromQuery]string codeCoupon)
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)?.Value;
+
+            var cart = await _uow.CartRepository.GetCartByIdUser(userId);
+            var result = await _serviceCoupon.CheckCouponInOrder(codeCoupon, cart);
+
+            _apiResponse.Result = new {
+                codeCoupon = codeCoupon,
+                isCanApply = result.IsCanApply,
+                amountDiscount = result.AmountDiscount,
+                nameCoupon = result.NameCoupon,
+            };
+            
             return Ok(_apiResponse);
         }
     }

@@ -14,5 +14,7 @@
         public string? Address { get; set; }
         public ICollection<FavoriteProducts> LikesProduct { get; set; }
         public string? PhoneNumber { get; set; }
+
+        public List<CouponUsage> CouponUsages { get; set; }
     }
 }
