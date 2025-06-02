@@ -66,6 +66,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
                     Name = product.Name,
                     Slug = product.Slug,
                     ThumbnailUrl = product.ThumbnailUrl,
+                    ThumbnailUrlSecond = product.ProductItems.FirstOrDefault().ImageUrl,
                     Keyword = product.Keyword,
                     Price = product.ProductItems.Any() ? product.ProductItems.Min(x => x.Price) : 0,
                     SalePrice = product.ProductItems.Any() ? product.ProductItems.Min(x => x.SalePrice) : 0,

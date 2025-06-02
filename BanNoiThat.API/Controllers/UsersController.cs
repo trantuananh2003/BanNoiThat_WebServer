@@ -79,7 +79,11 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> BlockUserAsync(string userId,[FromForm] Boolean isBlock)
         {
             await _serviceUser.UpdateUserBlock(userId, isBlock);
-            return Ok();
+
+            _apiResponse.IsSuccess = true;
+            _apiResponse.StatusCode=HttpStatusCode.OK;
+
+            return Ok(_apiResponse);
         }
 
         [HttpPost("{userId}/set-role")]

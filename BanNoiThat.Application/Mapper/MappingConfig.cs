@@ -33,7 +33,9 @@ namespace BanNoiThat.API.Mapper
             CreateMap<ProductItem, ProductItemResponse>();
 
             //Product
-            CreateMap<Product, ProductResponse>();
+            CreateMap<Product, ProductResponse>()
+                .ForMember(dest => dest.ThumbnailUrlSecond, opt => opt.MapFrom(x => x.ProductItems.FirstOrDefault().ImageUrl))
+;
             CreateMap<JsonPatchDocument<UpdateProductRequest>, JsonPatchDocument<Product>>();
             CreateMap<UpdateProductRequest, Product>();
             CreateMap<Product, ProductHomeResponse>();

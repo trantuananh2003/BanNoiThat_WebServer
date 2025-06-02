@@ -123,6 +123,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                     Name = product.Name,
                     Slug = product.Slug,
                     ThumbnailUrl = product.ThumbnailUrl,
+                    ThumbnailUrlSecond = product.ProductItems.FirstOrDefault().ImageUrl,
                     Keyword = product.Keyword,
                     Description = product.Description,
                     Price = product.ProductItems.Any() ? product.ProductItems.Min(x => x.Price) : 0,
