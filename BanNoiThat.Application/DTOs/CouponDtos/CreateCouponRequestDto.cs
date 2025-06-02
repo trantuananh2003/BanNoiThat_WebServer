@@ -12,5 +12,6 @@
         public double MinCouponValue { get; set; }
         public int UsageLimit { get; set; }
         public int Quantity { get; set; }
+        public string TypeCoupon { get; set; }
     }
 }

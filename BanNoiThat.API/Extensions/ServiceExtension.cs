@@ -33,6 +33,7 @@ namespace BanNoiThat.API.Extensions
             services.AddTransient<IStatisticService, StatisticService>();
 
             services.AddTransient<IServiceCoupon, CouponService>();
+            services.AddTransient<IServiceCouponUsage, CouponUsageService>();
         }
     }
 }

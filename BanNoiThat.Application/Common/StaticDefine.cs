@@ -34,5 +34,11 @@
         public const string DiscountType_Percent = "percent";
         public const string DiscountType_FixedAmount = "fixed_amount";
 
+        //Coupon Type
+        //onlyproduct, Together, onlyshipping
+        public const string CouponType_OnlyCouponProduct = "onlyproduct";
+        public const string CouponType_Together = "together";
+        public const string CouponType_OnlyCouponShipping = "onlyshipping";
+
     }
 }

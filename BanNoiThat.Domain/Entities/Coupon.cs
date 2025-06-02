@@ -11,6 +11,7 @@ namespace BanNoiThat.Domain.Entities
         public DateTime EndDate { get; set; } //Filter
 
         public string Categories { get; set; }
+        public string TypeCoupon { get; set; } //OnlyCouponProduct, Together, OnlyCouponShipping
 
         public string DiscountType { get; set; } //percent, fixed_amount
         public double DiscountValue { get; set; }

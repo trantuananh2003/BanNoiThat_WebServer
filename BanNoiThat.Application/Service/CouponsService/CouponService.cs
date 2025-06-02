@@ -52,6 +52,28 @@ namespace BanNoiThat.Application.Service.CouponsService
             return result;
         }
 
+        public async Task CheckApplyTogether(List<string> couponCodes, string currentCoupon)
+        {
+            Dictionary<string, int> typeCoupons = new Dictionary<string, int>();
+            foreach(var  couponCode in couponCodes)
+            {
+                var entity = await _uow.CouponsRepository.GetAsync(x => x.CouponCode == couponCode);
+                int timeAdd = 0;
+                if (typeCoupons.TryGetValue(entity.TypeCoupon, out timeAdd))
+                {
+                    if(timeAdd > 0 && (entity.TypeCoupon == StaticDefine.CouponType_OnlyCouponProduct || entity.TypeCoupon == StaticDefine.CouponType_OnlyCouponShipping))
+                    {
+                        throw new Exception("Mã này không được áp dụng đồng thời " + currentCoupon);
+                    }
+                    typeCoupons[entity.TypeCoupon] += ++timeAdd;
+                }
+                else
+                {
+                    typeCoupons.Add(entity.TypeCoupon, 1);
+                }
+            }
+        }
+
 
         private double CalculateCoupon(Coupon coupon, double totalPriceCart)
         {

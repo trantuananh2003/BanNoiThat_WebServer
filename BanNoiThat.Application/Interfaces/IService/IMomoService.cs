@@ -1,5 +1,5 @@
-﻿using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
-using BanNoiThat.Application.Service.PaymentService;
+﻿using BanNoiThat.Application.DTOs.OrderDtos;
+using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
 using Microsoft.AspNetCore.Http;
 
 namespace BanNoiThat.Application.Interfaces.IService

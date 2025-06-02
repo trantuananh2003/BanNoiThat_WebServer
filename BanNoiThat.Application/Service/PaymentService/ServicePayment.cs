@@ -1,11 +1,10 @@
 ﻿using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.CouponDtos;
+using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
-using BanNoiThat.Application.Service.CouponsService;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
 using BanNoiThat.Domain.Entities;
-using System.Security.Cryptography;
 
 namespace BanNoiThat.Application.Service.PaymentService
 {
@@ -64,6 +63,7 @@ namespace BanNoiThat.Application.Service.PaymentService
                     });
                 }
 
+                //Coupon Serivce
                 double amountDiscount = 0;
                 foreach(var resultCoupon in listResultCoupon)
                 {
@@ -77,11 +77,17 @@ namespace BanNoiThat.Application.Service.PaymentService
                         UsageDate = DateTime.Now,
                         DiscountAmount = resultCoupon.AmountDiscount
                     });
+
+                    var coupon = await _uow.CouponsRepository.GetAsync(x => x.CouponCode == resultCoupon.CouponCode, tracked: true);
+                    if(coupon.Quantity <= 0)
+                    {
+                        throw new Exception("Mã giảm giá có thay đổi");
+                    }
+                    coupon.Quantity -= 1;
                 }
 
                 orderEntity.TotalPrice = totalPrice - amountDiscount;
                
-
                 await _uow.OrderRepository.CreateAsync(orderEntity);
                 await _uow.SaveChangeAsync();
 

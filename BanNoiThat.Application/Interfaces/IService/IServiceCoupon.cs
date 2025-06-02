@@ -5,6 +5,7 @@ namespace BanNoiThat.Application.Interfaces.IService
 {
     public interface IServiceCoupon
     {
+        Task CheckApplyTogether(List<string> couponCodes, string currentCoupon);
         Task<ResultCheckCoupon> CheckCouponInOrder(string couponCode, Cart cart);
     }
 }

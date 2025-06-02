@@ -1,4 +1,4 @@
-﻿namespace BanNoiThat.Application.Service.PaymentService
+﻿namespace BanNoiThat.Application.DTOs.OrderDtos
 {
     public class OrderInfoModel
     {
