@@ -52,8 +52,9 @@ namespace BanNoiThat.API.Mapper
             CreateMap<OrderItem, OrderItemResponse>();
 
             //User
-            CreateMap<InfoUserRequest, User>();
-            CreateMap<User, InfoUserResponse>();
+            CreateMap<InfoUserRequest, User>();            ;
+            CreateMap<User, InfoUserResponse>()
+                .ForMember(dest => dest.Birthday, opt => opt.MapFrom(x => x.Birthday.ToString("yyyy-MM-dd")));
             CreateMap<User, UnitUserMangeReponse>()
                         .ForMember(dest => dest.RoleName, opt => opt.MapFrom(x => x.Role.Name));
         }

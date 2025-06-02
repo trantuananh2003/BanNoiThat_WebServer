@@ -26,10 +26,8 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet("{userId}")]
-        public async Task<ActionResult<ApiResponse>> GetInfoUserById()
-        {
-            var userId = HttpContext.User.Claims.First().Value;
-                
+        public async Task<ActionResult<ApiResponse>> GetInfoUserById([FromRoute] string userId)
+        {                
             var modelResponse = await _serviceUser.GetInfoUser(userId);
 
             _apiResponse.IsSuccess = true;
@@ -41,8 +39,6 @@ namespace BanNoiThat.API.Controllers
         [HttpGet]
         public async Task<ActionResult<ApiResponse>> GetAllUser(int pageCurrent, int pageSize, string? stringSearch)
         {
-            //var userId = HttpContext.User.Claims.First().Value;
-
             var modelPagedResponse = await _serviceUser.GetAllUser(stringSearch, pageCurrent, pageSize);
 
             _apiResponse.IsSuccess = true;

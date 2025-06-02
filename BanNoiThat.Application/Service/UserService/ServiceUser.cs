@@ -7,6 +7,7 @@ using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Domain.Entities;
+using System.Net;
 using System.Reflection;
 
 namespace BanNoiThat.Application.Service.UserService
@@ -30,8 +31,14 @@ namespace BanNoiThat.Application.Service.UserService
             _uow.UserRepository.AttachEntity(userEntity);
 
             userEntity.Birthday = modelRequest.BirthDay;
-            userEntity.IsMale = modelRequest.IsMale;
-            userEntity.FullName = modelRequest.FullName;
+            userEntity.IsMale = modelRequest.IsMale ;
+            userEntity.FullName = modelRequest.FullName ?? null;
+            userEntity.PhoneNumber = modelRequest.PhoneNumber ?? null;
+
+            if (!modelRequest.IsOnlyUpdateInfo)
+            {
+                userEntity.Address = $"{modelRequest.Province}-{modelRequest.District}-{modelRequest.Ward}-{modelRequest.ShippingAddress}";
+            }
 
             await _uow.SaveChangeAsync();
         }
@@ -56,8 +63,6 @@ namespace BanNoiThat.Application.Service.UserService
 
             return listPagedEntity;
         }
-
-
 
         public async Task UpdateUserBlock(string userId, Boolean isBlock)
         {
