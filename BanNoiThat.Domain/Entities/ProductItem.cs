@@ -9,6 +9,8 @@
         public int Quantity { get; set; }
         public double Price { get; set; }
         public double SalePrice { get; set; }
+        public string? SaleProgram_Id { get; set; }
+        public SaleProgram? SaleProgram { get; set; }
         public string Sku { get; set; }
         public string? ImageUrl { get; set; }
         public string? ModelUrl { get; set; }

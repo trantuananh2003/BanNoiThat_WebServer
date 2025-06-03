@@ -40,5 +40,10 @@
         public const string CouponType_Together = "together";
         public const string CouponType_OnlyCouponShipping = "onlyshipping";
 
+        //SaleType
+        public const string Sale_ApplyType_Brand = "brand";
+        public const string Sale_ApplyType_category = "category";
+
+
     }
 }

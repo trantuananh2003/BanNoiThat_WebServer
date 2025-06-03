@@ -9,6 +9,7 @@ using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService;
 using BanNoiThat.Application.Service.PaymentMethod.PayVnService;
 using BanNoiThat.Application.Service.PaymentService;
+using BanNoiThat.Application.Service.SaleProgramService;
 using BanNoiThat.Application.Service.StatisticService;
 using BanNoiThat.Application.Service.UserService;
 using BanNoiThat.Domain.Entities;
@@ -34,6 +35,8 @@ namespace BanNoiThat.API.Extensions
 
             services.AddTransient<IServiceCoupon, CouponService>();
             services.AddTransient<IServiceCouponUsage, CouponUsageService>();
+
+            services.AddTransient<IServiceSalePrograms, SaleProgramService>();
         }
     }
 }
