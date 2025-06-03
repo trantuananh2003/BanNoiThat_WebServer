@@ -4,6 +4,7 @@ using BanNoiThat.Application.DTOs.SaleProgramDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Domain.Entities;
+using BanNoiThat.Infrastructure.SqlServer.Migrations;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -99,6 +100,65 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(_apiResponse); 
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ApiResponse>> UpdateSaleProgram([FromRoute] string id, [FromForm] RequestSaleProgram model)
+        {
+            var entity = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == id, tracked: true);
+            var clonedEntity = new SaleProgram
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                StartDate = entity.StartDate,
+                EndDate = entity.EndDate,
+                DiscountType = entity.DiscountType,
+                DiscountValue = entity.DiscountValue,
+                MaxDiscount = entity.MaxDiscount,
+                ApplyType = entity.ApplyType,
+                ApplyValues = entity.ApplyValues,
+                IsActive = entity.IsActive
+            };
+
+            if (entity == null)
+            {
+                return NotFound(new ApiResponse
+                {
+                    IsSuccess = false,
+                    StatusCode = System.Net.HttpStatusCode.NotFound,
+                });
+            }
+
+            entity.Name = model.Name;
+            entity.Description = model.Description;
+            entity.StartDate = DateTime.ParseExact(model.StartDate, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            entity.EndDate = DateTime.ParseExact(model.EndDate, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            entity.DiscountType = model.DiscountType;
+            entity.DiscountValue = model.DiscountValue;
+            entity.MaxDiscount = model.MaxDiscount;
+            entity.ApplyType = model.ApplyType;
+            entity.ApplyValues = string.Join(",", model.ApplyValues.Split(',').Select(v => v.Trim()));
+
+            //if (model.ApplyType != clonedEntity.ApplyType || model.ApplyValues != clonedEntity.ApplyValues)
+            //{
+            //    await _serviceSalePrograms.ApplySaleProgramsToProduct(entity);
+            //}
+
+            //if (model.DiscountValue != clonedEntity.DiscountValue || model.DiscountType != clonedEntity.DiscountType || model.MaxDiscount != clonedEntity.MaxDiscount)
+            //{
+            //    await _serviceSalePrograms.ApplySaleProgramsToProduct(entity);
+            //}
+            await _serviceSalePrograms.ApplySaleProgramsToProduct(entity);
+
+            await _uow.SaveChangeAsync();
+
+            return Ok(new ApiResponse
+            {
+                IsSuccess = true,
+                StatusCode = System.Net.HttpStatusCode.OK,
+            });
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse>> DeleteSalePrograms([FromRoute][Required] string id)

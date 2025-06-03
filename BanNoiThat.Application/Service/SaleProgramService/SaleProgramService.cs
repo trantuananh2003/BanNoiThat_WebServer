@@ -28,7 +28,7 @@ namespace BanNoiThat.Application.Service.SaleProgramService
                 {
                     foreach (var productItem in product.ProductItems)
                     {
-                        if (productItem.SaleProgram_Id is not null)
+                        if (productItem.SaleProgram_Id != modelSale.Id)
                         {
                             throw new Exception($"Sản phẩm {product.Name}");
                         }

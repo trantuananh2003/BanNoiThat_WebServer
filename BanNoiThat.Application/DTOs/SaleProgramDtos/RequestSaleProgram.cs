@@ -13,6 +13,6 @@ namespace BanNoiThat.Application.DTOs.SaleProgramDtos
         public double MaxDiscount { get; set; }
         public string ApplyType { get; set; }
         public string ApplyValues { get; set; }
-        public Boolean IsActive { get; set; }
+        //public Boolean IsActive { get; set; }
     }
 }
