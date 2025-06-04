@@ -14,6 +14,7 @@ using BanNoiThat.Application.Service.StatisticService;
 using BanNoiThat.Application.Service.UserService;
 using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BanNoiThat.API.Extensions
 {
@@ -37,6 +38,8 @@ namespace BanNoiThat.API.Extensions
             services.AddTransient<IServiceCouponUsage, CouponUsageService>();
 
             services.AddTransient<IServiceSalePrograms, SaleProgramService>();
+            services.AddHttpClient<ServiceShipping>();
+            services.AddTransient<ServiceShipping>();
         }
     }
 }

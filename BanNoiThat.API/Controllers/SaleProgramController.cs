@@ -4,7 +4,6 @@ using BanNoiThat.Application.DTOs.SaleProgramDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Domain.Entities;
-using BanNoiThat.Infrastructure.SqlServer.Migrations;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;

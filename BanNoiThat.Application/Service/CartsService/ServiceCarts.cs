@@ -59,7 +59,7 @@ namespace BanNoiThat.Application.Service.CartsService
             //Kiểm tra số lượng hiện tại "Lớn hơn" ?  Báo lỗi vượt quá : Thao tác update cartEntity item
             if (countQuantity > productItem.Quantity)
             {
-                throw new Exception("Vượt quá số lượng");
+                throw new Exception("Vượt quá số lượng vui lòng liên hệ thông tin bên dưới trang");
             }
 
             //*Thao tác update cartEntity item
