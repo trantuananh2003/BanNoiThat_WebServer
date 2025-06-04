@@ -80,7 +80,7 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
-        //Update producte
+        //Update product
         [HttpPut("{id}")]
         [Authorize]
         public async Task<ActionResult<ApiResponse>> UpdateProductByIdAsync([FromRoute]string id, [FromForm] UpdateProductRequest modelUpdateRequest)
@@ -173,6 +173,6 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(_apiResponse);
         }
-        #endregion 3DD
+        #endregion 3D
     }
 }

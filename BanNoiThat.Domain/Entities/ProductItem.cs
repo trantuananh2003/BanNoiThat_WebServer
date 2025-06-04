@@ -7,7 +7,6 @@
         public Product Product { get; set; }
         public string NameOption { get; set; }
         public int Quantity { get; set; }
-        public int QuantitySoldOut { get; set; }
         public double Price { get; set; }
         public double SalePrice { get; set; }
         public string? SaleProgram_Id { get; set; }

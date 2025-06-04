@@ -23,7 +23,7 @@ namespace BanNoiThat.Application.Service.SaleProgramService
                 .ToList();
             if (modelSale.ApplyType == StaticDefine.Sale_ApplyType_Brand)
             {
-                var listProducts = await _uow.ProductRepository.GetAllAsync(x => listApplyValue.Contains(x.Brand.Slug), isTracked: true, includeProperties: "ProductItems");
+                var listProducts = await _uow.ProductRepository.GetAllAsync(x => listApplyValue.Contains(x.Brand.Id), isTracked: true, includeProperties: "ProductItems");
                 foreach (var product in listProducts)
                 {
                     foreach (var productItem in product.ProductItems)
