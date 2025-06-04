@@ -16,5 +16,6 @@ namespace BanNoiThat.Application.DTOs.ProductDtos
         public bool IsDeleted { get; set; }
         public Brand Brand { get; set; }
         public Category Category { get; set; }
+        public Boolean IsHaveModel3D { get; set; }
     }
 }

@@ -70,6 +70,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
                     Keyword = product.Keyword,
                     Price = product.ProductItems.Any() ? product.ProductItems.Min(x => x.Price) : 0,
                     SalePrice = product.ProductItems.Any() ? product.ProductItems.Min(x => x.SalePrice) : 0,
+                    IsHaveModel3D = product.ProductItems.Any(x => !string.IsNullOrEmpty(x.ModelUrl)) ? true : false,
                 }).ToList();
 
             var paged = new PagedList<ProductHomeResponse>(modelsReponse, request.PageCurrent, request.PageSize, totalEntity);

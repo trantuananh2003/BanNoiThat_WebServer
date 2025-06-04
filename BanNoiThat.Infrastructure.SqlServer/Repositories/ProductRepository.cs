@@ -32,7 +32,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             if(!string.IsNullOrEmpty(stringSearch))
             {
                 var categoryEntity = await _db.Categories.AsNoTracking().Where(c => c.Slug == stringSearch).Include(x => x.Children).FirstOrDefaultAsync();
-                var brandEntity = await _db.Brands.AsNoTracking().Where(c => c.Slug == stringSearch).FirstOrDefaultAsync();
+                var brandEntity = await _db.Brands.AsNoTracking().Where(b => b.Slug == stringSearch).FirstOrDefaultAsync();
+                var saleProgram = await _db.SalePrograms.AsNoTracking().Where(sp => sp.Slug == stringSearch).FirstOrDefaultAsync();
 
                 if (categoryEntity != null)
                 {
@@ -49,6 +50,10 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                 else if(brandEntity != null)
                 {
                     query = query.Where(x => x.Brand_Id == brandEntity.Id);
+                }
+                else if(saleProgram != null)
+                {
+                    query = query.Where(x => x.ProductItems.Any(item => item.SaleProgram_Id == saleProgram.Id));
                 }
                 else
                 {
@@ -113,7 +118,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                 query = query.Skip((pageCurrent - 1) * pageSize).Take(pageSize);
             }
 
-
             //Select
             var resultQuery = query.Include(x => x.ProductItems)
                 .Select(
@@ -131,7 +135,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
                     Brand = product.Brand,
                     Category = product.Category,
                     IsDeleted = product.IsDeleted,
-                });
+                    IsHaveModel3D = product.ProductItems.Any(x => !string.IsNullOrEmpty(x.ModelUrl)) ? true : false,
+                }); 
             var listEntity = await resultQuery.ToListAsync();
             #endregion
 

@@ -13,7 +13,7 @@
         public string ApplyType { get; set; }
         public string ApplyValues { get; set; }
         public Boolean IsActive { get; set; }
-
+        public string Slug { get; set; }
         public List<ProductItem> ProductItems { get; set; }
     }
 }

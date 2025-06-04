@@ -38,6 +38,29 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
+        [HttpGet("homepage")]
+        public async Task<ActionResult<ApiResponse>> GetSaleProgramForHomePage()
+        {
+            var list = await _uow.SaleProgramsRepository.GetAllAsync();
+            var listSaleProgramHomePage = new List<RequestHomePageSaleProgram>();
+
+            foreach (var item in list)
+            {
+                listSaleProgramHomePage.Add(new RequestHomePageSaleProgram
+                {
+                    Id = item.Id,
+                    Slug = item.Slug,
+                    Name = item.Name,
+                });
+            }
+
+            _apiResponse.IsSuccess = true;
+            _apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+            _apiResponse.Result = listSaleProgramHomePage;
+
+            return Ok(_apiResponse);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse>> GetSaleProgram([FromRoute] string Id)
         {
@@ -69,6 +92,7 @@ namespace BanNoiThat.API.Controllers
                 MaxDiscount = model.MaxDiscount,
                 ApplyType = model.ApplyType,
                 ApplyValues = model.ApplyValues,
+                Slug = model.Slug is null ? model.Name.GenerateSlug() : model.Slug,
                 IsActive = true
             };
 
@@ -158,7 +182,6 @@ namespace BanNoiThat.API.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
             });
         }
-
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse>> DeleteSalePrograms([FromRoute][Required] string id)

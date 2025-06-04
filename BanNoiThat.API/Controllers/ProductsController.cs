@@ -1,4 +1,5 @@
 ﻿using BanNoiThat.API.Model;
+using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.Product;
 using BanNoiThat.Application.DTOs.ProductDtos;
 using BanNoiThat.Application.Interfaces.Repository;
@@ -152,41 +153,23 @@ namespace BanNoiThat.API.Controllers
         }
 
         #region model 3d
-        //Get file model 3D
-        [HttpGet("product-items/{productItemId}/model")]
-        public async Task<ActionResult<ApiResponse>> GetFileModel3D([FromRoute] string productItemId)
+        [HttpPut("/api/product-items/{productItemId}/model")]
+        public async Task<ActionResult<ApiResponse>> UpdateFilesModel3D([FromRoute] string productItemId, [FromForm] ProductModelRequest model)
         {
-            var model = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
+            var entityProductItem = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
 
-            _apiResponse.Result = model;
-            _apiResponse.StatusCode = HttpStatusCode.OK;
-
-            return Ok(_apiResponse);
-        }
-
-        [HttpPost("product-items/{productItemId}/model")]
-        public async Task<ActionResult<ApiResponse>> UpdateFileModel3D([FromRoute] string productItemId, [FromForm] IFormFile fileModel3D)
-        {
-            var url = await _blob.UploadBlob(fileModel3D.FileName, "bannoithat-3dmodel", fileModel3D);
-            var entity = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
-            entity.ImageUrl = url;
-
-            await _uow.SaveChangeAsync();
-
-            return Ok(_apiResponse);
-        }
-
-        [HttpPost("product-items/{productItemId}/models")]
-        public async Task<ActionResult<ApiResponse>> UpdateFilesModel3D([FromRoute] string productItemId, [FromForm] IFormFile[] model3DFiles)
-        {
-            foreach (var model3DFile in model3DFiles)
+            if (model.model3DFile != null && model.model3DFile.Length > 0)
             {
-                var url = await _blob.UploadBlob(model3DFile.FileName, "bannoithat-3dmodel", model3DFile);
-                var entity = await _uow.ProductRepository.GetProductItemByIdAsync(productItemId);
-                entity.ImageUrl = url;
+                if (entityProductItem != null && !string.IsNullOrEmpty(entityProductItem.ModelUrl))
+                    await _blob.DeleteBlob(entityProductItem.ModelUrl, StaticDefine.SD_Storage_Containter);
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(model.model3DFile.FileName)}";
+                entityProductItem.ModelUrl = await _blob.UploadBlob(model.model3DFile.FileName, "bannoithat-3dmodel", model.model3DFile);
             }
 
             await _uow.SaveChangeAsync();
+
+            _apiResponse.IsSuccess = true;
+            _apiResponse.StatusCode = HttpStatusCode.OK;
 
             return Ok(_apiResponse);
         }
