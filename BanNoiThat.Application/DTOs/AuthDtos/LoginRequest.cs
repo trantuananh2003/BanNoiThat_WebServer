@@ -2,7 +2,7 @@
 
 namespace BanNoiThat.Application.DTOs.Auth
 {
-    public class LoginRequest
+    public class LoginRequestDto
     {
         [Required]
         public string Email { get; set; }

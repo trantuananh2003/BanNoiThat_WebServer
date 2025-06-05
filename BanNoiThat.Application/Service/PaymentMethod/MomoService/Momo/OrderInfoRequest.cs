@@ -9,6 +9,6 @@
         public string District { get; set; }
         public string Ward { get; set; }
         public string PhoneNumber { get; set; }
-        public List<string> CouponCodes { get; set; }
+        public List<string>? CouponCodes { get; set; }
     }
 }

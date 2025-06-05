@@ -21,6 +21,8 @@ builder.Services.AddMediatR(cfg => {
 builder.Services.AddDbContextSQL(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.RegisterDIRepository();
+builder.Services.RegisterMailService(builder.Configuration);
+builder.Services.SetUpIdentity();
 builder.Services.AddApiVersioning(
     option =>
     {

@@ -1,9 +1,11 @@
-﻿using BanNoiThat.Application.Interfaces.Database;
+﻿using BanNoiThat.Application.DTOs.MailDtos;
+using BanNoiThat.Application.Interfaces.Database;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Service.BrandService;
 using BanNoiThat.Application.Service.CartsService;
 using BanNoiThat.Application.Service.CouponsService;
 using BanNoiThat.Application.Service.Database;
+using BanNoiThat.Application.Service.MailsService;
 using BanNoiThat.Application.Service.OrderService;
 using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService;
@@ -14,6 +16,7 @@ using BanNoiThat.Application.Service.StatisticService;
 using BanNoiThat.Application.Service.UserService;
 using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BanNoiThat.API.Extensions
@@ -40,6 +43,15 @@ namespace BanNoiThat.API.Extensions
             services.AddTransient<IServiceSalePrograms, SaleProgramService>();
             services.AddHttpClient<ServiceShipping>();
             services.AddTransient<ServiceShipping>();
+
+            services.AddDataProtection();
+            services.AddScoped<DataProtectorTokenProviderService>();
+        }
+        public static void RegisterMailService(this IServiceCollection services, IConfiguration configuration)
+        {
+            var mailSettings = configuration.GetSection("MailSettings");
+            services.Configure<MailSettings>(mailSettings);
+            services.AddTransient<SendMailService>();
         }
     }
 }

@@ -51,15 +51,18 @@ namespace BanNoiThat.API.Controllers
             var cart = await _uow.CartRepository.GetCartByIdUser(userId);
             List<ResultCheckCoupon> resultCheckCoupons = new List<ResultCheckCoupon>();
 
-            foreach (var couponCode in model.CouponCodes)
+            if(model.CouponCodes is not null)
             {
-                var result = await _couponService.CheckCouponInOrder(couponCode, cart);
-                resultCheckCoupons.Add(result);
-                if (!result.IsCanApply)
+                foreach (var couponCode in model.CouponCodes)
                 {
-                    _apiResponse.IsSuccess = false;
-                    _apiResponse.ErrorMessages.Add("Không thể áp mã");
-                    return BadRequest(_apiResponse);
+                    var result = await _couponService.CheckCouponInOrder(couponCode, cart);
+                    resultCheckCoupons.Add(result);
+                    if (!result.IsCanApply)
+                    {
+                        _apiResponse.IsSuccess = false;
+                        _apiResponse.ErrorMessages.Add("Không thể áp mã");
+                        return BadRequest(_apiResponse);
+                    }
                 }
             }
 

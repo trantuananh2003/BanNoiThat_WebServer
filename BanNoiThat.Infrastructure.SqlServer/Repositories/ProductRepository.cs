@@ -8,7 +8,6 @@ using BanNoiThat.Application.DTOs.ProductDtos;
 using BanNoiThat.Application.Service.Products.Queries.GetProductsPaging;
 using System.Linq.Expressions;
 using LinqKit;
-using System.Drawing;
 
 namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 {
