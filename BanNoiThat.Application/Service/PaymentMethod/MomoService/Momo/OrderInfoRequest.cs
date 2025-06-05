@@ -10,5 +10,7 @@
         public string Ward { get; set; }
         public string PhoneNumber { get; set; }
         public List<string>? CouponCodes { get; set; }
+        public string? ProductItemId { get; set; }
+        public int Quantity { get; set; }
     }
 }

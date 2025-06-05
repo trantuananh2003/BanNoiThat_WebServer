@@ -19,7 +19,7 @@ namespace BanNoiThat.Application.Service.PaymentService
             _uow = uow;
         }
 
-        public async Task<OrderInfoModel> CreatePayment(string email, OrderInfoRequest orderInfo, List<ResultCheckCoupon> listResultCoupon)
+        public async Task<OrderInfoModel> CreatePayment(string email, OrderInfoRequest orderInfo)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace BanNoiThat.Application.Service.PaymentService
                 string address = orderInfo.ShippingAddress.Replace('-', ' ');
                 orderEntity.ShippingAddress = $"{orderInfo.Province}-{orderInfo.District}-{orderInfo.Ward}-{address}";
                 orderEntity.PhoneNumber = orderInfo.PhoneNumber;
-                orderEntity.PaymentIntentId = orderInfo.FullName; //*
+                orderEntity.UserNameOrder = orderInfo.FullName; //*
 
                 foreach (var cartItem in cartEntity.CartItems)
                 {
@@ -63,30 +63,7 @@ namespace BanNoiThat.Application.Service.PaymentService
                     });
                 }
 
-                //Coupon Serivce
-                double amountDiscount = 0;
-                foreach(var resultCoupon in listResultCoupon)
-                {
-                    amountDiscount += resultCoupon.AmountDiscount;
-                    await _uow.CouponUsageRepository.CreateAsync(new CouponUsage {
-                        Id = Guid.NewGuid().ToString(),
-                        Coupon_Id = resultCoupon.Coupon_Id,
-                        CouponCode = resultCoupon.CouponCode,
-                        User_Id = userEntity.Id,
-                        Order_Id = orderEntity.Id,
-                        UsageDate = DateTime.Now,
-                        DiscountAmount = resultCoupon.AmountDiscount
-                    });
-
-                    var coupon = await _uow.CouponsRepository.GetAsync(x => x.CouponCode == resultCoupon.CouponCode, tracked: true);
-                    if(coupon.Quantity <= 0)
-                    {
-                        throw new Exception("Mã giảm giá có thay đổi");
-                    }
-                    coupon.Quantity -= 1;
-                }
-
-                orderEntity.TotalPrice = totalPrice - amountDiscount;
+                orderEntity.TotalPrice = totalPrice;
                
                 await _uow.OrderRepository.CreateAsync(orderEntity);
                 await _uow.SaveChangeAsync();
@@ -102,7 +79,69 @@ namespace BanNoiThat.Application.Service.PaymentService
             }
             catch (Exception ex)
             {
-                return null;
+                throw new ArgumentException();
+            }
+        }
+
+        public async Task<OrderInfoModel> CreatePaymentOneProductItem(string email, OrderInfoRequest orderInfo)
+        {
+            try
+            {
+                double totalPrice = 0;
+                var orderEntity = new Order();
+                var userEntity = await _uow.UserRepository.GetAsync(user => user.Email == email);
+
+                orderEntity.Id = Guid.NewGuid().ToString();
+                orderEntity.User_Id = userEntity.Id;
+                orderEntity.OrderPaidTime = DateTime.Now;
+                orderEntity.PaymentMethod = orderInfo.PaymentMethod;
+                orderEntity.PaymentStatus = StaticDefine.Status_Payment_Pending;
+                orderEntity.OrderStatus = StaticDefine.Status_Order_Pending;
+                string address = orderInfo.ShippingAddress.Replace('-', ' ');
+                orderEntity.ShippingAddress = $"{orderInfo.Province}-{orderInfo.District}-{orderInfo.Ward}-{address}";
+                orderEntity.PhoneNumber = orderInfo.PhoneNumber;
+                orderEntity.UserNameOrder = orderInfo.FullName; //*
+
+                var entityProductItem = await _uow.ProductRepository.GetProductItemByIdAsync(orderInfo.ProductItemId);
+
+                entityProductItem.Quantity -= entityProductItem.Quantity;
+
+                if (entityProductItem.Quantity < 0)
+                {
+                    //Đẩy ra là hết sản phẩm
+                    throw new ArgumentException();
+                }
+
+                totalPrice = orderInfo.Quantity * entityProductItem.SalePrice;
+
+                orderEntity.OrderItems.Add(new OrderItem()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Order_Id = orderEntity.Id,
+                    NameItem = entityProductItem.Product.Name,
+                    ImageItemUrl = entityProductItem.ImageUrl,
+                    Quantity = orderInfo.Quantity,
+                    Price = entityProductItem.SalePrice,
+                    ProductItem_Id = entityProductItem.Id,
+                });
+
+                orderEntity.TotalPrice = totalPrice;
+
+                await _uow.OrderRepository.CreateAsync(orderEntity);
+                await _uow.SaveChangeAsync();
+
+                return new OrderInfoModel()
+                {
+                    OrderId = orderEntity.Id,
+                    FullName = orderInfo.FullName,
+                    ShippingAddress = $"{orderEntity.ShippingAddress}",
+                    PhoneNumber = orderInfo.PhoneNumber,
+                    TotalPrice = totalPrice,
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException();
             }
         }
     }

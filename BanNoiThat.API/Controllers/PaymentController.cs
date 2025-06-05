@@ -1,6 +1,7 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.CouponDtos;
+using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.DTOs.PaymentDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
@@ -48,27 +49,18 @@ namespace BanNoiThat.API.Controllers
             var emailUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)!.Value;
             var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
 
-            var cart = await _uow.CartRepository.GetCartByIdUser(userId);
-            List<ResultCheckCoupon> resultCheckCoupons = new List<ResultCheckCoupon>();
+            OrderInfoModel orderModel = null;
 
-            if(model.CouponCodes is not null)
+            if(string.IsNullOrEmpty(model.ProductItemId))
             {
-                foreach (var couponCode in model.CouponCodes)
-                {
-                    var result = await _couponService.CheckCouponInOrder(couponCode, cart);
-                    resultCheckCoupons.Add(result);
-                    if (!result.IsCanApply)
-                    {
-                        _apiResponse.IsSuccess = false;
-                        _apiResponse.ErrorMessages.Add("Không thể áp mã");
-                        return BadRequest(_apiResponse);
-                    }
-                }
+                orderModel = await _paymentService.CreatePayment(emailUser, model);
+            }
+            else
+            {
+                orderModel = await _paymentService.CreatePaymentOneProductItem(emailUser, model);
             }
 
-            var orderModel =  await _paymentService.CreatePayment(emailUser, model, resultCheckCoupons);
-
-            if(model.PaymentMethod == "cod")
+            if (model.PaymentMethod == "cod")
             {
                 _apiResponse.IsSuccess = true;
                 _apiResponse.StatusCode = HttpStatusCode.OK;

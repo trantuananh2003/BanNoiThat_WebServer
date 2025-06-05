@@ -6,6 +6,7 @@ namespace BanNoiThat.Application.Interfaces.IService
 {
     public interface IServicePayment
     {
-        Task<OrderInfoModel> CreatePayment(string email, OrderInfoRequest orderInfo, List<ResultCheckCoupon> listResultCoupon);
+        Task<OrderInfoModel> CreatePayment(string email, OrderInfoRequest orderInfo);
+        Task<OrderInfoModel> CreatePaymentOneProductItem(string email, OrderInfoRequest orderInfo);
     }
 }

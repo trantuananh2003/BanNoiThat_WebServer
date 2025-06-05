@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250524071831_PutField_ProductItems_Size_1")]
-    partial class PutField_ProductItems_Size_1
+    [Migration("20250605153414_Order")]
+    partial class Order
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -77,8 +77,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Cart_Id");
 
-                    b.HasIndex("ProductItem_Id")
-                        .IsUnique();
+                    b.HasIndex("ProductItem_Id");
 
                     b.ToTable("CartItems");
                 });
@@ -111,6 +110,92 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.Coupon", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Categories")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CouponCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("DiscountValue")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("MaxDiscount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinCouponValue")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TypeCoupon")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UsageLimit")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Coupons");
+                });
+
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.CouponUsage", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CouponCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Coupon_Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("DiscountAmount")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Order_Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UsageDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("User_Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Coupon_Id");
+
+                    b.HasIndex("User_Id");
+
+                    b.ToTable("CouponUsages");
+                });
+
             modelBuilder.Entity("BanNoiThat.Domain.Entities.FavoriteProducts", b =>
                 {
                     b.Property<string>("Id")
@@ -139,17 +224,12 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AddressCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OrderPaidTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("OrderStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserNameOrder")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -173,6 +253,9 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("TransferService")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -238,7 +321,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -305,7 +388,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LongSize")
+                    b.Property<int?>("LengthSize")
                         .HasColumnType("int");
 
                     b.Property<string>("ModelUrl")
@@ -327,9 +410,15 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<double>("SalePrice")
                         .HasColumnType("float");
 
+                    b.Property<string>("SaleProgram_Id")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Sku")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Weight")
+                        .HasColumnType("int");
 
                     b.Property<int?>("WidthSize")
                         .HasColumnType("int");
@@ -338,7 +427,100 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Product_Id");
 
+                    b.HasIndex("SaleProgram_Id");
+
                     b.ToTable("ProductItems");
+                });
+
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameNormalized")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.RoleClaim", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClaimType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role_Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Role_Id");
+
+                    b.ToTable("RoleClaims");
+                });
+
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.SaleProgram", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplyType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ApplyValues")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("DiscountValue")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("MaxDiscount")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SalePrograms");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.User", b =>
@@ -356,7 +538,10 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserNameOrder")
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
 
@@ -373,13 +558,15 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Role_Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("Role_Id");
 
                     b.ToTable("Users");
                 });
@@ -393,8 +580,8 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .IsRequired();
 
                     b.HasOne("BanNoiThat.Domain.Entities.ProductItem", "ProductItem")
-                        .WithOne()
-                        .HasForeignKey("BanNoiThat.Domain.Entities.CartItem", "ProductItem_Id")
+                        .WithMany()
+                        .HasForeignKey("ProductItem_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -410,6 +597,25 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .HasForeignKey("Parent_Id");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.CouponUsage", b =>
+                {
+                    b.HasOne("BanNoiThat.Domain.Entities.Coupon", "Coupon")
+                        .WithMany("CouponUsages")
+                        .HasForeignKey("Coupon_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BanNoiThat.Domain.Entities.User", "User")
+                        .WithMany("CouponUsages")
+                        .HasForeignKey("User_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coupon");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.FavoriteProducts", b =>
@@ -485,7 +691,33 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .HasForeignKey("Product_Id")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("BanNoiThat.Domain.Entities.SaleProgram", "SaleProgram")
+                        .WithMany("ProductItems")
+                        .HasForeignKey("SaleProgram_Id");
+
                     b.Navigation("Product");
+
+                    b.Navigation("SaleProgram");
+                });
+
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.RoleClaim", b =>
+                {
+                    b.HasOne("BanNoiThat.Domain.Entities.Role", "Role")
+                        .WithMany("RoleClaims")
+                        .HasForeignKey("Role_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.User", b =>
+                {
+                    b.HasOne("BanNoiThat.Domain.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("Role_Id");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Brand", b =>
@@ -505,6 +737,11 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.Coupon", b =>
+                {
+                    b.Navigation("CouponUsages");
+                });
+
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderItems");
@@ -519,8 +756,20 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Navigation("ProductItems");
                 });
 
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.Role", b =>
+                {
+                    b.Navigation("RoleClaims");
+                });
+
+            modelBuilder.Entity("BanNoiThat.Domain.Entities.SaleProgram", b =>
+                {
+                    b.Navigation("ProductItems");
+                });
+
             modelBuilder.Entity("BanNoiThat.Domain.Entities.User", b =>
                 {
+                    b.Navigation("CouponUsages");
+
                     b.Navigation("LikesProduct");
                 });
 #pragma warning restore 612, 618

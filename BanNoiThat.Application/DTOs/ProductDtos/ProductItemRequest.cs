@@ -16,5 +16,6 @@ namespace BanNoiThat.Application.DTOs.ProductDtos
         public int? HeightSize { get; set; }
         public int? WidthSize { get; set; }
         public int? LengthSize { get; set; }
+        public int? Weight { get; set; }
     }
 }

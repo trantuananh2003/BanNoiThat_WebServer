@@ -17,7 +17,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -35,7 +35,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands", (string)null);
+                    b.ToTable("Brands");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Cart", b =>
@@ -49,7 +49,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.CartItem", b =>
@@ -76,7 +76,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("ProductItem_Id");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Category", b =>
@@ -104,7 +104,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Parent_Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Coupon", b =>
@@ -154,7 +154,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.CouponUsage", b =>
@@ -190,7 +190,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("User_Id");
 
-                    b.ToTable("CouponUsages", (string)null);
+                    b.ToTable("CouponUsages");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.FavoriteProducts", b =>
@@ -212,7 +212,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("User_Id");
 
-                    b.ToTable("FavoriteProducts", (string)null);
+                    b.ToTable("FavoriteProducts");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Order", b =>
@@ -223,15 +223,14 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("AddressCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("OrderPaidTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("OrderStatus")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentIntentId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PaymentMethod")
@@ -256,13 +255,16 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("TransferService")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserNameOrder")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("User_Id")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.OrderItem", b =>
@@ -299,7 +301,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("ProductItem_Id");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Product", b =>
@@ -344,7 +346,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Category_Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.ProductConfig", b =>
@@ -368,7 +370,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Product_Id");
 
-                    b.ToTable("ProductConfigs", (string)null);
+                    b.ToTable("ProductConfigs");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.ProductItem", b =>
@@ -414,6 +416,9 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Weight")
+                        .HasColumnType("int");
+
                     b.Property<int?>("WidthSize")
                         .HasColumnType("int");
 
@@ -423,7 +428,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("SaleProgram_Id");
 
-                    b.ToTable("ProductItems", (string)null);
+                    b.ToTable("ProductItems");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Role", b =>
@@ -441,7 +446,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.RoleClaim", b =>
@@ -465,7 +470,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Role_Id");
 
-                    b.ToTable("RoleClaims", (string)null);
+                    b.ToTable("RoleClaims");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.SaleProgram", b =>
@@ -514,7 +519,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SalePrograms", (string)null);
+                    b.ToTable("SalePrograms");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.User", b =>
@@ -562,7 +567,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
                     b.HasIndex("Role_Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.CartItem", b =>

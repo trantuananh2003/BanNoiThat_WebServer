@@ -233,7 +233,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("UserNameOrder")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -538,7 +538,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("UserNameOrder")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
 

@@ -17,6 +17,7 @@
         public int? LengthSize { get; set; }
         public int? WidthSize { get; set; }
         public int? HeightSize { get; set; }
+        public int? Weight { get; set; }
         public string? Colors { get; set; }
     }
 }

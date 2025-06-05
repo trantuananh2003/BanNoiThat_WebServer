@@ -10,13 +10,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "FullName",
-                table: "Users",
-                type: "nvarchar(255)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
@@ -79,13 +72,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "FullName",
-                table: "Users",
-                type: "nvarchar",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(255)");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",

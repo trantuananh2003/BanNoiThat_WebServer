@@ -203,7 +203,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 
         public async Task<ProductItem> GetProductItemByIdAsync(string productItemId)
         {
-            var productItemEntity = await _db.ProductItems.Where(x => x.Id == productItemId).FirstOrDefaultAsync();
+            var productItemEntity = await _db.ProductItems.Where(x => x.Id == productItemId).Include(x => x.Product).FirstOrDefaultAsync();
 
             return productItemEntity;
         }
