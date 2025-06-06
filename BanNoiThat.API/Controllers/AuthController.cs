@@ -19,6 +19,7 @@ using BanNoiThat.Application.Service.UserService;
 using Microsoft.AspNetCore.DataProtection;
 using BanNoiThat.Application.Interfaces.IService;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BanNoiThat.API.Controllers
 {
@@ -209,6 +210,21 @@ namespace BanNoiThat.API.Controllers
                 _apiResponse.ErrorMessages.Add("Xác thực thất bại");
                 return BadRequest(_apiResponse);
             }
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<ActionResult<ApiResponse>> ChangePassword([FromForm] ChangePasswordRequest model)
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)?.Value;
+
+            var userEntity = await _uow.UserRepository.GetAsync(x => x.Id == userId, tracked: true);
+
+            var passwordHash = _passwordHasher.HashPassword(userEntity, model.NewPassword);
+            userEntity.PasswordHash = passwordHash;
+
+            _apiResponse.IsSuccess = true;
+            return Ok(_apiResponse);
         }
     }
 }
