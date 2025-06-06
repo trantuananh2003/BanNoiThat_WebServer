@@ -2,39 +2,81 @@
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Domain.Entities;
+using Microsoft.Extensions.Logging;
+using Quartz;
+using System.Text.Json.Serialization;
 
 namespace BanNoiThat.Application.Service.SaleProgramService
 {
-    public class SaleProgramService : IServiceSalePrograms
+    [DisallowConcurrentExecution]
+    public class SaleProgramService : IServiceSalePrograms, IJob
     {
         private readonly IUnitOfWork _uow;
+        private readonly ILogger<SaleProgramService> _logger;
 
-        public SaleProgramService(IUnitOfWork uow)
+        public SaleProgramService(IUnitOfWork uow, ILogger<SaleProgramService> logger)
         {
             _uow = uow;
+            _logger = logger;
         }
 
-        public async Task ApplySaleProgramsToProduct(SaleProgram modelSale)
+        public async Task Execute(IJobExecutionContext context)
         {
+            await CheckApplyTime();
+        }
+
+        public async Task CheckApplyTime()
+        {
+            //Chương trình tới hạn nhưng chưa được áp dụng
+            var listSalePrograms = await _uow.SaleProgramsRepository.GetAllAsync(x => x.StartDate < DateTime.Now && x.Status == StaticDefine.SP_Status_Inactive);
+            _logger.LogWarning("Found {Count} active sale programs", listSalePrograms?.Count() ?? 0);
+
+            foreach (var program in listSalePrograms)
+            {
+                _logger.LogWarning("Chuong trinh can duoc ap dung: {ProgramName}, Start: {StartDate}, End: {EndDate}",
+                    program.Name, program.StartDate, program.EndDate);
+                await ApplySaleProgramsToProduct(program.Id);
+            }
+
+            //Chương trình hết hạn và chương trình đó đang được áp dụng
+            var listSaleProgramsExpried = await _uow.SaleProgramsRepository.GetAllAsync(x => x.EndDate < DateTime.Now && x.Status == StaticDefine.SP_Status_Active);
+
+            foreach (var program in listSaleProgramsExpried)
+            {
+                _logger.LogWarning("Chuong trinh can duoc tat: {ProgramName}, Start: {StartDate}, End: {EndDate}",
+                    program.Name, program.StartDate, program.EndDate);
+                await SetExpiredSalePrograms(program.Id);
+            }
+        }
+
+        public async Task ApplySaleProgramsToProduct(string saleProgramId)
+        {
+            var entitySP = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == saleProgramId, tracked: true);
+            entitySP.Status = StaticDefine.SP_Status_Active;
             List<ProductItem> listProductItems = new List<ProductItem>();
-            var listApplyValue = modelSale.ApplyValues
+            var listApplyValue = entitySP.ApplyValues
                 .Split(',')
                 .Select(value => value.Trim())
                 .ToList();
-            if (modelSale.ApplyType == StaticDefine.Sale_ApplyType_Brand)
+
+            if (entitySP.ApplyType == StaticDefine.Sale_ApplyType_Brand)
             {
                 var listProducts = await _uow.ProductRepository.GetAllAsync(x => listApplyValue.Contains(x.Brand.Id), isTracked: true, includeProperties: "ProductItems");
                 foreach (var product in listProducts)
                 {
                     foreach (var productItem in product.ProductItems)
                     {
-                        if (productItem.SaleProgram_Id == modelSale.Id)
+                        //Mỗi sản phẩm chỉ được áp dụng vào 1 chương trình
+                        //Áp dụng chương trình có giá sale lớn hơn hoặc bằng
+                        var priceSaleOfSP = (productItem.Price - CalculatePrice(entitySP, productItem.Price));
+                        //Product item khong trong 1 chuong trinh sale
+                        if (productItem.SaleProgram_Id != null && productItem.SalePrice > priceSaleOfSP )
                         {
-                            throw new Exception($"Sản phẩm {product.Name}");
+                            continue;
                         }
 
-                        productItem.SaleProgram_Id = modelSale.Id;
-                        productItem.SalePrice = productItem.Price - CalculatePrice(modelSale, productItem.Price);
+                        productItem.SaleProgram_Id = entitySP.Id;
+                        productItem.SalePrice = productItem.Price - CalculatePrice(entitySP, productItem.Price);
                     }
                 }
             }
@@ -42,6 +84,17 @@ namespace BanNoiThat.Application.Service.SaleProgramService
            await _uow.SaveChangeAsync();
         }
 
+        public async Task SetExpiredSalePrograms(string saleProgramId)
+        {
+            var entitySP = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == saleProgramId, tracked: true);
+            entitySP.Status = StaticDefine.SP_Status_Expired;
+
+            await PutBackPrice(entitySP.Id);
+
+            await _uow.SaveChangeAsync();
+        }
+
+        //Đặt lại giá gốc
         public async Task PutBackPrice(string modelSaleProgramId)
         {
             var entitySaleProgram = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == modelSaleProgramId, tracked: true, includeProperties: "ProductItems");
@@ -50,13 +103,14 @@ namespace BanNoiThat.Application.Service.SaleProgramService
                 foreach (var productItem in entitySaleProgram.ProductItems)
                 {
                     productItem.SalePrice = productItem.Price;
+                    productItem.SaleProgram_Id = null;
                 }
             }
 
-          
             await _uow.SaveChangeAsync();
         }
 
+        //Lưu lại giá tiền khi có chương trình
         public async Task GetBackPrice(string modelSaleProgramId)
         {
             var entitySaleProgram = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == modelSaleProgramId, tracked: true, includeProperties: "ProductItems");

@@ -9,6 +9,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
         private ApplicationDbContext _dbContext;
         private ICategoriesRepository _categoriesRepository;
         private IProductRepository _productsRepository;
+        private IProductItemRepository _productItemsRepository;
         private IBrandsRepository _brandsRepository;
         private ICartRepository _cartRepository;
         private IOrdersRepository _orderRepository;
@@ -20,6 +21,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 
         public ICategoriesRepository CategoriesRepository => _categoriesRepository = new CategoriesRepository(_dbContext);
         public IProductRepository ProductRepository => _productsRepository = new ProductRepository(_dbContext);
+        public IProductItemRepository ProductItemRepository => _productItemsRepository = new ProductItemRepository(_dbContext);
         public IBrandsRepository BrandRepository => _brandsRepository = new BrandRepository(_dbContext);
         public ICartRepository CartRepository => _cartRepository = new CartRepository(_dbContext);
         public IOrdersRepository OrderRepository => _orderRepository = new OrderRepository(_dbContext);
@@ -28,7 +30,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
         public ICouponRepository CouponsRepository => _couponsRepository = new CouponsRepository(_dbContext);
         public ICouponUsageRepository CouponUsageRepository => _couponUsageRepository = new CouponUsageRepository(_dbContext);
         public ISaleProgramsRepository SaleProgramsRepository => _saleProgramsRepository = new SaleProgramsRepository(_dbContext);
-
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {

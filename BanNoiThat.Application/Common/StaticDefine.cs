@@ -47,5 +47,11 @@
         public const string SD_URL_LINK_RESETPASSWORD = "http://localhost:3005/reset-password";
         public const string SD_URL_LINK_CONFIRMPASSWORD = "https://localhost:7000/api/auth/confirm-password";
 
+
+        //Sale
+        public const string SP_Status_Inactive = "inactive";
+        public const string SP_Status_Active = "active";
+        public const string SP_Status_Expired = "expired";
+
     }
 }

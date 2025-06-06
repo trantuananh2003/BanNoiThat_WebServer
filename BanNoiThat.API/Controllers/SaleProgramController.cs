@@ -92,12 +92,11 @@ namespace BanNoiThat.API.Controllers
                 ApplyType = model.ApplyType,
                 ApplyValues = model.ApplyValues,
                 Slug = model.Slug is null ? model.Name.GenerateSlug() : model.Slug,
-                IsActive = true
+                IsActive = false,
+                Status = StaticDefine.SP_Status_Inactive,
             };
 
             await _uow.SaleProgramsRepository.CreateAsync(saleProgram);
-
-            await _serviceSalePrograms.ApplySaleProgramsToProduct(saleProgram);
 
             _apiResponse.IsSuccess = true;
             _apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
@@ -161,17 +160,7 @@ namespace BanNoiThat.API.Controllers
             entity.MaxDiscount = model.MaxDiscount;
             entity.ApplyType = model.ApplyType;
             entity.ApplyValues = string.Join(",", model.ApplyValues.Split(',').Select(v => v.Trim()));
-
-            //if (model.ApplyType != clonedEntity.ApplyType || model.ApplyValues != clonedEntity.ApplyValues)
-            //{
-            //    await _serviceSalePrograms.ApplySaleProgramsToProduct(entity);
-            //}
-
-            //if (model.DiscountValue != clonedEntity.DiscountValue || model.DiscountType != clonedEntity.DiscountType || model.MaxDiscount != clonedEntity.MaxDiscount)
-            //{
-            //    await _serviceSalePrograms.ApplySaleProgramsToProduct(entity);
-            //}
-            await _serviceSalePrograms.ApplySaleProgramsToProduct(entity);
+            entity.Status = model.Status;
 
             await _uow.SaveChangeAsync();
 

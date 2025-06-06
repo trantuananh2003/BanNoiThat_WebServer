@@ -4,7 +4,7 @@ namespace BanNoiThat.Application.Interfaces.IService
 {
     public interface IServiceSalePrograms
     {
-        Task ApplySaleProgramsToProduct(SaleProgram modelSale);
+        Task ApplySaleProgramsToProduct(string modesaleProgramId);
         Task GetBackPrice(string modelSaleProgramId);
         Task PutBackPrice(string modelSaleProgramId);
     }

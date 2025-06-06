@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService;
 using BanNoiThat.API.Filter;
 using BanNoiThat.API.Extensions.Authorization;
+using Quartz;
+using BanNoiThat.Application.Service.SaleProgramService;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoApi"));
@@ -41,6 +43,16 @@ builder.Services.RegisterDIService();
 builder.Services.SetUpAuthentication(builder.Configuration);
 builder.Services.SetupAuthorization();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddQuartz(opt =>
+{
+    var jobKey = JobKey.Create("Check Sale programs");
+
+    opt.AddJob<SaleProgramService>(jobKey)
+        .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(s => s.WithIntervalInSeconds(10).RepeatForever()));
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 builder.Services.AddCors(options =>
 {

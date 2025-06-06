@@ -9,10 +9,11 @@
         public DateTime EndDate { get; set; }
         public string DiscountType { get; set; } //percent, fixed_amount
         public double DiscountValue { get; set; }
-        public double MaxDiscount { get; set; } 
+        public double MaxDiscount { get; set; }
         public string ApplyType { get; set; }
         public string ApplyValues { get; set; }
         public Boolean IsActive { get; set; }
+        public string Status { get; set; } //Inactive, active, expired
         public string Slug { get; set; }
         public List<ProductItem> ProductItems { get; set; }
     }

@@ -14,6 +14,7 @@ namespace BanNoiThat.Application.DTOs.SaleProgramDtos
         public string ApplyType { get; set; }
         public string ApplyValues { get; set; }
         public string? Slug { get; set; }
+        public string? Status { get; set; }
         //public Boolean IsActive { get; set; }
     }
 }
