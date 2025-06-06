@@ -34,7 +34,7 @@ namespace BanNoiThat.API.Controllers
         [Authorize]
         public async Task<ActionResult<ApiResponse>> GetInfoOrderById(string id)
         {
-            string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == "userId")!.Value;
+            string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value;
 
             var orderEntity = await _serviceOrder.GetDetailOrderById(id, userId);
 
@@ -57,12 +57,11 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet("manager")]
-        [Authorize]
         public async Task<ActionResult<ApiResponse>> GetListOrderForManager([FromQuery] string orderStatus)
         {
-            string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value;
+            //string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value ;
 
-            var listOrder = await _serviceOrder.GetListOrderForAdmin(userId, orderStatus);
+            var listOrder = await _serviceOrder.GetListOrderForAdmin( orderStatus);
 
             _apiResponse.IsSuccess = true;
             _apiResponse.Result = listOrder;
@@ -107,8 +106,15 @@ namespace BanNoiThat.API.Controllers
         [HttpPost("{orderId}/create-order-ghn")]
         public async Task<ActionResult<ApiResponse>> CreateOrderGHNAsync([FromRoute] string orderId)
         {
-            var entityOrder = await _uow.OrderRepository.GetAsync(x => x.Id == orderId);
+            var entityOrder = await _uow.OrderRepository.GetOrderIncludeAsync(orderId);
             var listAddress = entityOrder.ShippingAddress.Split('-');
+
+            int totalWeight = entityOrder.OrderItems
+                .Select(oi =>
+                    (oi.ProductItem.Weight ?? 1) * oi.Quantity // Lấy cân nặng, nhân với số lượng
+                )
+                .Sum();
+
             var resultId = await ReadFileGHN.GetIDsAsync("./GHN/DuLieuGHN.xlsx", listAddress[1], listAddress[2]);
 
             var resultGHN = await _serviceShipping.CreateOrderGHN("a85473ec-2e75-11f0-9b81-222185cb68c8", new
@@ -116,31 +122,26 @@ namespace BanNoiThat.API.Controllers
                 payment_type_id = 2,
                 required_note = "KHONGCHOXEMHANG",
                 client_order_code = "",
-                to_name = "Tran Tuan Anh",
+                to_name = entityOrder.UserNameOrder,
                 to_phone = entityOrder.PhoneNumber,
                 to_address = listAddress[3],
                 to_ward_code = resultId.WardCode,
                 to_district_id = Convert.ToInt32(resultId.DistrictID),
-                weight = 200,
-                length = 1,
-                width = 19,
-                height = 10,
                 insurance_value = 3000,
                 service_type_id = 2,
-                items = new[]
+                weight = totalWeight,
+                items = entityOrder.OrderItems.Select(oi =>
+                new
                 {
-                    new
-                    {
-                        name = "Áo Polo",
-                        code = "Polo123",
-                        quantity = 1,
-                        price = 200000,
-                        length = 12,
-                        width = 12,
-                        height = 12,
-                        weight = 1200,
-                    }
-                }
+                    name = oi.ProductItem.NameOption,
+                    code = oi.ProductItem.Sku,
+                    quantity = oi.Quantity,
+                    price = (int)oi.Price,
+                    length = oi.ProductItem.LengthSize,
+                    width = oi.ProductItem.WidthSize,
+                    height = oi.ProductItem.HeightSize,
+                    weight = oi.ProductItem.Weight ?? 1, // Gán giá trị mặc định nếu null
+                }).ToList()
             });
 
             entityOrder.AddressCode = resultGHN.Data.order_code;

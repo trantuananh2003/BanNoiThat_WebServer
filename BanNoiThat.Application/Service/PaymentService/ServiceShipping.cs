@@ -51,6 +51,7 @@ namespace BanNoiThat.Application.Service.PaymentService
                 throw;
             }
         }
+
         public async Task<CreateOrderResponse> CreateOrderGHN(string token, object payload)
         {
             try
@@ -86,8 +87,15 @@ namespace BanNoiThat.Application.Service.PaymentService
 
                 // Parse response content
                 var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Response Body: {responseContent}");
-
+                if (!response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Status Code: {response.StatusCode}");
+                    Console.WriteLine($"Reason Phrase: {response.ReasonPhrase}");
+                    Console.WriteLine($"Response Body: {responseBody}");
+                    throw new Exception("API returned an error. Check the response log for details.");
+                }
+                response.EnsureSuccessStatusCode();
                 var createOrderResponse = JsonConvert.DeserializeObject<CreateOrderResponse>(responseContent);
 
                 return createOrderResponse;
@@ -98,8 +106,44 @@ namespace BanNoiThat.Application.Service.PaymentService
                 throw;
             }
         }
-   
 
+        public async Task<OrderDetailGHNReponse> GetStatusOrder(string token, string orderCode)
+        {
+            try
+            {
+                // Endpoint URL
+                var url = "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/detail";
+
+                // Tạo payload JSON
+                var payload = new
+                {
+                    order_code = orderCode
+                };
+
+                // Convert payload to JSON
+                var jsonPayload = JsonConvert.SerializeObject(payload);
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+                Console.WriteLine(jsonPayload);
+
+                // Add headers
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Add("Token", token);
+                _httpClient.DefaultRequestHeaders.Host = "dev-online-gateway.ghn.vn";
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await _httpClient.PostAsync(url, content);
+                response.EnsureSuccessStatusCode();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var shippingFeeResponse = JsonConvert.DeserializeObject<OrderDetailGHNReponse>(responseContent);
+                return shippingFeeResponse;
+            }
+            catch (Exception ex)
+            {
+                // Handle errors
+                Console.WriteLine($"Error: {ex.Message}");
+                throw;
+            }
+        }
     }
 
 
@@ -160,5 +204,18 @@ namespace BanNoiThat.Application.Service.PaymentService
     {
         public string order_code { get; set; }
         public string total_fee { get; set; }
+    }
+
+    public class OrderDetailGHNReponse
+    {
+        public int Code { get; set; }
+        public string Message { get; set; }
+        public OrderDetailGHN Data { get; set; }
+    }
+
+    public class OrderDetailGHN
+    {
+        public string shop_id { get; set; }
+        public string status { get; set; }
     }
 }

@@ -87,7 +87,7 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpPost("{userId}/set-role")]
-        public async Task<ActionResult<ApiResponse>> SetRoleUser(string userId,[FromForm] string roleId)
+        public async Task<ActionResult<ApiResponse>> SetRoleUser(string userId,[FromForm] string? roleId)
         {
             var userEntity = await _unitOfWork.UserRepository.GetAsync(x => x.Id == userId);
             _unitOfWork.UserRepository.AttachEntity(userEntity);

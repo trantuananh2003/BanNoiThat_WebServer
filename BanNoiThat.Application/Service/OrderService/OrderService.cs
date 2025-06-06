@@ -4,6 +4,7 @@ using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
+using BanNoiThat.Application.Service.PaymentService;
 using BanNoiThat.Domain.Entities;
 
 namespace BanNoiThat.Application.Service.OrderService
@@ -12,10 +13,12 @@ namespace BanNoiThat.Application.Service.OrderService
     {
         private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
+        private ServiceShipping _serviceShipping;
 
-        public OrderService(IUnitOfWork uow, IMapper mapper) {
+        public OrderService(IUnitOfWork uow, IMapper mapper, ServiceShipping serviceShipping) {
             _uow = uow;
             _mapper = mapper;
+            _serviceShipping = serviceShipping;
         }
 
         public async Task<Order> GetDetailOrderById(string id, string userId)
@@ -32,10 +35,26 @@ namespace BanNoiThat.Application.Service.OrderService
             return listOrderResponse;
         }
 
-        public async Task<List<OrderResponse>> GetListOrderForAdmin(string userId, string orderStatus)
+        public async Task<List<OrderResponse>> GetListOrderForAdmin(string orderStatus)
         {
             var listOrder = await _uow.OrderRepository.GetAllAsync(x => x.OrderStatus == orderStatus, includeProperties: "OrderItems");
             var listOrderResponse = _mapper.Map<List<OrderResponse>>(listOrder);
+
+            var listOrderShipping = await _uow.OrderRepository.GetAllAsync(x => x.OrderStatus == StaticDefine.Status_Order_Shipping, includeProperties: "OrderItems", isTracked: true);
+
+            foreach (var order in listOrderShipping)
+            {
+                var statusGHN = await CheckStatusOrderGHN(order.Id);
+                if(statusGHN.Data.status == "delivered")
+                {
+                    await OrderUpdateStatus(order.Id, orderStatus: StaticDefine.Status_Order_Done, paymentStatus: StaticDefine.Status_Payment_Paid);
+                }
+                else if(statusGHN.Data.status == "return" || statusGHN.Data.status == "returned")
+                {
+                    await OrderUpdateStatus(order.Id, orderStatus: StaticDefine.Status_Payment_Refunded);
+                }
+                await _uow.SaveChangeAsync();
+            }
 
             return listOrderResponse;
         }
@@ -70,5 +89,15 @@ namespace BanNoiThat.Application.Service.OrderService
                 orderItem.ProductItem.Quantity += orderItem.Quantity;
             }
         }
+    
+        private async Task<OrderDetailGHNReponse> CheckStatusOrderGHN(string orderId)
+        {
+            var entityOrder = await _uow.OrderRepository.GetAsync(x => x.Id == orderId);
+            var statusOrder = await _serviceShipping.GetStatusOrder("a85473ec-2e75-11f0-9b81-222185cb68c8", entityOrder.AddressCode);
+
+            return statusOrder;
+        }
+
+
     }
 }
