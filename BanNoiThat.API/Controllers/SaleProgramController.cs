@@ -110,11 +110,12 @@ namespace BanNoiThat.API.Controllers
             var entity = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == id, tracked: true);
             entity.IsActive = isActive;
 
+            //Bật lại chương trình
             if (isActive)
             {
                 await _serviceSalePrograms.GetBackPrice(id);
-
             }
+            //Tạm không áp dụng giá chương trình nữa nhưng sản phẩm vẫn thuộc khung giờ
             else
             {
                 await _serviceSalePrograms.PutBackPrice(id);
@@ -160,7 +161,6 @@ namespace BanNoiThat.API.Controllers
             entity.MaxDiscount = model.MaxDiscount;
             entity.ApplyType = model.ApplyType;
             entity.ApplyValues = string.Join(",", model.ApplyValues.Split(',').Select(v => v.Trim()));
-            entity.Status = model.Status;
 
             await _uow.SaveChangeAsync();
 
@@ -175,7 +175,6 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> DeleteSalePrograms([FromRoute][Required] string id)
         {
             await _serviceSalePrograms.PutBackPrice(id);
-
             await _uow.SaleProgramsRepository.DeleteEntityHard(id);
             await _uow.SaveChangeAsync();
 

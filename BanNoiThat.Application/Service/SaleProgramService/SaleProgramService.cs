@@ -28,7 +28,7 @@ namespace BanNoiThat.Application.Service.SaleProgramService
         public async Task CheckApplyTime()
         {
             //Chương trình tới hạn nhưng chưa được áp dụng
-            var listSalePrograms = await _uow.SaleProgramsRepository.GetAllAsync(x => x.StartDate < DateTime.Now && x.Status == StaticDefine.SP_Status_Inactive);
+            var listSalePrograms = await _uow.SaleProgramsRepository.GetAllAsync(x => x.StartDate < DateTime.Now && x.Status == StaticDefine.SP_Status_Inactive && x.IsActive == true);
             _logger.LogWarning("Found {Count} active sale programs", listSalePrograms?.Count() ?? 0);
 
             foreach (var program in listSalePrograms)
@@ -86,8 +86,13 @@ namespace BanNoiThat.Application.Service.SaleProgramService
 
         public async Task SetExpiredSalePrograms(string saleProgramId)
         {
-            var entitySP = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == saleProgramId, tracked: true);
+            var entitySP = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == saleProgramId, tracked: true, includeProperties: "ProductItems");
             entitySP.Status = StaticDefine.SP_Status_Expired;
+
+            foreach(var productItem in entitySP.ProductItems)
+            {
+                productItem.SaleProgram_Id = null;
+            }
 
             await PutBackPrice(entitySP.Id);
 
@@ -103,14 +108,13 @@ namespace BanNoiThat.Application.Service.SaleProgramService
                 foreach (var productItem in entitySaleProgram.ProductItems)
                 {
                     productItem.SalePrice = productItem.Price;
-                    productItem.SaleProgram_Id = null;
                 }
             }
 
             await _uow.SaveChangeAsync();
         }
 
-        //Lưu lại giá tiền khi có chương trình
+        //Giá tiền khi có chương trình
         public async Task GetBackPrice(string modelSaleProgramId)
         {
             var entitySaleProgram = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == modelSaleProgramId, tracked: true, includeProperties: "ProductItems");
