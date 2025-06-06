@@ -1,4 +1,4 @@
-﻿using BanNoiThat.Application.DTOs.Product;
+﻿using BanNoiThat.Application.DTOs.ProductDtos;
 using MediatR;
 
 namespace BanNoiThat.Application.Service.Products.Commands.UpdatePatchProduct

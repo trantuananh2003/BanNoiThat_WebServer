@@ -9,7 +9,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.FluentConfig
         public void Configure(EntityTypeBuilder<SaleProgram> builder)
         {
             builder.HasKey(o => o.Id);
-            
         }   
     }
 }

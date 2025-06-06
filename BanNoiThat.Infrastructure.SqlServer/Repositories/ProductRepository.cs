@@ -32,7 +32,7 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             {
                 var categoryEntity = await _db.Categories.AsNoTracking().Where(c => c.Slug == stringSearch).Include(x => x.Children).FirstOrDefaultAsync();
                 var brandEntity = await _db.Brands.AsNoTracking().Where(b => b.Slug == stringSearch).FirstOrDefaultAsync();
-                var saleProgram = await _db.SalePrograms.AsNoTracking().Where(sp => sp.Slug == stringSearch).FirstOrDefaultAsync();
+                var saleProgram = await _db.SalePrograms.AsNoTracking().Where(sp => sp.Slug == stringSearch).Include(x => x.ProductItems).FirstOrDefaultAsync();
 
                 if (categoryEntity != null)
                 {
@@ -208,6 +208,16 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             return productItemEntity;
         }
 
+        public async Task<Product> GetProductByIdOrSlug(string value)
+        {
+            var entity = await _db.Products.Where(x => x.Slug == value || x.Id == value)
+                .Include(x => x.ProductItems).ThenInclude(x=>x.SaleProgram)
+                .Include(x => x.Brand)
+                .Include(x => x.Category).FirstOrDefaultAsync();
+
+            return entity;
+        }
+ 
         public async Task<List<ProductItem>> GetListProductItemByProductIdAsync(string productId)
         {
             var varListProductItems = await _db.ProductItems.Where(x => x.Product_Id == productId).AsNoTracking().ToListAsync();

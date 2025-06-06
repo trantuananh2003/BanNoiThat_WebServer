@@ -13,6 +13,7 @@ namespace BanNoiThat.Application.Interfaces.Repository
         Task DeleteSoft(string productId, Boolean isDeleted);
         Task<List<ProductItem>> GetListProductItemByProductIdAsync(string productId);
         Task<PagedList<ProductHomeResponse>> GetPagedListProduct(string stringSearch, int pageSize, int pageCurrent, bool IsDeleted, List<PriceRange> priceRanges, List<string> colors, SizeProductItem size);
+        Task<Product> GetProductByIdOrSlug(string value);
         Task<ProductItem> GetProductItemByIdAsync(string id);
         Task UpdatePatchProduct(string id, JsonPatchDocument<Product> productModel);
         void UpdateProductItem(ProductItem productItem);

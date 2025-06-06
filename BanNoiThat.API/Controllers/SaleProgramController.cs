@@ -40,7 +40,8 @@ namespace BanNoiThat.API.Controllers
         [HttpGet("homepage")]
         public async Task<ActionResult<ApiResponse>> GetSaleProgramForHomePage()
         {
-            var list = await _uow.SaleProgramsRepository.GetAllAsync();
+            var list = await _uow.SaleProgramsRepository
+                .GetAllAsync(x => x.IsActive == true && x.Status == StaticDefine.SP_Status_Active);
             var listSaleProgramHomePage = new List<RequestHomePageSaleProgram>();
 
             foreach (var item in list)

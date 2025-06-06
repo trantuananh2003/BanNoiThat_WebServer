@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace BanNoiThat.Application.DTOs.Product
+namespace BanNoiThat.Application.DTOs.ProductDtos
 {
     public class UpdateProductRequest
     {

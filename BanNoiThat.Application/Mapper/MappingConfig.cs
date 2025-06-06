@@ -4,12 +4,9 @@ using BanNoiThat.Application.DTOs.BrandDto;
 using BanNoiThat.Application.DTOs.CartDtos;
 using BanNoiThat.Application.DTOs.CategoryDtos;
 using BanNoiThat.Application.DTOs.OrderDtos;
-using BanNoiThat.Application.DTOs.Product;
 using BanNoiThat.Application.DTOs.ProductDtos;
+using BanNoiThat.Application.DTOs.SaleProgramDtos;
 using BanNoiThat.Application.DTOs.User;
-using BanNoiThat.Application.Service.BrandService;
-using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
-using BanNoiThat.Application.Service.Products.Commands.UpdatePatchProduct;
 using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.JsonPatch;
 
@@ -17,7 +14,8 @@ namespace BanNoiThat.API.Mapper
 {
     public class MappingConfig : Profile
     {
-        public MappingConfig() {
+        public MappingConfig()
+        {
             //Category
             CreateMap<CreateCategoriesRequest, Category>().
                                 ForMember(dest => dest.Slug, opt => opt.MapFrom(x => string.IsNullOrEmpty(x.Slug) ? x.Name.GenerateSlug() : x.Slug));
@@ -54,11 +52,14 @@ namespace BanNoiThat.API.Mapper
             CreateMap<OrderItem, OrderItemResponse>();
 
             //User
-            CreateMap<InfoUserRequest, User>();            ;
+            CreateMap<InfoUserRequest, User>();
             CreateMap<User, InfoUserResponse>()
                 .ForMember(dest => dest.Birthday, opt => opt.MapFrom(x => x.Birthday.ToString("yyyy-MM-dd")));
             CreateMap<User, UnitUserMangeReponse>()
                         .ForMember(dest => dest.RoleName, opt => opt.MapFrom(x => x.Role.Name));
+
+            //SaleProgram
+            CreateMap<SaleProgram, SaleProgramResponse>();
         }
     }
 }
