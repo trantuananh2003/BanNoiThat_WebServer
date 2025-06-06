@@ -55,8 +55,6 @@ namespace BanNoiThat.Application.Service.Products.Commands.UpdateProductItems
                 var modelRequest = listEntityProductItems.Where(x => x.Id == modelProductItem.Id).FirstOrDefault();
                 if (modelProductItem != null && modelProductItem.ImageProductItem != null && modelProductItem.ImageProductItem.Length > 0)
                 {
-                    if(modelRequest != null &&!string.IsNullOrEmpty(modelRequest.ImageUrl))
-                        await _blobService.DeleteBlob(modelRequest.ImageUrl, StaticDefine.SD_Storage_Containter);
                     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(modelProductItem.ImageProductItem.FileName)}";
                     entityProductItem.ImageUrl = await _blobService.UploadBlob(fileName, StaticDefine.SD_Storage_Containter, modelProductItem.ImageProductItem);
                 }
