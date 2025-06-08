@@ -1,5 +1,4 @@
 ﻿using BanNoiThat.Application.Interfaces.IRepository;
-using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using BanNoiThat.Infrastructure.SqlServer.Repositories;

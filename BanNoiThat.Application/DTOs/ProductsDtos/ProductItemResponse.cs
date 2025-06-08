@@ -17,6 +17,7 @@ namespace BanNoiThat.Application.DTOs.ProductDtos
         public int? HeightSize { get; set; }
         public int? Weight { get; set; }
         public string? Colors { get; set; }
+        public int SoldQuantity { get; set; }
         public SaleProgramResponse? SaleProgram { get; set; }
     }
 }

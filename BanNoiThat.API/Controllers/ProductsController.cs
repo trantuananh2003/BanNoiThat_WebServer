@@ -1,6 +1,7 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.ProductDtos;
+using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Application.Service.Products.Commands.CreateProduct;
@@ -25,12 +26,15 @@ namespace BanNoiThat.API.Controllers
         private ApiResponse _apiResponse;
         private readonly IUnitOfWork _uow;
         private IBlobService _blob;
+        private IServiceProduct _serviceProduct;
 
-        public ProductsController(IMediator mediator, IUnitOfWork uow, IBlobService blob)
+        public ProductsController(IMediator mediator, IUnitOfWork uow, IBlobService blob
+            , IServiceProduct serviceProduct)
         {
             _mediator = mediator;
             _uow = uow;
             _blob = blob;
+            _serviceProduct = serviceProduct;
             _apiResponse = new ApiResponse();
         }
 
@@ -118,17 +122,32 @@ namespace BanNoiThat.API.Controllers
 
         //Get product for paged list
         [HttpPost("recommend")]
-        public async Task<ActionResult<ApiResponse>> GetPagedListProductRecommendAsync(int pageCurrent, int pageSize, string? stringSearch,[FromForm] RecommendRequest model)
+        public async Task<ActionResult<ApiResponse>> GetPagedListProductRecommendAsync(int pageCurrent, int pageSize, string? stringSearch,
+            [FromForm] RecommendRequest? model)
         {
+            
+            var productIds = new List<string>();
+
+            if(model.IsSpecial)
+            {
+                productIds.Add(model.InteractedProductId);
+            }
+            else
+            {
+                string? userInteractionJson = Request.Cookies["userInteraction"];
+                productIds = JsonSerializer.Deserialize<List<string>>(userInteractionJson) ?? new List<string>();
+            }
+
+
             GetPagedProductsRecommendQuery queryPagedProduct = new GetPagedProductsRecommendQuery
             {
                 PageCurrent = pageCurrent,
                 PageSize = pageSize,
                 StringSearch = stringSearch,
-                InteractedProductIds = model.InteractedProductIds.ToArray(),
+                InteractedProductIds = productIds,
             };
 
-            var pagedProductModel = await _mediator.Send(queryPagedProduct);
+            var pagedProductModel = await _serviceProduct.HandleRecommend(queryPagedProduct);
 
             PaginationDto pagination = new PaginationDto()
             {

@@ -5,27 +5,25 @@
 namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateProperty_Order_UserName_2 : Migration
+    public partial class AddProperty_ProductItem_SoldOut : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-
-
-            migrationBuilder.AddColumn<string>(
-                name: "UserNameOrder",
-                table: "Orders",
-                type: "nvarchar(max)",
-                nullable: true);
+            migrationBuilder.AddColumn<int>(
+                name: "SoldQuantity",
+                table: "ProductItems",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "UserNameOrder",
-                table: "Orders");
-
+                name: "SoldQuantity",
+                table: "ProductItems");
         }
     }
 }

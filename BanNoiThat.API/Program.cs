@@ -8,6 +8,8 @@ using BanNoiThat.API.Filter;
 using BanNoiThat.API.Extensions.Authorization;
 using Quartz;
 using BanNoiThat.Application.Service.SaleProgramService;
+using BanNoiThat.Infrastructure.SqlServer.DataContext;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoApi"));
@@ -59,41 +61,17 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontEnd",
         builder =>
         {
-            builder.WithOrigins("http://161.248.146.74")
+            builder.WithOrigins("http://160.191.50.203:3005", "http://160.191.50.203:3004", "http://160.191.50.203:3006")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials()
                    .WithExposedHeaders("X-Pagination");
 
-            builder.WithOrigins("http://localhost:5173")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials()
-                .WithExposedHeaders("X-Pagination");
-
-            builder.WithOrigins("http://localhost:3005")
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials()
-               .WithExposedHeaders("X-Pagination");
-
-            builder.WithOrigins("http://localhost:3000")
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials()
-               .WithExposedHeaders("X-Pagination");
-
-            builder.WithOrigins("http://localhost:3006")
+            builder.WithOrigins("http://localhost:3000", "http://localhost:3006", "http://localhost:3004", "http://localhost:3005", "http://localhost:5500")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials()
                    .WithExposedHeaders("X-Pagination");
-
-            builder.WithOrigins("http://localhost:5501")
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials()
-               .WithExposedHeaders("X-Pagination");
 
             builder.WithOrigins("https://udify.app/")
                .AllowAnyHeader()
@@ -104,6 +82,7 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
 app.UseCors("AllowFrontEnd");
 
 // Configure the HTTP request pipeline.

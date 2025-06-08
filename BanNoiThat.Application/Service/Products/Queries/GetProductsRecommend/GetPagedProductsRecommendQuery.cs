@@ -9,6 +9,6 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
         public int PageSize { get; set; }
         public int PageCurrent { get; set; }
         public string? StringSearch { get; set; }
-        public string[] InteractedProductIds { get; set; }
+        public List<string> InteractedProductIds { get; set; }
     }
 }

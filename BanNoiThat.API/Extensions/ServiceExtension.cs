@@ -11,6 +11,7 @@ using BanNoiThat.Application.Service.OutService;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService;
 using BanNoiThat.Application.Service.PaymentMethod.PayVnService;
 using BanNoiThat.Application.Service.PaymentService;
+using BanNoiThat.Application.Service.Products;
 using BanNoiThat.Application.Service.SaleProgramService;
 using BanNoiThat.Application.Service.StatisticService;
 using BanNoiThat.Application.Service.UserService;
@@ -25,6 +26,8 @@ namespace BanNoiThat.API.Extensions
     {
         public static void RegisterDIService(this IServiceCollection services) {
             services.AddSingleton<IBlobService, BlobService>();
+
+            services.AddTransient<IServiceProduct, ServiceProduct>();
 
             services.AddTransient<IServiceCategories, ServiceCategories>();
             services.AddTransient<IServiceBrands, ServiceBrands>();

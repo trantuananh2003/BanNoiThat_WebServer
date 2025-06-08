@@ -14,6 +14,7 @@ namespace BanNoiThat.Application.DTOs.ProductDtos
         public string? Keyword { get; set; }
         public string? Description { get; set; }
         public bool IsDeleted { get; set; }
+        public int TotalSoldQuantity { get; set; }
         public Brand Brand { get; set; }
         public Category Category { get; set; }
         public SaleProgram SaleProgram { get; set; }

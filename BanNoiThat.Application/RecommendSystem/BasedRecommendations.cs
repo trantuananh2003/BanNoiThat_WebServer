@@ -1,4 +1,5 @@
-﻿using BanNoiThat.Domain.Interface;
+﻿using BanNoiThat.Domain.Entities;
+using BanNoiThat.Domain.Interface;
 
 namespace BanNoiThat.Application.Service.RecommendSystem
 {
@@ -11,13 +12,14 @@ namespace BanNoiThat.Application.Service.RecommendSystem
             _vocabularyKeyword = vocabularyKeyword;
         }
 
-        public List<T> GetContentBasedRecommendations(string[] interactedProductIds, List<T> productsData, List<Dictionary<string, double>> tfidfVectors)
+        public List<T> GetContentBasedRecommendations(List<string> interactedProductIds, List<T> productsData, List<Dictionary<string, double>> tfidfVectors)
         {
-            if (interactedProductIds == null || interactedProductIds.Length == 0)
+            if (interactedProductIds == null || interactedProductIds.Count() == 0)
                 return new List<T>();
 
             // Lấy vector TF-IDF của các sản phẩm đã tương tác
             var interactedVectors = new List<Dictionary<string, double>>();
+
             foreach (var id in interactedProductIds)
             {
                 var index = GetProductIndexById(id, productsData);
@@ -32,7 +34,9 @@ namespace BanNoiThat.Application.Service.RecommendSystem
             for (int i = 0; i < tfidfVectors.Count; i++)
             {
                 var productId = GetProductIdByIndex(i, productsData);
-                //if (interactedProductIds.Contains(productId)) continue; // Bỏ qua sản phẩm đã tương tác
+                //Tính trung bình cho các sản phẩm được quan tâm
+                // Bỏ qua sản phẩm đã tương tác
+                if (interactedProductIds.Contains(productId)) continue; 
 
                 double totalSimilarity = 0;
                 foreach (var interactedVector in interactedVectors)
@@ -64,6 +68,7 @@ namespace BanNoiThat.Application.Service.RecommendSystem
         }
 
         #region Hỗ trợ tính
+        //Hàm tính vector
         public List<Dictionary<string, double>> ComputeTFIDF(List<Dictionary<string, double>> tfArray, Dictionary<string, double> idf)
         {
             // Danh sách kết quả TF-IDF
@@ -92,8 +97,7 @@ namespace BanNoiThat.Application.Service.RecommendSystem
 
             foreach (var product in products)
             {
-                // Lấy danh sách từ khóa của sản phẩm
-                string[] keywords = product.Keyword.Split(' ');
+                string[] keywords = product.Keyword.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? new string[0];
 
                 // Từ điển để lưu TF cho từng từ khóa trong vocabulary
                 var tf = new Dictionary<string, double>();
@@ -135,8 +139,8 @@ namespace BanNoiThat.Application.Service.RecommendSystem
                     }
                 }
 
-                // Tính IDF: log10(totalDocs / (1 + docsWithTerm))
-                idf[term] = Math.Log10((double)totalDocs / (1 + docsWithTerm));
+                //1+ tranh loi chia cho 0
+                idf[term] = Math.Log10((double)totalDocs / (docsWithTerm));
             }
 
             return idf;

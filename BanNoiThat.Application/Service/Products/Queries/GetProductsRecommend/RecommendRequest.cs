@@ -3,6 +3,7 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
 {
     public class RecommendRequest
     {
-        public List<string> InteractedProductIds { get; set; }
+        public Boolean IsSpecial { get; set; } = false;
+        public string? InteractedProductId { get; set; }
     }
 }

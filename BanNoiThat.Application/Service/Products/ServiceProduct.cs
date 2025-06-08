@@ -1,57 +1,49 @@
-﻿
+﻿using BanNoiThat.Application.DTOs.ProductDtos;
 using BanNoiThat.Application.DTOs;
-using BanNoiThat.Application.Interfaces.Repository;
-using MediatR;
-using BanNoiThat.Domain.Entities;
+using BanNoiThat.Application.Interfaces.IService;
+using BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend;
 using BanNoiThat.Application.Service.RecommendSystem;
-using AutoMapper;
+using BanNoiThat.Domain.Entities;
 using System.Text.RegularExpressions;
 using System.Text;
-using BanNoiThat.Application.DTOs.ProductDtos;
+using BanNoiThat.Application.Interfaces.Repository;
 
-namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
+namespace BanNoiThat.Application.Service.Products
 {
-    public class TypeValue
-    {
-        public string Type { get; set; }
-        public string Value { get; set; }
-    }
-
-    public class GetPagedProductsRecommendQueryHandler : IRequestHandler<GetPagedProductsRecommendQuery, PagedList<ProductHomeResponse>>
+    public class ServiceProduct : IServiceProduct
     {
         private IUnitOfWork _uow;
-        private IMapper _mapper;
-
-        public GetPagedProductsRecommendQueryHandler(IUnitOfWork uow, IMapper mapper) {
+        public ServiceProduct(IUnitOfWork uow) {
             _uow = uow;
-            _mapper = mapper;
         }
 
-        public async Task<PagedList<ProductHomeResponse>> Handle(GetPagedProductsRecommendQuery request, CancellationToken cancellationToken)
+        public async Task<PagedList<ProductHomeResponse>> HandleRecommend(GetPagedProductsRecommendQuery request)
         {
             var listProduct = await _uow.ProductRepository
-                .GetAllAsync(x => x.ProductItems.Any(x => x.Quantity > 0), includeProperties: "ProductItems");
+                .GetAllAsync(x => x.ProductItems.Any(x => x.Quantity > 0), includeProperties: "ProductItems,Category,Brand");
 
-            List<string> keywords = new List<string>();
-
-            //Lay toàn bộ sản phẩm và keyword lưu vào
-            foreach(var entity in listProduct)
+            //Tạo vocabulary
+            List<string> vocabulary = new List<string>();
+            foreach (var entity in listProduct)
             {
-                _uow.ProductRepository.AttachEntity(entity);
                 entity.Keyword = HandleSaveKeyWord(entity);
-
-                //HandleKeyword.AddKeyWord(entity.Keyword);
-                keywords.Add(entity.Keyword);
+                var keywords = entity.Keyword.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var word in keywords)
+                {
+                    if (!vocabulary.Contains(word))
+                    {
+                        vocabulary.Add(word);
+                    }
+                }
             }
-  
-            //var recommendSystem = new BasedRecommendations<Product>(await HandleKeyword.ReadKeywordFromVocal());
-            var recommendSystem = new BasedRecommendations<Product>(keywords);
 
+            //var recommendSystem = new BasedRecommendations<Product>(await HandleKeyword.ReadKeywordFromVocal());
+            var recommendSystem = new BasedRecommendations<Product>(vocabulary);
 
             var tfArray = recommendSystem.ComputeTF((List<Product>)listProduct);
             var idf = recommendSystem.ComputeIDF((List<Product>)listProduct);
 
-            var vectorTFIDF = recommendSystem.ComputeTFIDF(tfArray,idf);
+            var vectorTFIDF = recommendSystem.ComputeTFIDF(tfArray, idf);
 
             var listEntityRecommend = recommendSystem.GetContentBasedRecommendations(request.InteractedProductIds, (List<Product>)listProduct, vectorTFIDF);
             var totalEntity = listEntityRecommend.Count();
@@ -88,9 +80,13 @@ namespace BanNoiThat.Application.Service.Products.Queries.GetProductsRecommend
             string keyword;
 
             var slugs = product.Slug.Split('-');
-            var description = product.Description.Split(' ');
+            var categorys = (product.Category?.Slug ?? "").Split('-');
+            var brands = (product.Brand?.Slug ?? "").Split('-');
+
 
             keyword = string.Join(" ", slugs);
+            keyword += " " + string.Join(" ", categorys);
+            keyword += " " + string.Join(" ", brands);
 
             keyword = RemoveSpecialCharacters(keyword);
 
