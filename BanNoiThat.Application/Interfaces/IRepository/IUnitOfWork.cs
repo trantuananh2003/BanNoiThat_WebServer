@@ -15,6 +15,7 @@ namespace BanNoiThat.Application.Interfaces.Repository
         ICouponUsageRepository CouponUsageRepository { get; }
         ISaleProgramsRepository SaleProgramsRepository { get; }
         IProductItemRepository ProductItemRepository { get; }
+        IReviewRepository ReviewRepository { get; }
 
         Task SaveChangeAsync();
     }

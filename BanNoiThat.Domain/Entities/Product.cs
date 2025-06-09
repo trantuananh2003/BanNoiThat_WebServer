@@ -19,6 +19,7 @@ namespace BanNoiThat.Domain.Entities
         public string Slug { get; set; } = string.Empty;
         public DateTime CreateAt { get; set; }
         public Boolean IsDeleted { get; set; }
-       
+        public double? Rate { get; set; }
+        public List<Review> Reviews { get; set; }
     }
 }

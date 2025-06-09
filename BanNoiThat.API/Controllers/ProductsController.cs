@@ -192,5 +192,45 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
         #endregion 3D
+        
+        [HttpGet("productsAI")]
+        public async Task<ActionResult<ApiResponse>> GetProductForAI()
+        {
+            var listProduct = await _uow.ProductRepository
+                .GetAllAsync(x => x.ProductItems.Any(x => x.Quantity > 0), includeProperties: "ProductItems,Category,Brand");
+
+            // Ánh xạ danh sách sản phẩm, loại bỏ Description
+            var productList = listProduct.Select(product => new
+            {
+                Id = product.Id,
+                Category = new
+                {
+                    Id = product.Category.Id,
+                    Name = product.Category.Name
+                },
+                Brand = new
+                {
+                    Id = product.Brand.Id,
+                    Name = product.Brand.Name
+                },
+                Name = product.Name,
+                ThumbnailUrl = product.ThumbnailUrl,
+                Slug = product.Slug,
+                CreateAt = product.CreateAt,
+                IsDeleted = product.IsDeleted,
+                Rate = product.Rate,
+                ProductItems = product.ProductItems.Select(item => new
+                {
+                    Id = item.Id,
+                    Quantity = item.Quantity
+                }).ToList()
+            }).ToList();
+
+            _apiResponse.StatusCode = HttpStatusCode.OK;
+            _apiResponse.Result = productList;
+
+            return Ok(_apiResponse);
+        }
+
     }
 }
