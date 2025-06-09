@@ -24,5 +24,10 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
             var order = await query.FirstOrDefaultAsync();
             return order;
         }
+
+        public async Task<OrderItem> GetOrderItemById(string orderItemId)
+        {
+            return await _db.OrderItems.Where(x => x.Id == orderItemId).AsTracking().FirstOrDefaultAsync();
+        }
     }
 }

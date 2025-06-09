@@ -11,5 +11,6 @@
         public double Price { get; set; }
         public string ProductItem_Id { get; set; }
         public ProductItem ProductItem { get; set; }
+        public Boolean IsComment { get; set; }
     }
 }

@@ -193,7 +193,7 @@ namespace BanNoiThat.API.Controllers
         }
         #endregion 3D
         
-        [HttpGet("productsAI")]
+        [HttpGet("/productsAI")]
         public async Task<ActionResult<ApiResponse>> GetProductForAI()
         {
             var listProduct = await _uow.ProductRepository

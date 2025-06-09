@@ -2,7 +2,8 @@
 {
     public class RateCreateDto
     {
-        public string Product_Id { get; set; }
+        public string OrderItemId { get; set; }
+        public string ProductItemId { get; set; }
         public string Comment { get; set; }
         public double Rate { get; set; }
     }

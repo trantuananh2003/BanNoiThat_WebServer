@@ -19,5 +19,6 @@
         public int Quantity { get; set; }
         public string Price { get; set; }
         public string ProductItem_Id { get; set; }
+        public Boolean IsComment { get; set; }
     }
 }

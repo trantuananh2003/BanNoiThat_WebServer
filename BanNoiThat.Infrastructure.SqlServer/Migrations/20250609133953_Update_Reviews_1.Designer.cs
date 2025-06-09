@@ -4,6 +4,7 @@ using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250609133953_Update_Reviews_1")]
+    partial class Update_Reviews_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -275,9 +278,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<string>("ImageItemUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsComment")
-                        .HasColumnType("bit");
-
                     b.Property<string>("NameItem")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
@@ -455,14 +455,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                     b.Property<bool>("IsShow")
                         .HasColumnType("bit");
 
-                    b.Property<string>("NameUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrderItem_Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ProductItem_Id")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -479,8 +471,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderItem_Id");
 
                     b.HasIndex("ProductItem_Id");
 
@@ -765,12 +755,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
 
             modelBuilder.Entity("BanNoiThat.Domain.Entities.Review", b =>
                 {
-                    b.HasOne("BanNoiThat.Domain.Entities.OrderItem", "OrderItem")
-                        .WithMany()
-                        .HasForeignKey("OrderItem_Id")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("BanNoiThat.Domain.Entities.ProductItem", "ProductItem")
                         .WithMany()
                         .HasForeignKey("ProductItem_Id")
@@ -788,8 +772,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Migrations
                         .HasForeignKey("User_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("OrderItem");
 
                     b.Navigation("Product");
 
