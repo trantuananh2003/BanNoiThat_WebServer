@@ -10,16 +10,11 @@ using System.Security.Claims;
 using System.Text;
 using BanNoiThat.Application.Common;
 using Microsoft.AspNetCore.Identity;
-using Azure;
 using System.Web;
 using BanNoiThat.Application.Service.MailsService;
-using Microsoft.AspNetCore.Identity.Data;
 using BanNoiThat.Application.DTOs.AuthDtos;
-using BanNoiThat.Application.Service.UserService;
-using Microsoft.AspNetCore.DataProtection;
-using BanNoiThat.Application.Interfaces.IService;
-using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Google.Apis.Auth;
 
 namespace BanNoiThat.API.Controllers
 {
@@ -50,7 +45,7 @@ namespace BanNoiThat.API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromForm] LoginRequestDto loginRequest)
         {
-            //Check account
+            // Check account
             var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == loginRequest.Email);
             if (userEntity == null)
             {
@@ -58,43 +53,86 @@ namespace BanNoiThat.API.Controllers
             }
 
             var resultValidate = _passwordHasher.VerifyHashedPassword(userEntity, userEntity.PasswordHash, loginRequest.Password);
-            if(resultValidate == PasswordVerificationResult.Failed)
+            if (resultValidate == PasswordVerificationResult.Failed)
             {
                 return Unauthorized();
             }
 
-            //Generate JWT
-            JwtSecurityTokenHandler tokenHandler = new();
-            byte[] key = Encoding.ASCII.GetBytes(_secretKey);
+            // Generate JWT using the shared method
+            string token = GenerateJwt(userEntity.Id, userEntity.Email, userEntity.FullName, userEntity.Role_Id);
 
-            SecurityTokenDescriptor tokenDescriptor = new()
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(StaticDefine.Claim_User_Id, userEntity.Id),
-                    new Claim(ClaimTypes.Email, userEntity.Email),
-                    new Claim(StaticDefine.Claim_FullName, userEntity.FullName),
-                    new Claim(StaticDefine.Claim_User_Role, !string.IsNullOrEmpty(userEntity.Role_Id) ? userEntity.Role_Id : "")
-                    //new Claim(SDClaimAccess.ManageUser, SDClaimAccess.ClaimBlockUser)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-
-            var loginResponse = new LoginResponse()
+            var loginResponse = new LoginResponse
             {
                 Email = userEntity.Email,
                 FullName = userEntity.FullName,
                 UserId = userEntity.Id,
-                Token = tokenHandler.WriteToken(token)
+                Token = token
             };
 
             _apiResponse.IsSuccess = true;
             _apiResponse.StatusCode = HttpStatusCode.OK;
             _apiResponse.Result = loginResponse;
             return Ok(_apiResponse);
+        }
+
+        [HttpPost("login-google")]
+        public async Task<ActionResult> LoginGoogle([FromForm] GoogleLoginRequest request)
+        {
+            try
+            {
+                var googleClientId = _configuration.GetValue<string>("Google:ClientId");
+                var payload = await GoogleJsonWebSignature.ValidateAsync(request.TokenId, new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { googleClientId }
+                });
+
+                var email = payload.Email;
+                var name = payload.Name;
+
+                // Kiểm tra người dùng trong cơ sở dữ liệu
+                var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == email);
+
+                if (userEntity == null)
+                {
+                    // Tạo người dùng mới
+                    userEntity = new User
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        FullName = name,
+                        Email = email,
+                        Role_Id = "customer",
+                        IsBlocked = false,
+                        IsMale = false
+                    };
+
+                    var passwordHash = _passwordHasher.HashPassword(userEntity, Guid.NewGuid().ToString());
+                    userEntity.PasswordHash = passwordHash;
+
+                    await _uow.UserRepository.CreateAsync(userEntity);
+                    await _uow.SaveChangeAsync();
+                }
+
+                // Generate JWT using the shared method
+                string token = GenerateJwt(userEntity.Id, userEntity.Email, userEntity.FullName, userEntity.Role_Id);
+
+                var loginResponse = new LoginResponse
+                {
+                    Email = userEntity.Email,
+                    FullName = userEntity.FullName,
+                    UserId = userEntity.Id,
+                    Token = token
+                };
+
+                _apiResponse.IsSuccess = true;
+                _apiResponse.StatusCode = HttpStatusCode.OK;
+                _apiResponse.Result = loginResponse;
+                return Ok(_apiResponse);
+            }
+            catch (Exception ex)
+            {
+                _apiResponse.ErrorMessages.Add("Đăng nhập google thất bại");
+                return BadRequest(_apiResponse);
+            }
         }
 
         [HttpPost("register")]
@@ -105,7 +143,7 @@ namespace BanNoiThat.API.Controllers
                 Id = Guid.NewGuid().ToString(),
                 FullName = registerRequest.FullName,
                 Email = registerRequest.Email,
-                Role_Id = null,
+                Role_Id = "customer",
                 IsBlocked = false,
                 IsMale = false,
             };
@@ -225,6 +263,28 @@ namespace BanNoiThat.API.Controllers
 
             _apiResponse.IsSuccess = true;
             return Ok(_apiResponse);
+        }
+
+        private string GenerateJwt(string userId, string email, string fullName, string roleId)
+        {
+            JwtSecurityTokenHandler tokenHandler = new();
+            byte[] key = Encoding.ASCII.GetBytes(_secretKey);
+
+            SecurityTokenDescriptor tokenDescriptor = new()
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(StaticDefine.Claim_User_Id, userId),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(StaticDefine.Claim_FullName, fullName),
+                    new Claim(StaticDefine.Claim_User_Role, roleId ?? "")
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

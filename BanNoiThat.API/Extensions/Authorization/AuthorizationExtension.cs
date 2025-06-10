@@ -14,6 +14,10 @@ namespace BanNoiThat.API.Extensions.Authorization
                     {
                         policyBuilder.Requirements.Add(new PermissionRequirement(SDPermissionAccess.Manage, SDPermissionAccess.BlockUser));
                     });
+                    opts.AddPolicy(SDPermissionAccess.CancelOrder, policyBuilder =>
+                    {
+                        policyBuilder.Requirements.Add(new PermissionRequirement(SDPermissionAccess.Manage, SDPermissionAccess.CancelOrder));
+                    });
                 }
             );
 

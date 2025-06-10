@@ -7,7 +7,6 @@ using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Security.Claims;
 
 namespace BanNoiThat.API.Controllers
 {
@@ -29,7 +28,6 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> GetInfoUserById([FromRoute] string userId)
         {                
             var modelResponse = await _serviceUser.GetInfoUser(userId);
-
             _apiResponse.IsSuccess = true;
             _apiResponse.Result = modelResponse;
 
@@ -50,27 +48,11 @@ namespace BanNoiThat.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ApiResponse>> UpdateInfoUser([FromRoute] string id, [FromForm] InfoUserRequest modelRequest)
         {
-            var userId = HttpContext.User.Claims.First().Value;
+                var userId = HttpContext.User.Claims.First().Value;
 
             await _serviceUser.UpdateInfoUser(userId, modelRequest);
 
             _apiResponse.IsSuccess = true;
-            return _apiResponse;
-        }
-
-        [HttpPatch("{id}/{fieldName}")]
-        public async Task<ActionResult<ApiResponse>> UpdatePatchUser(string id, string fieldName, [FromForm] string value)
-        {
-            Type userType = typeof(User);
-
-            if (userType.GetProperty(fieldName) == null)
-            {
-                return BadRequest();
-            }
-
-            _apiResponse.IsSuccess = true;
-            _apiResponse.StatusCode = HttpStatusCode.OK;
-            //await _serviceUser.UpdateFieldUser(id, fieldName, value);
             return _apiResponse;
         }
 
@@ -111,5 +93,21 @@ namespace BanNoiThat.API.Controllers
             await _unitOfWork.SaveChangeAsync();
             return _apiResponse;
         }
+
+        //[HttpPatch("{id}/{fieldName}")]
+        //public async Task<ActionResult<ApiResponse>> UpdatePatchUser(string id, string fieldName, [FromForm] string value)
+        //{
+        //    Type userType = typeof(User);
+
+        //    if (userType.GetProperty(fieldName) == null)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    _apiResponse.IsSuccess = true;
+        //    _apiResponse.StatusCode = HttpStatusCode.OK;
+        //    await _serviceUser.UpdateFieldUser(id, fieldName, value);
+        //    return _apiResponse;
+        //}
     }
 }

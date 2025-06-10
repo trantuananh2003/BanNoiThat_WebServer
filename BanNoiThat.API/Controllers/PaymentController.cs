@@ -1,6 +1,5 @@
 ﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
-using BanNoiThat.Application.DTOs.CouponDtos;
 using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.DTOs.PaymentDtos;
 using BanNoiThat.Application.Interfaces.IService;
@@ -8,7 +7,6 @@ using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Application.Service.PaymentMethod.MomoService.Momo;
 using BanNoiThat.Application.Service.PaymentMethod.PayVnService;
 using BanNoiThat.Application.Service.PaymentService;
-using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -69,13 +67,6 @@ namespace BanNoiThat.API.Controllers
 
                 return Ok(_apiResponse);
             }
-            else if (model.PaymentMethod == "momo" && orderModel != null)
-            {
-                var resultMomo = await _momoService.CreatePaymentMomoAsync(orderModel);
-                _apiResponse.IsSuccess = true;
-                _apiResponse.Result = resultMomo.PayUrl;
-                return Ok(_apiResponse);
-            }
             else if(model.PaymentMethod == "vnpay" && orderModel != null)
             {
                 var modelPaymentVNPAY = new Application.Service.PaymentMethod.PayVnService.Model.PaymentInformationModel()
@@ -128,24 +119,34 @@ namespace BanNoiThat.API.Controllers
             return Ok(response);
         }
 
+        //Tinh phi ship
         [HttpGet("shipping-fee")]
-        public async Task<ActionResult> GetFeeShipping([FromQuery] List<string> listProductItem)
+        public async Task<ActionResult> GetFeeShipping([FromQuery] string[] listProductItem, [FromQuery] int[] quantity)
         {
-            var listItems = new List<ItemShippingFee>();
-
-            foreach (var item in listProductItem)
+            if (listProductItem.Length != quantity.Length)
             {
-                var productItem = await _uow.ProductRepository.GetProductItemByIdAsync(item);
+                return BadRequest("Số lượng sản phẩm và danh sách số lượng không khớp.");
+            }
+
+            var itemsForShipping = new List<object>();
+            int? totalWeight = 0;
+
+            for (int i = 0; i < listProductItem.Length; i++)
+            {
+                var productItem = await _uow.ProductRepository.GetProductItemByIdAsync(listProductItem[i]);
                 if (productItem != null)
                 {
-                    listItems.Add(new ItemShippingFee
+                    itemsForShipping.Add(new
                     {
-                        Name = productItem.NameOption,
-                        Height = productItem.HeightSize,
-                        Width = productItem.WidthSize,
-                        Lenght = productItem.LengthSize,
-                        Quantity = 1
+                        name = productItem.NameOption,
+                        quantity = quantity[i],
+                        height = productItem.HeightSize,
+                        weight = productItem.Weight,
+                        length = productItem.LengthSize,
+                        width = productItem.WidthSize
                     });
+
+                    totalWeight += productItem.Weight * quantity[i];
                 }
             }
 
@@ -157,22 +158,10 @@ namespace BanNoiThat.API.Controllers
                 service_type_id = 2,
                 to_district_id = 1443,
                 to_ward_code = "20207",
-                insurance_value = 10000,
                 cod_failed_amount = 2000,
                 coupon = (string?)null,
-                height = listItems.Max(i => i.Height),
-                length = listItems.Max(i => i.Lenght),
-                weight = 400,
-                width = listItems.Max(i => i.Width),
-                items = listItems.Select(i => new
-                {
-                    name = i.Name,
-                    quantity = i.Quantity,
-                    height = i.Height,
-                    weight = 200,
-                    length = i.Lenght,
-                    width = i.Width
-                }).ToList()
+                weight = totalWeight,
+                items = itemsForShipping
             });
 
             _apiResponse.Result = result.Data;

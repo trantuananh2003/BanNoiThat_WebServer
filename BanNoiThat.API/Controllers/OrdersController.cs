@@ -1,10 +1,8 @@
-﻿using Azure;
-using BanNoiThat.API.Model;
+﻿using BanNoiThat.API.Model;
 using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
-using BanNoiThat.Application.Service.OrderService;
 using BanNoiThat.Application.Service.PaymentService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +33,6 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> GetInfoOrderById(string id)
         {
             string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value;
-
             var orderEntity = await _serviceOrder.GetDetailOrderById(id, userId);
 
             _apiResponse.Result = orderEntity;
@@ -48,7 +45,6 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> GetListOrderForUser([FromQuery] string orderStatus)
         {
             string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value;
-
             var listOrder = await _serviceOrder.GetListOrderForClient(userId, orderStatus);
 
             _apiResponse.IsSuccess = true;
@@ -60,7 +56,6 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> GetListOrderForManager([FromQuery] string orderStatus)
         {
             //string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value ;
-
             var listOrder = await _serviceOrder.GetListOrderForAdmin( orderStatus);
 
             _apiResponse.IsSuccess = true;
@@ -68,16 +63,14 @@ namespace BanNoiThat.API.Controllers
             return Ok(_apiResponse);
         }
 
-        [HttpPatch("{orderId}/orderStatus")]
-        [Authorize]
-        public async Task<ActionResult<ApiResponse>> UpdateOrderStatus([FromRoute] string orderId, [FromForm] OrderPatchRequest order)
+        [HttpPatch("cancelOrder/{orderId}")]
+        [Authorize(Policy = SDPermissionAccess.CancelOrder)]
+        public async Task<ActionResult<ApiResponse>> CancelOrderAsync([FromRoute] string orderId)
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
-            var roleUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;
+            await _serviceOrder.OrderUpdateStatus(orderId, orderStatus: "Cancelled");
 
-            //User chỉ được quyền hủy
-            await _serviceOrder.OrderUpdateStatus(orderId, orderStatus:order.OrderStatus);
-            return _apiResponse;
+            _apiResponse.IsSuccess = true;
+            return Ok(_apiResponse);
         }
 
         [HttpPut("{orderId}/approve")]
@@ -127,7 +120,7 @@ namespace BanNoiThat.API.Controllers
                 to_address = listAddress[3],
                 to_ward_code = resultId.WardCode,
                 to_district_id = Convert.ToInt32(resultId.DistrictID),
-                insurance_value = 3000,
+                insurance_value = 0,
                 service_type_id = 2,
                 weight = totalWeight,
                 items = entityOrder.OrderItems.Select(oi =>
@@ -140,7 +133,7 @@ namespace BanNoiThat.API.Controllers
                     length = oi.ProductItem.LengthSize,
                     width = oi.ProductItem.WidthSize,
                     height = oi.ProductItem.HeightSize,
-                    weight = oi.ProductItem.Weight ?? 1, // Gán giá trị mặc định nếu null
+                    weight = oi.ProductItem.Weight ?? 1,
                 }).ToList()
             });
 
@@ -148,8 +141,11 @@ namespace BanNoiThat.API.Controllers
             entityOrder.TransferService = "GHN";
             entityOrder.OrderStatus = StaticDefine.Status_Order_Shipping;
 
+            _apiResponse.IsSuccess = true;
+            _apiResponse.StatusCode = System.Net.HttpStatusCode.OK;
+
             await _uow.SaveChangeAsync();
-            return Ok();
+            return Ok(_apiResponse);
         }
     }
 }

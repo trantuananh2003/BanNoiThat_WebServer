@@ -42,6 +42,7 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<ApiResponse>> UpdateCartItem([FromForm] CartItemRequest cartItemRequest)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(x => x.Type == StaticDefine.Claim_User_Id)!.Value;

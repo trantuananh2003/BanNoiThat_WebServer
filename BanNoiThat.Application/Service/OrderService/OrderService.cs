@@ -23,14 +23,18 @@ namespace BanNoiThat.Application.Service.OrderService
 
         public async Task<Order> GetDetailOrderById(string id, string userId)
         {
-            var orderEntity = await _uow.OrderRepository.GetAsync(x => x.Id == id && x.User_Id == userId);
+            var orderEntity = await _uow.OrderRepository.GetAsync(x => x.Id == id);
             return orderEntity;
         }
 
         public async Task<List<OrderResponse>> GetListOrderForClient(string userId, string orderStatus)
         {
-            var listOrder = await _uow.OrderRepository.GetAllAsync(x => x.User_Id == userId && x.OrderStatus == orderStatus, includeProperties: "OrderItems");
-            var listOrderResponse = _mapper.Map<List<OrderResponse>>(listOrder);
+            var listOrder = await _uow.OrderRepository.GetAllAsync(
+                x => x.User_Id == userId && x.OrderStatus == orderStatus,
+                includeProperties: "OrderItems"
+            );
+            var sortedListOrder = listOrder.OrderByDescending(x => x.OrderPaidTime).ToList();
+            var listOrderResponse = _mapper.Map<List<OrderResponse>>(sortedListOrder);
 
             return listOrderResponse;
         }
@@ -40,6 +44,7 @@ namespace BanNoiThat.Application.Service.OrderService
             var listOrder = await _uow.OrderRepository.GetAllAsync(x => x.OrderStatus == orderStatus, includeProperties: "OrderItems");
             var listOrderResponse = _mapper.Map<List<OrderResponse>>(listOrder);
 
+            //Gọi để kiểm tra trạng thái đơn hàng
             var listOrderShipping = await _uow.OrderRepository.GetAllAsync(x => x.OrderStatus == StaticDefine.Status_Order_Shipping, includeProperties: "OrderItems", isTracked: true);
 
             foreach (var order in listOrderShipping)
@@ -48,6 +53,7 @@ namespace BanNoiThat.Application.Service.OrderService
                 if(statusGHN.Data.status == "delivered")
                 {
                     await OrderUpdateStatus(order.Id, orderStatus: StaticDefine.Status_Order_Done, paymentStatus: StaticDefine.Status_Payment_Paid);
+                    await SetSoldQuantityProductItem(order.Id);
                 }
                 else if(statusGHN.Data.status == "return" || statusGHN.Data.status == "returned")
                 {
@@ -55,7 +61,6 @@ namespace BanNoiThat.Application.Service.OrderService
                 }
                 await _uow.SaveChangeAsync();
             }
-
             return listOrderResponse;
         }
 
@@ -89,7 +94,7 @@ namespace BanNoiThat.Application.Service.OrderService
                 orderItem.ProductItem.Quantity += orderItem.Quantity;
             }
         }
-    
+
         private async Task<OrderDetailGHNReponse> CheckStatusOrderGHN(string orderId)
         {
             var entityOrder = await _uow.OrderRepository.GetAsync(x => x.Id == orderId);
@@ -97,7 +102,17 @@ namespace BanNoiThat.Application.Service.OrderService
 
             return statusOrder;
         }
+    
+        private async Task SetSoldQuantityProductItem(string orderItemId)
+        {
+            var entityOrder = await _uow.OrderRepository.GetOrderIncludeAsync(orderItemId);
 
+            foreach(var orderItem in entityOrder.OrderItems)
+            {
+                orderItem.ProductItem.SoldQuantity += orderItem.Quantity;
+            }
 
+            await _uow.SaveChangeAsync();
+        }
     }
 }

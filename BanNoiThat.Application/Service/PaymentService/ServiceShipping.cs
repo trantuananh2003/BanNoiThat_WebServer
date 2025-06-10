@@ -31,6 +31,14 @@ namespace BanNoiThat.Application.Service.PaymentService
 
                 // Send POST request
                 var response = await _httpClient.PostAsync(url, content);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Status Code: {response.StatusCode}");
+                    Console.WriteLine($"Reason Phrase: {response.ReasonPhrase}");
+                    Console.WriteLine($"Response Body: {responseBody}");
+                    throw new Exception("API returned an error. Check the response log for details.");
+                }
 
                 // Ensure success status code
                 response.EnsureSuccessStatusCode();
@@ -38,6 +46,14 @@ namespace BanNoiThat.Application.Service.PaymentService
                 // Read response content
                 var responseContent = await response.Content.ReadAsStringAsync();
 
+                if (!response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Status Code: {response.StatusCode}");
+                    Console.WriteLine($"Reason Phrase: {response.ReasonPhrase}");
+                    Console.WriteLine($"Response Body: {responseBody}");
+                    throw new Exception("API returned an error. Check the response log for details.");
+                }
                 // Deserialize the JSON response into a C# object
                 var shippingFeeResponse = JsonConvert.DeserializeObject<ShippingFeeResponse>(responseContent);
 

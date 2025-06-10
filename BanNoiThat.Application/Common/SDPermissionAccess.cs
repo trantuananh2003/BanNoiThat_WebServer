@@ -8,13 +8,15 @@
         public static string ManageUser = "manage-user";
         public static string ManageProduct = "manage-product";
         public static string ManageOrder = "manage-order";
+        public const string CancelOrder = "cancel-order";
 
         public static Dictionary<string, string> Permissions = new()
         {
             {nameof(BlockUser), BlockUser},
             {nameof(ManageUser), ManageUser},
             {nameof(ManageProduct), ManageProduct },
-            { nameof(ManageOrder), ManageOrder}
+            {nameof(ManageOrder), ManageOrder},
+            {nameof(CancelOrder), CancelOrder}
         };
     }
 }

@@ -208,7 +208,6 @@ namespace BanNoiThat.Infrastructure.SqlServer.Repositories
 
             return productItemEntity;
         }
-
         public async Task<Product> GetProductByIdOrSlug(string value)
         {
             var entity = await _db.Products.Where(x => x.Slug == value || x.Id == value)

@@ -17,8 +17,6 @@ using BanNoiThat.Application.Service.StatisticService;
 using BanNoiThat.Application.Service.UserService;
 using BanNoiThat.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BanNoiThat.API.Extensions
 {
