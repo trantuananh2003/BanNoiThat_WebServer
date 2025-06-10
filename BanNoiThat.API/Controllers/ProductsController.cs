@@ -107,7 +107,7 @@ namespace BanNoiThat.API.Controllers
             };
 
             await _mediator.Send(command);
-
+                
             return Ok();
         }
 
@@ -137,7 +137,6 @@ namespace BanNoiThat.API.Controllers
                 string? userInteractionJson = Request.Cookies["userInteraction"];
                 productIds = JsonSerializer.Deserialize<List<string>>(userInteractionJson) ?? new List<string>();
             }
-
 
             GetPagedProductsRecommendQuery queryPagedProduct = new GetPagedProductsRecommendQuery
             {

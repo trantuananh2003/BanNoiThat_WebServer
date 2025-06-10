@@ -23,6 +23,7 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ApiResponse>> GetCartAsyncByIdUser()
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)?.Value;

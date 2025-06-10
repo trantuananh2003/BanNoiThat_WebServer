@@ -3,6 +3,7 @@ using BanNoiThat.Application.DTOs.CartDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using BanNoiThat.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BanNoiThat.Application.Service.CartsService
 {
@@ -14,6 +15,7 @@ namespace BanNoiThat.Application.Service.CartsService
         public async Task<CartResponse> GetCartByUserId(string userId)
         {
             var userEntity = await _uow.UserRepository.GetAsync(x => x.Id == userId);
+
             var cartEntity = await _uow.CartRepository.GetCartByIdUser(userEntity.Id);
             //*Nếu giỏ hàng chưa tồn tại
             if (cartEntity is null)
