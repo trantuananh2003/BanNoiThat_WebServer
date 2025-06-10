@@ -93,11 +93,12 @@ namespace BanNoiThat.API.Controllers
                 ApplyType = model.ApplyType,
                 ApplyValues = model.ApplyValues,
                 Slug = model.Slug is null ? model.Name.GenerateSlug() : model.Slug,
-                IsActive = false,
+                IsActive = true,
                 Status = StaticDefine.SP_Status_Inactive,
             };
 
             await _uow.SaleProgramsRepository.CreateAsync(saleProgram);
+            await _uow.SaveChangeAsync();
 
             _apiResponse.IsSuccess = true;
             _apiResponse.StatusCode = System.Net.HttpStatusCode.OK;

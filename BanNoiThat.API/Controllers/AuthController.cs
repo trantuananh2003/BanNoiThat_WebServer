@@ -159,7 +159,25 @@ namespace BanNoiThat.API.Controllers
 
             string callBackUrl = StaticDefine.SD_URL_LINK_CONFIRMPASSWORD + $"?token={encodedToken}&email={userEntity.Email}";
 
-            await _sendMailService.SendMail(new MailContent { To = userEntity.Email, Body = $"<a href='{callBackUrl}'>clicking here</a>.", Subject = "Xác nhận mật khẩu" });
+            var mailContent = new MailContent
+            {
+                To = userEntity.Email,
+                Subject = "Xác nhận mật khẩu",
+                Body = $@"
+        <div style='font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; border-radius: 8px;'>
+            <h2 style='color: #333;'>Xác nhận mật khẩu đăng ký</h2>
+            <p>Xin chào {userEntity.FullName},</p>
+            <p>Cảm ơn bạn đã đăng ký tài khoản với chúng tôi. Vui lòng nhấn vào nút bên dưới để xác nhận mật khẩu của bạn:</p>
+            <a href='{callBackUrl}' 
+               style='display: inline-block; padding: 10px 20px; margin: 20px 0; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;'>
+                Xác nhận mật khẩu
+            </a>
+            <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
+            <p>Trân trọng,<br/>Đội ngũ hỗ trợ</p>
+        </div>"
+            };
+
+            await _sendMailService.SendMail(mailContent);
 
             await _uow.SaveChangeAsync();
             return Ok();
@@ -184,7 +202,8 @@ namespace BanNoiThat.API.Controllers
                 await _uow.SaveChangeAsync();
 
                 _apiResponse.IsSuccess = true;
-                return Ok(_apiResponse);
+                Response.Redirect("http://localhost:3005/");
+                return null;
             }
             else
             {

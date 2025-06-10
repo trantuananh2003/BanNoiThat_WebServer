@@ -45,7 +45,7 @@
         public const string Sale_ApplyType_category = "category";
 
         public const string SD_URL_LINK_RESETPASSWORD = "http://localhost:3005/reset-password";
-        public const string SD_URL_LINK_CONFIRMPASSWORD = "https://localhost:7000/api/auth/confirm-password";
+        public const string SD_URL_LINK_CONFIRMPASSWORD = "http://localhost:7000/api/auth/confirm-password";
 
         //Sale
         public const string SP_Status_Inactive = "inactive";

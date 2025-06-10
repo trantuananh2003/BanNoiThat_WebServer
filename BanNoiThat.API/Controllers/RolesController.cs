@@ -75,9 +75,21 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpDelete("{RoleId}/role-claims/{RoleClaimId}")]
-        public async Task<ActionResult<ApiResponse>> AddClaimToRoleAsync([FromRoute] string RoleClaimId)
+        public async Task<ActionResult<ApiResponse>> DeleteRoleClaim([FromRoute] string RoleClaimId)
         {
             await _uow.RolesRepository.DeleteRoleClaim(RoleClaimId);
+
+            await _uow.SaveChangeAsync();
+
+            _apiResponse.IsSuccess = true;
+
+            return Ok(_apiResponse);
+        }
+
+        [HttpDelete("{RoleId}")]
+        public async Task<ActionResult<ApiResponse>> DeleteRole([FromRoute] string RoleId)
+        {
+            await _uow.RolesRepository.DeleteEntityHard(RoleId);
 
             await _uow.SaveChangeAsync();
 
