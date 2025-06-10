@@ -21,6 +21,7 @@ using MediatR;namespace BanNoiThat.Application.Service.Products.Commands.UpdateP
             _uow.ProductRepository.AttachEntity(entity);
 
             entity.Brand_Id = request.updateProductRequest.Brand_Id;
+            entity.Name = request.updateProductRequest.Name;
             entity.Category_Id = request.updateProductRequest.Category_Id;
             entity.Slug = request.updateProductRequest.Slug;
             entity.Description = request.updateProductRequest.Description;
