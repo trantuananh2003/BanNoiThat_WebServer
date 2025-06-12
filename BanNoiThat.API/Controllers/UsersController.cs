@@ -48,7 +48,7 @@ namespace BanNoiThat.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ApiResponse>> UpdateInfoUser([FromRoute] string id, [FromForm] InfoUserRequest modelRequest)
         {
-                var userId = HttpContext.User.Claims.First().Value;
+            var userId = HttpContext.User.Claims.First().Value;
 
             await _serviceUser.UpdateInfoUser(userId, modelRequest);
 

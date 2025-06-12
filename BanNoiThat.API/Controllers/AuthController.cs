@@ -138,12 +138,13 @@ namespace BanNoiThat.API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register([FromForm] RegisterRequestDto registerRequest)
         {
+            var entity = (await _uow.UserRepository.GetAsync(x => x.Email == registerRequest.Email) != null
+                    ? throw new Exception("Email đã được đăng ký.") : Task.CompletedTask);
+
             var userEntity = new User()
             {
-                Id = Guid.NewGuid().ToString(),
-                FullName = registerRequest.FullName,
-                Email = registerRequest.Email,
-                Role_Id = "customer",
+                Id = Guid.NewGuid().ToString(), FullName = registerRequest.FullName,
+                Email = registerRequest.Email, Role_Id = "customer",
                 IsBlocked = false,
                 IsMale = false,
             };
@@ -156,7 +157,6 @@ namespace BanNoiThat.API.Controllers
             var token = _dataProtectorTokenProviderService.GenerateToken(userEntity.Id, "confirmpassword");
             string encodedToken = HttpUtility.UrlEncode(token);
 
-
             string callBackUrl = StaticDefine.SD_URL_LINK_CONFIRMPASSWORD + $"?token={encodedToken}&email={userEntity.Email}";
 
             var mailContent = new MailContent
@@ -164,17 +164,17 @@ namespace BanNoiThat.API.Controllers
                 To = userEntity.Email,
                 Subject = "Xác nhận mật khẩu",
                 Body = $@"
-        <div style='font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; border-radius: 8px;'>
-            <h2 style='color: #333;'>Xác nhận mật khẩu đăng ký</h2>
-            <p>Xin chào {userEntity.FullName},</p>
-            <p>Cảm ơn bạn đã đăng ký tài khoản với chúng tôi. Vui lòng nhấn vào nút bên dưới để xác nhận mật khẩu của bạn:</p>
-            <a href='{callBackUrl}' 
-               style='display: inline-block; padding: 10px 20px; margin: 20px 0; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;'>
-                Xác nhận mật khẩu
-            </a>
-            <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
-            <p>Trân trọng,<br/>Đội ngũ hỗ trợ</p>
-        </div>"
+                <div style='font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; border-radius: 8px;'>
+                    <h2 style='color: #333;'>Xác nhận mật khẩu đăng ký</h2>
+                    <p>Xin chào {userEntity.FullName},</p>
+                    <p>Cảm ơn bạn đã đăng ký tài khoản với chúng tôi. Vui lòng nhấn vào nút bên dưới để xác nhận mật khẩu của bạn:</p>
+                    <a href='{callBackUrl}' 
+                       style='display: inline-block; padding: 10px 20px; margin: 20px 0; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;'>
+                        Xác nhận mật khẩu
+                    </a>
+                    <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
+                    <p>Trân trọng,<br/>Đội ngũ hỗ trợ</p>
+                </div>"
             };
 
             await _sendMailService.SendMail(mailContent);
