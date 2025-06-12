@@ -4,7 +4,6 @@ using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
-using BanNoiThat.Application.Service.PaymentService;
 using BanNoiThat.Domain.Entities;
 
 namespace BanNoiThat.Application.Service.OrderService
@@ -57,7 +56,7 @@ namespace BanNoiThat.Application.Service.OrderService
                 }
                 else if(statusGHN.Data.status == "return" || statusGHN.Data.status == "returned")
                 {
-                    await OrderUpdateStatus(order.Id, orderStatus: StaticDefine.Status_Payment_Refunded);
+                    await OrderUpdateStatus(order.Id, orderStatus: StaticDefine.Status_Order_Returned);
                 }
                 await _uow.SaveChangeAsync();
             }

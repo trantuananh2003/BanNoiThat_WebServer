@@ -3,7 +3,7 @@ using BanNoiThat.Application.Common;
 using BanNoiThat.Application.DTOs.OrderDtos;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
-using BanNoiThat.Application.Service.PaymentService;
+using BanNoiThat.Application.Service.OrderService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -147,5 +147,6 @@ namespace BanNoiThat.API.Controllers
             await _uow.SaveChangeAsync();
             return Ok(_apiResponse);
         }
+
     }
 }

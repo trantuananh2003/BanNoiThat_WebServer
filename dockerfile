@@ -21,7 +21,12 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./BanNoiThat.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+RUN mkdir -p /app/certificates
+COPY ["BanNoiThat.API/Certificate/aspnetapp.pfx", "/app/certificates/"]
+
 ENTRYPOINT ["dotnet", "BanNoiThat.API.dll"]

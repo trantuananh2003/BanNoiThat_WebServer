@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace BanNoiThat.Application.Service.PaymentService
+namespace BanNoiThat.Application.Service.OrderService
 {
     public class ServiceShipping
     {

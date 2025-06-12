@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using BanNoiThat.API.Model;
+using BanNoiThat.Application.Common;
 using BanNoiThat.Application.Interfaces.IService;
 using BanNoiThat.Application.Interfaces.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +33,7 @@ namespace BanNoiThat.API.Controllers
             var firstDayLastWeek = DateTime.Today - new TimeSpan((int)daynow.DayOfWeek + 7 - 1, 0, 0, 0);
             var firstDayWeek = DateTime.Today - new TimeSpan((int)daynow.DayOfWeek - 1, 0, 0, 0);
 
-            var listEntity = await _uow.OrderRepository.GetAllAsync(x => x.OrderPaidTime >= firstDayLastWeek);
+            var listEntity = await _uow.OrderRepository.GetAllAsync(x => x.OrderPaidTime >= firstDayLastWeek && x.OrderStatus == StaticDefine.Status_Order_Done);
             double revenueLastWeek = 0;
             double revenueWeek = 0;
 

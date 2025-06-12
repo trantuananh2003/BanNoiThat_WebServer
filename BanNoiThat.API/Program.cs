@@ -61,7 +61,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontEnd",
         builder =>
         {
-            builder.WithOrigins("http://160.191.50.203:3005", "http://160.191.50.203:3004", "http://160.191.50.203:3006")
+            builder.WithOrigins("http://160.191.50.203:3005", "http://160.191.50.203:3004", "http://160.191.50.203:3006" )
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .AllowCredentials()
+                   .WithExposedHeaders("X-Pagination");
+
+            builder.WithOrigins("https://noithatvn.click", "https://ar.noithatvn.click", "https://admin.noithatvn.click")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials()
