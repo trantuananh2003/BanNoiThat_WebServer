@@ -134,8 +134,8 @@ namespace BanNoiThat.API.Controllers
             }
             else
             {
-                string? userInteractionJson = Request.Cookies["userInteraction"];
-                productIds = JsonSerializer.Deserialize<List<string>>(userInteractionJson) ?? new List<string>();
+                string? json = Request.Cookies["userInteraction"];
+                productIds = !string.IsNullOrWhiteSpace(json) && json != "null"? JsonSerializer.Deserialize<List<string>>(json)! : new List<string>();
             }
 
             GetPagedProductsRecommendQuery queryPagedProduct = new GetPagedProductsRecommendQuery
