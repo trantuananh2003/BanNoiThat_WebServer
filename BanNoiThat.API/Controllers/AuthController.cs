@@ -42,21 +42,21 @@ namespace BanNoiThat.API.Controllers
             _dataProtectorTokenProviderService = dataProtectorTokenProviderService;
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult> Login([FromForm] LoginRequestDto loginRequest)
+        [HttpPost("login")] //76
+        public async Task<ActionResult<ApiResponse>> Login([FromForm] LoginRequestDto loginRequest)
         {
-            // Check account
-            var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == loginRequest.Email);
-            if (userEntity == null)
-            {
-                return Unauthorized();
-            }
 
+            var userEntity = await _uow.UserRepository.GetAsync(x => x.Email == loginRequest.Email);
             var resultValidate = _passwordHasher.VerifyHashedPassword(userEntity, userEntity.PasswordHash, loginRequest.Password);
             if (resultValidate == PasswordVerificationResult.Failed)
             {
-                return Unauthorized();
+                return Unauthorized("Thông tin không chính xác");
             }
+
+            if (userEntity == null) return Unauthorized("Người dùng không tồn tại.");
+            if (!userEntity.EmailConfirmed) return Unauthorized("Vui lòng xác thực email của bạn.");
+            if (userEntity.IsBlocked) return Unauthorized("Người dùng đã bị khóa.");
+
 
             // Generate JWT using the shared method
             string token = GenerateJwt(userEntity.Id, userEntity.Email, userEntity.FullName, userEntity.Role_Id);

@@ -11,7 +11,7 @@ namespace BanNoiThat.Domain.Entities
         public string PasswordHash { get; set; }
         public string? Role_Id { get; set; }
         public Role Role { get; set; }
-        public Boolean? IsBlocked { get; set; }
+        public Boolean IsBlocked { get; set; }
         public string? Address { get; set; }
         public ICollection<FavoriteProducts> LikesProduct { get; set; }
         public string? PhoneNumber { get; set; }
