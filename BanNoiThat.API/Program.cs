@@ -8,7 +8,6 @@ using BanNoiThat.API.Filter;
 using BanNoiThat.API.Extensions.Authorization;
 using Quartz;
 using BanNoiThat.Application.Service.SaleProgramService;
-using BanNoiThat.Infrastructure.SqlServer.DataContext;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,12 +67,6 @@ builder.Services.AddCors(options =>
                    .WithExposedHeaders("X-Pagination");
 
             builder.WithOrigins("https://noithatvn.click", "https://ar.noithatvn.click", "https://admin.noithatvn.click")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod()
-                   .AllowCredentials()
-                   .WithExposedHeaders("X-Pagination");
-
-            builder.WithOrigins("http://localhost:3000", "http://localhost:3006", "http://localhost:3004", "http://localhost:3005", "http://localhost:5500")
                    .AllowAnyHeader()
                    .AllowAnyMethod()
                    .AllowCredentials()

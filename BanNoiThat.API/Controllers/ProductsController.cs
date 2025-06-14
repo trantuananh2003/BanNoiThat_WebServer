@@ -125,17 +125,9 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> GetPagedListProductRecommendAsync(int pageCurrent, int pageSize, string? stringSearch,
             [FromForm] RecommendRequest? model)
         {
-            
-            var productIds = new List<string>();
-
-            if(model.IsSpecial)
+            if(!model.InteractedProductIds.Any())
             {
-                productIds.Add(model.InteractedProductId);
-            }
-            else
-            {
-                string? json = Request.Cookies["userInteraction"];
-                productIds = !string.IsNullOrWhiteSpace(json) && json != "null"? JsonSerializer.Deserialize<List<string>>(json)! : new List<string>();
+                return BadRequest(_apiResponse);
             }
 
             GetPagedProductsRecommendQuery queryPagedProduct = new GetPagedProductsRecommendQuery
@@ -143,7 +135,7 @@ namespace BanNoiThat.API.Controllers
                 PageCurrent = pageCurrent,
                 PageSize = pageSize,
                 StringSearch = stringSearch,
-                InteractedProductIds = productIds,
+                InteractedProductIds = model.InteractedProductIds,
             };
 
             var pagedProductModel = await _serviceProduct.HandleRecommend(queryPagedProduct);
