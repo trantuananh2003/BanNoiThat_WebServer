@@ -10,7 +10,7 @@
         public static string ManageUser = "manage-user";
         public static string ManageOrder = "manage-order";
         public static string ManageSaleProgram = "manage-saleprogram";
-        public static string ManageAnalysis = "manage-analysis ";
+        public static string ManageAnalysis = "manage-analysis";
         public static string ManageRole = "manage-role";
 
         public static string BlockUser = "block-user";

@@ -48,9 +48,8 @@
         public const string SD_URL_LINK_CONFIRMPASSWORD = "http://localhost:7000/api/auth/confirm-password";
 
         //Sale
-        public const string SP_Status_Inactive = "inactive";
-        public const string SP_Status_Active = "active";
+        public const string SP_Status_Inactive = "pending";
+        public const string SP_Status_Active = "processing";
         public const string SP_Status_Expired = "expired";
-
     }
 }

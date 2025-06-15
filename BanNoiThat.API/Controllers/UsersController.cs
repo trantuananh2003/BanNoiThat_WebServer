@@ -35,12 +35,12 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse>> GetAllUser(int pageCurrent, int pageSize, string? stringSearch)
+        public async Task<ActionResult<ApiResponse>> GetAllUser(int? pageCurrent, int? pageSize, string? stringSearch)
         {
-            var modelPagedResponse = await _serviceUser.GetAllUser(stringSearch, pageCurrent, pageSize);
+            var modelPagedResponse = await _unitOfWork.UserRepository.GetAllAsync(includeProperties: "Role");
 
             _apiResponse.IsSuccess = true;
-            _apiResponse.Result = modelPagedResponse.Items;
+            _apiResponse.Result = modelPagedResponse;
 
             return _apiResponse;
         }
