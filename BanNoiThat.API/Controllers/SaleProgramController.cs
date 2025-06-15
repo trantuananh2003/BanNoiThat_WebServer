@@ -162,6 +162,7 @@ namespace BanNoiThat.API.Controllers
             entity.DiscountValue = model.DiscountValue;
             entity.MaxDiscount = model.MaxDiscount;
             entity.ApplyType = model.ApplyType;
+            entity.Status = StaticDefine.SP_Status_Inactive
             entity.ApplyValues = string.Join(",", model.ApplyValues.Split(',').Select(v => v.Trim()));
 
             await _uow.SaveChangeAsync();

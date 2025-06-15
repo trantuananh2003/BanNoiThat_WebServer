@@ -51,17 +51,12 @@ namespace BanNoiThat.Application.Service.UserService
             return infoUserResponse;
         }
 
-        public async Task<PagedList<UnitUserMangeReponse>> GetAllUser(string stringSearch, int pageCurrent,int pageSize)
+        public async Task<List<UnitUserMangeReponse>> GetAllUser()
         {
             var listEntity = await _uow.UserRepository.GetAllAsync(includeProperties: "Role");
-
-            listEntity = listEntity.Skip((pageCurrent-1) * pageSize).Take(pageSize);
-
             var listResult = _mapper.Map<List<UnitUserMangeReponse>>(listEntity);
 
-            var listPagedEntity = new PagedList<UnitUserMangeReponse>(listResult, pageCurrent, pageSize, listEntity.Count());
-
-            return listPagedEntity;
+            return listResult;
         }
 
         public async Task UpdateUserBlock(string userId, Boolean isBlock)
