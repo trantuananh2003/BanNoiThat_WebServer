@@ -96,7 +96,8 @@ namespace BanNoiThat.API.Controllers
                 IsActive = true,
                 Status = StaticDefine.SP_Status_Inactive,
             };
-
+            
+            
             await _uow.SaleProgramsRepository.CreateAsync(saleProgram);
             await _uow.SaveChangeAsync();
 
@@ -165,6 +166,8 @@ namespace BanNoiThat.API.Controllers
             entity.Status = StaticDefine.SP_Status_Inactive;
             entity.ApplyValues = string.Join(",", model.ApplyValues.Split(',').Select(v => v.Trim()));
 
+            await _serviceSalePrograms.PutBackPrice(id);
+            await _serviceSalePrograms.SetNullProgramSale(id);
             await _uow.SaveChangeAsync();
 
             return Ok(new ApiResponse

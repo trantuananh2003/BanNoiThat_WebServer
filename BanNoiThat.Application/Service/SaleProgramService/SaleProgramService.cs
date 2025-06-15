@@ -59,28 +59,34 @@ namespace BanNoiThat.Application.Service.SaleProgramService
                 .Select(value => value.Trim())
                 .ToList();
 
+            IEnumerable<Product> listProducts = null;
             if (entitySP.ApplyType == StaticDefine.Sale_ApplyType_Brand)
             {
-                var listProducts = await _uow.ProductRepository.GetAllAsync(x => listApplyValue.Contains(x.Brand.Id), isTracked: true, includeProperties: "ProductItems");
-                foreach (var product in listProducts)
-                {
-                    foreach (var productItem in product.ProductItems)
-                    {
-                        //Mỗi sản phẩm chỉ được áp dụng vào 1 chương trình
-                        //Áp dụng chương trình có giá sale lớn hơn hoặc bằng
-                        var priceSaleOfSP = (productItem.Price - CalculatePrice(entitySP, productItem.Price));
-                        //Product item khong trong 1 chuong trinh sale
-                        if (productItem.SaleProgram_Id != null && productItem.SalePrice > priceSaleOfSP )
-                        {
-                            continue;
-                        }
-
-                        productItem.SaleProgram_Id = entitySP.Id;
-                        productItem.SalePrice = productItem.Price - CalculatePrice(entitySP, productItem.Price);
-                    }
-                }
+                listProducts = await _uow.ProductRepository.GetAllAsync(x => listApplyValue.Contains(x.Brand.Id), isTracked: true, includeProperties: "ProductItems");
+            }
+            else
+            {
+                listProducts = await _uow.ProductRepository.GetAllAsync(x => listApplyValue.Contains(x.Category.Id), isTracked: true, includeProperties: "ProductItems");
             }
 
+            foreach (var product in listProducts)
+            {
+                foreach (var productItem in product.ProductItems)
+                {
+                    //Mỗi sản phẩm chỉ được áp dụng vào 1 chương trình
+                    //Áp dụng chương trình có giá sale lớn hơn hoặc bằng
+                    var priceSaleOfSP = (productItem.Price - CalculatePrice(entitySP, productItem.Price));
+                    //Product item khong trong 1 chuong trinh sale
+                    if (productItem.SaleProgram_Id != null && productItem.SalePrice > priceSaleOfSP && productItem.SaleProgram_Id != saleProgramId)
+                    {
+                        continue;
+                    }
+
+                    productItem.SaleProgram_Id = entitySP.Id;
+                    productItem.SalePrice = productItem.Price - CalculatePrice(entitySP, productItem.Price);
+                }
+            }
+            
            await _uow.SaveChangeAsync();
         }
 
@@ -141,6 +147,18 @@ namespace BanNoiThat.Application.Service.SaleProgramService
             {
                 return 0;
             }
+        }
+
+        //Giá tiền khi có chương trình
+        public async Task SetNullProgramSale(string modelSaleProgramId)
+        {
+            var entitySaleProgram = await _uow.SaleProgramsRepository.GetAsync(x => x.Id == modelSaleProgramId, tracked: true, includeProperties: "ProductItems");
+            foreach (var productItem in entitySaleProgram.ProductItems)
+            {
+                productItem.SaleProgram_Id = null;
+            }
+
+            await _uow.SaveChangeAsync();
         }
     }
 }

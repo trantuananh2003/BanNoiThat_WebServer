@@ -7,5 +7,6 @@ namespace BanNoiThat.Application.Interfaces.IService
         Task ApplySaleProgramsToProduct(string modesaleProgramId);
         Task GetBackPrice(string modelSaleProgramId);
         Task PutBackPrice(string modelSaleProgramId);
+        Task SetNullProgramSale(string modelSaleProgramId);
     }
 }
