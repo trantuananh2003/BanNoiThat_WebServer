@@ -53,7 +53,7 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet("manager")]
-        public async Task<ActionResult<ApiResponse>> GetListOrderForManager([FromQuery] string orderStatus, [FromQuery] string latestStatusDay)
+        public async Task<ActionResult<ApiResponse>> GetListOrderForManager([FromQuery] string orderStatus, [FromQuery] DateTime latestStatusDay)
         {
             //string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value ;
             var listOrder = await _serviceOrder.GetListOrderForAdmin( orderStatus);
