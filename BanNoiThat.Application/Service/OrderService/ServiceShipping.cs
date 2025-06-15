@@ -96,21 +96,15 @@ namespace BanNoiThat.Application.Service.OrderService
                     Console.WriteLine($"Status Code: {response.StatusCode}");
                     Console.WriteLine($"Reason Phrase: {response.ReasonPhrase}");
                     Console.WriteLine($"Response Body: {responseBody}");
-                    throw new Exception("API returned an error. Check the response log for details.");
+                    var resultFail = JsonConvert.DeserializeObject<CreateOrderResponse>(responseBody);
+                    throw new Exception(resultFail.Message);
                 }
                 response.EnsureSuccessStatusCode();
 
 
                 // Parse response content
                 var responseContent = await response.Content.ReadAsStringAsync();
-                if (!response.IsSuccessStatusCode)
-                {
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Status Code: {response.StatusCode}");
-                    Console.WriteLine($"Reason Phrase: {response.ReasonPhrase}");
-                    Console.WriteLine($"Response Body: {responseBody}");
-                    throw new Exception("API returned an error. Check the response log for details.");
-                }
+
                 response.EnsureSuccessStatusCode();
                 var createOrderResponse = JsonConvert.DeserializeObject<CreateOrderResponse>(responseContent);
 
@@ -125,40 +119,31 @@ namespace BanNoiThat.Application.Service.OrderService
 
         public async Task<OrderDetailGHNReponse> GetStatusOrder(string token, string orderCode)
         {
-            try
+            // Endpoint URL
+            var url = "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/detail";
+
+            // Tạo payload JSON
+            var payload = new
             {
-                // Endpoint URL
-                var url = "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/detail";
+                order_code = orderCode
+            };
 
-                // Tạo payload JSON
-                var payload = new
-                {
-                    order_code = orderCode
-                };
+            // Convert payload to JSON
+            var jsonPayload = JsonConvert.SerializeObject(payload);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            Console.WriteLine(jsonPayload);
 
-                // Convert payload to JSON
-                var jsonPayload = JsonConvert.SerializeObject(payload);
-                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-                Console.WriteLine(jsonPayload);
+            // Add headers
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Add("Token", token);
+            _httpClient.DefaultRequestHeaders.Host = "dev-online-gateway.ghn.vn";
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                // Add headers
-                _httpClient.DefaultRequestHeaders.Clear();
-                _httpClient.DefaultRequestHeaders.Add("Token", token);
-                _httpClient.DefaultRequestHeaders.Host = "dev-online-gateway.ghn.vn";
-                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                var response = await _httpClient.PostAsync(url, content);
-                response.EnsureSuccessStatusCode();
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var shippingFeeResponse = JsonConvert.DeserializeObject<OrderDetailGHNReponse>(responseContent);
-                return shippingFeeResponse;
-            }
-            catch (Exception ex)
-            {
-                // Handle errors
-                Console.WriteLine($"Error: {ex.Message}");
-                throw;
-            }
+            var response = await _httpClient.PostAsync(url, content);
+            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var shippingFeeResponse = JsonConvert.DeserializeObject<OrderDetailGHNReponse>(responseContent);
+            return shippingFeeResponse;
         }
     }
 

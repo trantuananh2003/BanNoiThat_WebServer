@@ -53,7 +53,7 @@ namespace BanNoiThat.API.Controllers
         }
 
         [HttpGet("manager")]
-        public async Task<ActionResult<ApiResponse>> GetListOrderForManager([FromQuery] string orderStatus)
+        public async Task<ActionResult<ApiResponse>> GetListOrderForManager([FromQuery] string orderStatus, [FromQuery] string )
         {
             //string userId = HttpContext.User.Claims.FirstOrDefault(claim => claim.Type == StaticDefine.Claim_User_Id)!.Value ;
             var listOrder = await _serviceOrder.GetListOrderForAdmin( orderStatus);
@@ -104,7 +104,7 @@ namespace BanNoiThat.API.Controllers
 
             int totalWeight = entityOrder.OrderItems
                 .Select(oi =>
-                    (oi.ProductItem.Weight ?? 1) * oi.Quantity // Lấy cân nặng, nhân với số lượng
+                    (oi.ProductItem.Weight ?? 1) * oi.Quantity
                 )
                 .Sum();
 

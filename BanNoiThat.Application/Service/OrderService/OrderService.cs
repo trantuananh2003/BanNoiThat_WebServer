@@ -41,13 +41,16 @@ namespace BanNoiThat.Application.Service.OrderService
         public async Task<List<OrderResponse>> GetListOrderForAdmin(string orderStatus)
         {
             var listOrder = await _uow.OrderRepository.GetAllAsync(x => x.OrderStatus == orderStatus, includeProperties: "OrderItems");
-            var listOrderResponse = _mapper.Map<List<OrderResponse>>(listOrder);
+            var sortedListOrder = listOrder.OrderByDescending(x => x.OrderPaidTime).ToList();
+            var listOrderResponse = _mapper.Map<List<OrderResponse>>(sortedListOrder);
 
             //Gọi để kiểm tra trạng thái đơn hàng
             var listOrderShipping = await _uow.OrderRepository.GetAllAsync(x => x.OrderStatus == StaticDefine.Status_Order_Shipping, includeProperties: "OrderItems", isTracked: true);
 
             foreach (var order in listOrderShipping)
             {
+                if (order.TransferService != "GHN")
+                    continue;
                 var statusGHN = await CheckStatusOrderGHN(order.Id);
                 if(statusGHN.Data.status == "delivered")
                 {

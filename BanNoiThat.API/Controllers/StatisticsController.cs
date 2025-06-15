@@ -58,13 +58,13 @@ namespace BanNoiThat.API.Controllers
         public async Task<ActionResult<ApiResponse>> GetNumberOfOrders()
         {
             var daynow = DateTime.Today;
-            var firstDayLastWeek = DateTime.Today - new TimeSpan((int)daynow.DayOfWeek + 7 - 1, 0, 0, 0);
-            var firstDayWeek = DateTime.Today - new TimeSpan((int)daynow.DayOfWeek - 1, 0, 0, 0);
+            var firstDayWeek = DateTime.Today - new TimeSpan((int)daynow.DayOfWeek + 7 - 1, 0, 0, 0);
+            var firstLastWeek = firstDayWeek.AddDays(-7);
 
-            var listEntity = await _uow.OrderRepository.GetAllAsync(x => x.OrderPaidTime >= firstDayLastWeek);
-
-            var entityWeek = listEntity.Where(x => x.OrderPaidTime >= firstDayWeek).Count();
-            var entityLastWeek = listEntity.Where(x => x.OrderPaidTime < firstDayWeek).Count();
+            var listEntity = await _uow.OrderRepository.GetAllAsync(x => x.OrderPaidTime >= firstDayWeek.AddDays(-7));
+           
+            var entityWeek = listEntity.Where(x => x.OrderPaidTime >= firstDayWeek && x.OrderPaidTime < firstDayWeek.AddDays(7)).Count();
+            var entityLastWeek = listEntity.Where(x => x.OrderPaidTime <= firstDayWeek && x.OrderPaidTime > firstDayWeek.AddDays(-7)).Count();
 
             _apiReponse.Result = new
             {

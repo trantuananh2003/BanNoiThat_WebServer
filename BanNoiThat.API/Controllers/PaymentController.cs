@@ -121,7 +121,7 @@ namespace BanNoiThat.API.Controllers
 
         //Tinh phi ship
         [HttpGet("shipping-fee")]
-        public async Task<ActionResult> GetFeeShipping([FromQuery] string[] listProductItem, [FromQuery] int[] quantity)
+        public async Task<ActionResult> GetFeeShipping([FromQuery] string[] listProductItem, [FromQuery] int[] quantity, [FromQuery] string? district, [FromQuery] string? ward)
         {
             if (listProductItem.Length != quantity.Length)
             {
@@ -130,6 +130,8 @@ namespace BanNoiThat.API.Controllers
 
             var itemsForShipping = new List<object>();
             int? totalWeight = 0;
+
+            var resultId = await ReadFileGHN.GetIDsAsync("./GHN/DuLieuGHN.xlsx", district, ward);
 
             for (int i = 0; i < listProductItem.Length; i++)
             {
@@ -149,15 +151,15 @@ namespace BanNoiThat.API.Controllers
                     totalWeight += productItem.Weight * quantity[i];
                 }
             }
+                
 
             var result = await _shippingService.CalculateShippingFeeAsync("a85473ec-2e75-11f0-9b81-222185cb68c8", new
             {
-                from_district_id = 1459,
-                from_ward_code = "22208",
+
                 service_id = (int?)null,
                 service_type_id = 2,
-                to_district_id = 1443,
-                to_ward_code = "20207",
+                to_district_id = Convert.ToInt32(resultId.DistrictID),
+                to_ward_code = resultId.WardCode,
                 cod_failed_amount = 2000,
                 coupon = (string?)null,
                 weight = totalWeight,
@@ -170,6 +172,5 @@ namespace BanNoiThat.API.Controllers
 
             return Ok(_apiResponse);
         }
-
     }
 }
